@@ -40,6 +40,4 @@ public class User extends BaseEntity {
 
     @ManyToOne
     private Company company;
-
 }
-
