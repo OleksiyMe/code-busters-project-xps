@@ -21,10 +21,10 @@ public class BaseEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false,updatable = false)
+    @Column(nullable = false, updatable = false)
     public LocalDateTime insertDateTime;
 
-    @Column(nullable = false,updatable = false)
+    @Column(nullable = false, updatable = false)
     public Long insertUserId;
 
     @Column(nullable = false)
@@ -34,4 +34,5 @@ public class BaseEntity implements Serializable {
     public Long lastUpdateUserId;
 
     private Boolean isDeleted = false;
+
 }
