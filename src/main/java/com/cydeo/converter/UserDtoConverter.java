@@ -21,7 +21,6 @@ public class UserDtoConverter implements Converter<String, UserDto> {
         }
 
 
-
         return userService.findByUsername(source);
     }
 }
