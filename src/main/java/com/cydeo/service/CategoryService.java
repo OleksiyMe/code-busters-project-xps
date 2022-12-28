@@ -9,6 +9,6 @@ public interface CategoryService {
     CategoryDto findCategoryById(Long id);
     List<CategoryDto> listAllCategories();
     CategoryDto save(CategoryDto categoryDto);
-    CategoryDto edit(CategoryDto category);
+    void edit(CategoryDto category);
     void delete(Long Id);   //Soft Delete
 }
