@@ -7,6 +7,11 @@ import com.cydeo.repository.CategoryRepository;
 import com.cydeo.service.CategoryService;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
@@ -20,14 +25,34 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    public CategoryDto findById(Long id) {
-        return mapperUtil.convert(categoryRepository.findById(id), new CategoryDto());
+    public CategoryDto findCategoryById(Long id) {
+        return mapperUtil.convert(categoryRepository.getCategoryById(id), new CategoryDto());
     }
 
     @Override
+    public List<CategoryDto> listAllCategories() {
+
+
+        return categoryRepository.findAll().stream().map(category->mapperUtil.convert(category, new CategoryDto())).sorted( Comparator.comparing(CategoryDto::getDescription)).collect(Collectors.toList());
+    }
+
+
+    @Override
     public CategoryDto save(CategoryDto categoryDto) {
-    Category category=mapperUtil.convert(categoryDto, new Category());
+        Category category=mapperUtil.convert(categoryDto, new Category());
 
         return mapperUtil.convert(categoryRepository.save(category), new CategoryDto());
     }
+
+    @Override
+    public void edit(CategoryDto category) {
+
+    }
+
+    @Override
+    public void delete(Long Id) {
+
+    }
+
+
 }
