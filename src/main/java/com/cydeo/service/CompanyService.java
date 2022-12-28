@@ -8,7 +8,7 @@ public interface CompanyService {
     CompanyDto findCompanyById(Long id);
 
     void createCompany(CompanyDto company);
-    List<CompanyDto> readAllCompanies();
+    List<CompanyDto> listAllCompanies();
     CompanyDto updateCompany(Long id);
     void deleteCompany(Long id);
 

@@ -1,12 +1,16 @@
 package com.cydeo.service.impl;
 
+import com.cydeo.dto.CategoryDto;
 import com.cydeo.dto.CompanyDto;
+import com.cydeo.entity.Company;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repository.CompanyRepository;
 import com.cydeo.service.CompanyService;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
@@ -32,8 +36,12 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public List<CompanyDto> readAllCompanies() {
-        return null;
+    public List<CompanyDto> listAllCompanies() {
+        List<Company> companyList = companyRepository.findAll();
+        return companyList.stream().filter(company -> company.getId() != 1).map(company ->
+                mapperUtil.convert(company, new CompanyDto()))
+                .sorted( Comparator.comparing(CompanyDto::getCompanyStatus))
+                .collect(Collectors.toList());
     }
 
     @Override
