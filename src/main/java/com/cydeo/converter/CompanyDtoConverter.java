@@ -20,6 +20,6 @@ private final CompanyService companyService;
 
             return null;
         }
-        return companyService.findById(Long.parseLong(source));
+        return companyService.findCompanyById(Long.parseLong(source));
     }
 }

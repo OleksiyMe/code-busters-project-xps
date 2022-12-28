@@ -18,6 +18,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final MapperUtil mapperUtil;
 
+
     public CategoryServiceImpl(CategoryRepository categoryRepository, MapperUtil mapperUtil) {
         this.categoryRepository = categoryRepository;
         this.mapperUtil = mapperUtil;
@@ -50,7 +51,16 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void delete(Long Id) {
+    public void delete(Long id) {
+
+        Category category = categoryRepository.getCategoryById(id).get();
+
+        category.setIsDeleted(true);
+
+        categoryRepository.save(category);
+
+        //where clause ??? we added it to Category Entity?
+
 
     }
 
