@@ -1,5 +1,6 @@
 package com.cydeo.service.impl;
 
+import com.cydeo.dto.ClientVendorDto;
 import com.cydeo.dto.ProductDto;
 import com.cydeo.dto.UserDto;
 import com.cydeo.entity.Product;
@@ -22,12 +23,11 @@ public class ProductServiceImpl implements ProductService {
         this.mapperUtil = mapperUtil;
     }
 
+
     @Override
-    public ProductDto findById(Long id) {
-       Product product = productRepository.findById(id).orElseThrow( () -> new NoSuchElementException("User not found"));
-        return mapperUtil.convert(product, new ProductDto());
+    public ProductDto findProductById(Long id) {
+        return mapperUtil.convert(productRepository.getProductById(id).get(), new ProductDto());
     }
-
-
-
 }
+
+
