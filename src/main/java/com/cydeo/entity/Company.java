@@ -25,6 +25,7 @@ public class Company extends BaseEntity {
 
     private String phone;
 
+
     private String website;
 
     @Enumerated(EnumType.STRING)
