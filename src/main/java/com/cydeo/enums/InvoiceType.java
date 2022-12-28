@@ -3,13 +3,12 @@ package com.cydeo.enums;
 import lombok.Getter;
 
 @Getter
-public enum ClientVendorType {
-    VENDOR("Vendor"),
-    CLIENT("Client");
+public enum InvoiceType {
+    PURCHASE("Purchase"), SALES("Sales");
 
     private final String value;
 
-    ClientVendorType(String value) {
+    InvoiceType(String value) {
         this.value = value;
     }
 }
