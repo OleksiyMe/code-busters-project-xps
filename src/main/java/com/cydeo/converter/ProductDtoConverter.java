@@ -23,7 +23,7 @@ public class ProductDtoConverter implements Converter <String, ProductDto>{
             return null;
         }
 
-        return productService.findById(Long.parseLong(source));
+        return productService.findProductById(Long.parseLong(source));
 
     }
 }
