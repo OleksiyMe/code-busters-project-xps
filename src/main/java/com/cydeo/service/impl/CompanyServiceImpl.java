@@ -53,4 +53,9 @@ public class CompanyServiceImpl implements CompanyService {
     public void deleteCompany(Long id) {
 
     }
+
+    @Override
+    public CompanyDto findById(long parseLong) {
+        return null;
+    }
 }
