@@ -6,6 +6,8 @@ import com.cydeo.repository.CompanyRepository;
 import com.cydeo.service.CompanyService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
@@ -18,9 +20,29 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public CompanyDto findById(Long id) {
+    public CompanyDto findCompanyById(Long id) {
 
         return mapperUtil.convert(companyRepository.findById(id), new CompanyDto());
+
+    }
+
+    @Override
+    public void createCompany(CompanyDto company) {
+
+    }
+
+    @Override
+    public List<CompanyDto> readAllCompanies() {
+        return null;
+    }
+
+    @Override
+    public CompanyDto updateCompany(Long id) {
+        return null;
+    }
+
+    @Override
+    public void deleteCompany(Long id) {
 
     }
 }
