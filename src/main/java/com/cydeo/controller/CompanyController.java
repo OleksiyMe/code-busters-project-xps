@@ -25,7 +25,7 @@ public class CompanyController {
         return "/company/company-list";
     }
 
-    @GetMapping("/company/{companyId}")
+    @GetMapping("/update/{companyId}")
     public String editCompany(@PathVariable("companyId") Long companyId, Model model){
 
         model.addAttribute("company",companyService.findCompanyById(companyId));
