@@ -1,10 +1,13 @@
 package com.cydeo.controller;
 
+import com.cydeo.dto.CompanyDto;
 import com.cydeo.service.CompanyService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/companies")
@@ -20,6 +23,43 @@ public class CompanyController {
     public String listCompanies(Model model){
         model.addAttribute("companies", companyService.listAllCompanies());
         return "/company/company-list";
+    }
+
+    @GetMapping("/company/{companyId}")
+    public String editCompany(@PathVariable("companyId") Long companyId, Model model){
+
+        model.addAttribute("company",companyService.findCompanyById(companyId));
+
+        return "company/company-update";
+    }
+
+
+
+//    @PostMapping("/update/{companyId}")
+//    public String updateCompany(@PathVariable("companyId") Long companyId, @Valid @ModelAttribute("company") CompanyDto companyDto, BindingResult bindingResult){
+//
+//        companyService.updateCompany(companyDto);
+//
+//
+//        return "redirect:/company/company-list";
+//
+//    }
+
+    @PostMapping("/update/{companyId}")
+    public String updateCompany(@Valid @ModelAttribute("company") CompanyDto companyDto, BindingResult bindingResult, @PathVariable Long companyId, Model model) throws CloneNotSupportedException {
+
+//        boolean isThisCompanyTitle = companyDto.getTitle().equals(companyService.findCompanyById(companyId).getTitle());
+//        if (companyService.isTitleExist(companyDto.getTitle()) && !isThisCompanyTitle) {
+//            bindingResult.rejectValue("title", " ", "This title already exists.");
+//        }
+
+        if (bindingResult.hasErrors()) {
+            companyDto.setId(companyId);
+            return "/company/company-update";
+        }
+
+        companyService.updateCompany(companyDto);
+        return "redirect:/companies/list";
     }
 
 }

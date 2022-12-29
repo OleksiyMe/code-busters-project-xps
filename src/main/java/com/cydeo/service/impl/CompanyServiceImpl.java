@@ -53,6 +53,8 @@ public class CompanyServiceImpl implements CompanyService {
 
         convertedCompany.setId(company.getId());
 
+        convertedCompany.setCompanyStatus(company.getCompanyStatus());
+
         companyRepository.save(convertedCompany);
 
         return findById(companyDto.getId());
