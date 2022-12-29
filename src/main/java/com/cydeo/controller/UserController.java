@@ -1,6 +1,7 @@
 package com.cydeo.controller;
 
-import com.cydeo.entity.User;
+import com.cydeo.dto.UserDto;
+import com.cydeo.service.SecurityService;
 import com.cydeo.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,14 +13,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 public class UserController {
     private final UserService userService;
+    private final SecurityService securityService;
 
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, SecurityService securityService) {
         this.userService = userService;
+        this.securityService = securityService;
     }
     @GetMapping("/list")
     public String listAllUsers(Model model){
-        model.addAttribute("users", userService.findAllOrderByCompanyOrderByRole());
+        UserDto loggedInUser=securityService.getLoggedInUser();
+
+        model.addAttribute("users",
+                userService.findAllFilterForLoggedInUser(loggedInUser));
 
         return"/user/user-list";
 

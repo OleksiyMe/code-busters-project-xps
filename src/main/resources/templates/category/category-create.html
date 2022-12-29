@@ -22,7 +22,7 @@
                                             <div class="tab-pane fade mt-2 show active" id="account" role="tabpanel"
                                                  aria-labelledby="account-tab">
                                                 <form th:action="@{/categories/create}"
-                                                      th:method="post" th:object="${newCategory}">
+                                                      th:method="post" th:object="${categoryDto} ">
                                                     <div class="row justify-content-center">
                                                         <div class="col-12 col-md-8">
                                                             <div class="form-group">
@@ -31,13 +31,20 @@
                                                                     <input type="text" th:field="*{description}"
                                                                            placeholder="Description"
                                                                            class="form-control">
-                                                                    <div th:if="${#fields.hasErrors('description')}">
+<!--                                                                    <div  th:if="${#fields.hasErrors('description')}">-->
+<!--                                                                        <ul>-->
+<!--                                                                            <li class="validation" th:each="err : ${#fields.errors('description')}"-->
+<!--                                                                                th:text="${err}"></li>-->
+<!--                                                                        </ul>-->
+<!--                                                                    </div>-->
+                                                                    <div  th:if="${#fields.hasErrors('*')}">
                                                                         <ul>
                                                                             <li class="validation"
-                                                                                th:each="err : ${#fields.errors('description')}"
+                                                                                th:each="err : ${#fields.errors('*')}"
                                                                                 th:text="${err}"></li>
                                                                         </ul>
                                                                     </div>
+
                                                                 </div>
                                                             </div>
                                                         </div>

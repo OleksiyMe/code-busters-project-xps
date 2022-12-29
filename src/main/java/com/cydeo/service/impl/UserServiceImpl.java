@@ -4,9 +4,7 @@ import com.cydeo.dto.UserDto;
 import com.cydeo.entity.User;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repository.UserRepository;
-import com.cydeo.service.SecurityService;
 import com.cydeo.service.UserService;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,17 +25,40 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto findByUsername(String username) {
-        User user = userRepository.findByUsername(username).orElseThrow( () -> new NoSuchElementException("User not found"));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new NoSuchElementException("User not found"));
         return mapperUtil.convert(user, new UserDto());
     }
 
-    @Override
-    public List<UserDto> findAllOrderByCompanyOrderByRole() {
+    private List<UserDto> findAllOrderByCompanyAndRole() {
 
-        List<UserDto> list = userRepository.findByIsDeletedOrderByCompanyOrderByRole(false).stream()
-                .map(currentUser-> mapperUtil.convert(currentUser, new UserDto()))
+        List<UserDto> list = userRepository.findAllOrderByCompanyAndRole(false).stream()
+                .map(currentUser -> {
+                    Boolean isOnlyAdmin =
+                            currentUser.getRole().getDescription().equals("Admin");
+                    UserDto userDto = mapperUtil.convert(currentUser, new UserDto());
+                    userDto.setIsOnlyAdmin(isOnlyAdmin);
+                    return userDto;
+                })
                 .collect(Collectors.toList());
         return list;
+    }
+
+    @Override
+    public List<UserDto> findAllFilterForLoggedInUser(UserDto loggedInUser) {
+        switch (loggedInUser.getRole().getDescription()) {
+            case "Root User":
+                return findAllOrderByCompanyAndRole().stream()
+                        .filter(user -> user.getRole().getDescription().equals("Admin"))
+                        .collect(Collectors.toList());
+            case "Admin":
+                return findAllOrderByCompanyAndRole().stream()
+                        .filter(user -> user.getCompany().equals(loggedInUser.getCompany()))
+                        .collect(Collectors.toList());
+            default:
+                return findAllOrderByCompanyAndRole();
+
+        }
+
     }
 
 }

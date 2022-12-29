@@ -12,31 +12,39 @@ import java.time.LocalDateTime;
 @Component
 public class BaseEntityListener extends AuditingEntityListener {
 
+
+
     @PrePersist
-    public void onPrePersist(BaseEntity baseEntity) {
+    private void onPrePersist(BaseEntity baseEntity){
 
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        baseEntity.insertDateTime = LocalDateTime.now();
-        baseEntity.lastUpdateDateTime = LocalDateTime.now();
+        baseEntity.setInsertDateTime(LocalDateTime.now());
+        baseEntity.setLastUpdateDateTime(LocalDateTime.now());
 
-        if (authentication != null && !authentication.getName().equals("anonymousUser")) {
-            UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
-            baseEntity.insertUserId = principal.getId();
-            baseEntity.lastUpdateUserId = principal.getId();
+        if(authentication != null && !authentication.getName().equals("anonymousUser")){
+            Object principal = authentication.getPrincipal();
+            baseEntity.setInsertUserId(((UserPrincipal) principal).getId());
+            baseEntity.setLastUpdateUserId( ((UserPrincipal) principal).getId());
+
         }
     }
 
     @PreUpdate
-    public void onPreUpdate(BaseEntity baseEntity) {
 
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    private void onPreUpdate(BaseEntity baseEntity){
 
-        baseEntity.lastUpdateDateTime = LocalDateTime.now();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication != null && !authentication.getName().equals("anonymousUser")) {
-            UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
-            baseEntity.lastUpdateUserId = principal.getId();
+        baseEntity.setLastUpdateDateTime(LocalDateTime.now());
+
+        if(authentication != null && !authentication.getName().equals("anonymousUser")){
+            Object principal = authentication.getPrincipal();
+            baseEntity.setLastUpdateUserId( ((UserPrincipal) principal).getId());
         }
     }
+
+
+
 }
+

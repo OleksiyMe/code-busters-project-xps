@@ -55,7 +55,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public CompanyDto findById(long parseLong) {
-        return null;
+    public CompanyDto findById(long id) {
+        return mapperUtil.convert(companyRepository.findById(id), new CompanyDto());
     }
 }
