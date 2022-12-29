@@ -36,6 +36,10 @@ public class CategoryController {
     @PostMapping("/create")
     public String createNewCategory(@Valid @ModelAttribute("categoryDto") CategoryDto categoryDto,
                                     BindingResult bindingResult, Model model) {
+        boolean descriptionExist = categoryService.isDescriptionExist(categoryDto.getDescription());
+        if (descriptionExist) {
+            bindingResult.rejectValue("description", " ", "This category description already exist");
+        }
         if (bindingResult.hasErrors()) {
             return "/category/category-create";
         }
@@ -50,5 +54,29 @@ public class CategoryController {
         return "redirect:/categories/list";
     }
 
+    @GetMapping("/update/{categoryId}")
+    public String editCategory(@PathVariable("categoryId") Long categoryId,Model model){
+
+        model.addAttribute("category",categoryService.findCategoryById(categoryId));
+
+        return "category/category-update";
+    }
+    @PostMapping("/update/{categoryId}")
+    public String updateCategory(@Valid @ModelAttribute("category") CategoryDto categoryDto,BindingResult bindingResult, @PathVariable("categoryId") Long categoryId){
+        categoryDto.setId(categoryId);
+
+        boolean descriptionExist = categoryService.isDescriptionExist(categoryDto.getDescription());
+        if (descriptionExist) {
+            bindingResult.rejectValue("description", " ", "This category description already exist");
+        }
+        if(bindingResult.hasErrors()){
+
+            return "/category/category-update";
+        }
+        categoryService.update(categoryDto);
+
+        return "redirect:/categories/list";
+
+    }
 
 }

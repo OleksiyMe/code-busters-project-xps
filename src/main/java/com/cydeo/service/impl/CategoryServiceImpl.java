@@ -1,7 +1,6 @@
 package com.cydeo.service.impl;
 
 import com.cydeo.dto.CategoryDto;
-import com.cydeo.dto.CompanyDto;
 import com.cydeo.dto.UserDto;
 import com.cydeo.entity.Category;
 import com.cydeo.entity.Company;
@@ -67,8 +66,15 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void edit(CategoryDto category) {
+    public boolean isDescriptionExist(String description) {
+        return categoryRepository.existsByDescriptionAndCompany_Title(description,companyService.getCompanyDto().getTitle());
+    }
 
+    @Override
+    public CategoryDto update(CategoryDto categoryDto) {
+        Category category = categoryRepository.getCategoryById(categoryDto.getId()).get();
+        category.setDescription(categoryDto.getDescription());
+        return mapperUtil.convert(categoryRepository.save(category), new CategoryDto());
     }
 
     @Override
