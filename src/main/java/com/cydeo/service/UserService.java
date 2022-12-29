@@ -9,5 +9,6 @@ public interface UserService {
 
     List<UserDto> findAllFilterForLoggedInUser(UserDto loggedInUser);
 
+    void deleteUserById(Long id);
 
 }
