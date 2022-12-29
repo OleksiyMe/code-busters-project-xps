@@ -67,6 +67,8 @@ public class UserServiceImpl implements UserService {
 
         user.setIsDeleted(true);
 
+        user.setUsername(user.getUsername() + "-" + user.getId());
+
         userRepository.save(user);
     }
 
