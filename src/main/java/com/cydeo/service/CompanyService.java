@@ -12,5 +12,5 @@ public interface CompanyService {
     CompanyDto updateCompany(Long id);
     void deleteCompany(Long id);
 
-    CompanyDto findById(long parseLong);
+    CompanyDto findById(long id);
 }
