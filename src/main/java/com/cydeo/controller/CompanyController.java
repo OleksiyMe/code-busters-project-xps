@@ -35,31 +35,16 @@ public class CompanyController {
 
 
 
-//    @PostMapping("/update/{companyId}")
-//    public String updateCompany(@PathVariable("companyId") Long companyId, @Valid @ModelAttribute("company") CompanyDto companyDto, BindingResult bindingResult){
-//
-//        companyService.updateCompany(companyDto);
-//
-//
-//        return "redirect:/company/company-list";
-//
-//    }
-
     @PostMapping("/update/{companyId}")
-    public String updateCompany(@Valid @ModelAttribute("company") CompanyDto companyDto, BindingResult bindingResult, @PathVariable Long companyId, Model model) throws CloneNotSupportedException {
-
-//        boolean isThisCompanyTitle = companyDto.getTitle().equals(companyService.findCompanyById(companyId).getTitle());
-//        if (companyService.isTitleExist(companyDto.getTitle()) && !isThisCompanyTitle) {
-//            bindingResult.rejectValue("title", " ", "This title already exists.");
-//        }
-
-        if (bindingResult.hasErrors()) {
-            companyDto.setId(companyId);
-            return "/company/company-update";
-        }
+    public String updateCompany(@PathVariable("companyId") Long companyId, @Valid @ModelAttribute("company") CompanyDto companyDto, BindingResult bindingResult){
 
         companyService.updateCompany(companyDto);
-        return "redirect:/companies/list";
+
+
+        return "redirect:/company/company-list";
+
     }
+
+
 
 }
