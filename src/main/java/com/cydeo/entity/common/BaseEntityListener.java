@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class BaseEntityListener extends AuditingEntityListener {
 
 
+
     @PrePersist
     private void onPrePersist(BaseEntity baseEntity){
 
@@ -25,10 +26,12 @@ public class BaseEntityListener extends AuditingEntityListener {
             Object principal = authentication.getPrincipal();
             baseEntity.setInsertUserId(((UserPrincipal) principal).getId());
             baseEntity.setLastUpdateUserId( ((UserPrincipal) principal).getId());
+
         }
     }
 
     @PreUpdate
+
     private void onPreUpdate(BaseEntity baseEntity){
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -44,3 +47,4 @@ public class BaseEntityListener extends AuditingEntityListener {
 
 
 }
+
