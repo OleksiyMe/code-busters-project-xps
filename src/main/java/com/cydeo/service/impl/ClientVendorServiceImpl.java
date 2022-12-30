@@ -2,6 +2,8 @@ package com.cydeo.service.impl;
 
 import com.cydeo.dto.CategoryDto;
 import com.cydeo.dto.ClientVendorDto;
+import com.cydeo.dto.UserDto;
+import com.cydeo.entity.Address;
 import com.cydeo.entity.ClientVendor;
 import com.cydeo.entity.Company;
 import com.cydeo.mapper.MapperUtil;
@@ -37,16 +39,16 @@ public class ClientVendorServiceImpl implements ClientVendorService {
     @Override
     public List<ClientVendorDto> listAllClientVendors() {
 
-        List<ClientVendor> clientVendorList=clientVendorRepository.findAll();
+        List<ClientVendor> clientVendorList=clientVendorRepository.listSortedClientVendor();
+
+        UserDto loggedInUser = securityService.getLoggedInUser();
 
         Company currentCompany = mapperUtil.convert(
                 securityService.getLoggedInUser().getCompany(), new Company());
 
         return clientVendorList.stream()
-                .filter(clientVendor -> clientVendor.getCompany().getId().equals(currentCompany.getId()))
+                .filter(clientVendor -> clientVendor.getCompany().getId().equals(loggedInUser.getCompany().getId()))
                 .map(clientVendor-> mapperUtil.convert(clientVendor, new ClientVendorDto()))
-                .sorted(Comparator.comparing(ClientVendorDto::getClientVendorType))
-                .sorted(Comparator.comparing(ClientVendorDto::getClientVendorName))
                 .collect(Collectors.toList());
 
 
@@ -54,17 +56,31 @@ public class ClientVendorServiceImpl implements ClientVendorService {
     }
 
     @Override
-    public ClientVendorDto save(ClientVendorDto clientVendorDto) {
-        return null;
+
+    public ClientVendorDto updateClientVendor(ClientVendorDto clientVendorDto) {
+        ClientVendor clientVendor = clientVendorRepository.findById(clientVendorDto.getId()).get();
+        ClientVendor convertedClientVendor = mapperUtil.convert(clientVendorDto, new ClientVendor());
+
+        Company currentCompany = mapperUtil.convert(
+                securityService.getLoggedInUser().getCompany(), new Company());
+
+        Address address = convertedClientVendor.getAddress();
+
+        convertedClientVendor.setClientVendorType(clientVendor.getClientVendorType());
+        convertedClientVendor.setCompany(currentCompany);
+        convertedClientVendor.setId(clientVendor.getId());
+        convertedClientVendor.setWebsite(clientVendor.getWebsite());
+        convertedClientVendor.setAddress(address);
+
+
+        clientVendorRepository.save(convertedClientVendor);
+
+        return mapperUtil.convert(convertedClientVendor, new ClientVendorDto());
     }
 
     @Override
-    public ClientVendorDto update(ClientVendorDto clientVendorDto) {
-        return null;
-    }
-
-    @Override
-    public void delete(Long id) {
+    public Address findClientVendorAddress(Long id) {
+        return clientVendorRepository.findById(id).get().getAddress();
 
     }
 

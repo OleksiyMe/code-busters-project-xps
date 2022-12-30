@@ -198,7 +198,7 @@
                                                                 <div class="controls">
                                                                     <label>Country</label>
                                                                     <input type="text" th:field="*{address.country}"
-                                                                           placeholder="Country"
+                                                                           placeholder="State"
                                                                            class="form-control">
                                                                     <div th:if="${#fields.hasErrors('address.country')}">
                                                                         <ul>
@@ -234,6 +234,7 @@
                                     <a id="companylistlink" class="btn bg-dark text-light mb-1"
                                        th:href="@{/clientVendors/list}"><i class="fa fa-list mr-1"></i>Client/Vendor
                                         List</a>
+
                                 </div>
                             </form>
                         </div>

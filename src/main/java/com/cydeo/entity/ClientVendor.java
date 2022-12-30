@@ -21,7 +21,7 @@ public class ClientVendor extends BaseEntity {
     private ClientVendorType clientVendorType;
     private String phone;
     private String website;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private Address address;
 
