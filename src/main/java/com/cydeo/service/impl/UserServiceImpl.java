@@ -1,6 +1,9 @@
 package com.cydeo.service.impl;
 
+import com.cydeo.dto.CategoryDto;
 import com.cydeo.dto.UserDto;
+import com.cydeo.entity.Category;
+import com.cydeo.entity.Company;
 import com.cydeo.entity.User;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repository.UserRepository;
@@ -9,6 +12,7 @@ import com.cydeo.service.UserService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -83,7 +87,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void save(UserDto userDto) {
-        userRepository.save(mapperUtil.convert(userDto, new User()) );
+        User user = mapperUtil.convert(userDto, new User());
+
+
+//        user.setInsertUserId(loggedInUser.getId());
+//        user.setLastUpdateUserId(loggedInUser.getId());
+//        user.setLastUpdateDateTime(LocalDateTime.now());
+//        user.setInsertDateTime(LocalDateTime.now());
+
+        userRepository.save(user);
     }
+
 
 }
