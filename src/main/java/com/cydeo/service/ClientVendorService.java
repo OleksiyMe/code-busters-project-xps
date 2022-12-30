@@ -16,4 +16,6 @@ public interface ClientVendorService {
 
     Address findClientVendorAddress(Long id);
 
+    void deleteClientVendor(Long id);
+
 }
