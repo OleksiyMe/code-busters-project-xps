@@ -1,11 +1,10 @@
 package com.cydeo.dto;
 
 import com.cydeo.enums.ProductUnit;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductDto {
