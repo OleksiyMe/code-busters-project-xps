@@ -1,11 +1,14 @@
 package com.cydeo.controller;
 
 
+import com.cydeo.dto.ClientVendorDto;
 import com.cydeo.service.ClientVendorService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/clientVendors")
@@ -22,5 +25,30 @@ public class ClientVendorController {
                 clientVendorService.listAllClientVendors());
 
         return "/clientVendor/clientVendor-list";
+    }
+
+    @GetMapping("/update/{id}")
+    public String editClientVendor(@PathVariable("id") Long id, Model model){
+
+        model.addAttribute("clientVendor", clientVendorService.findClientVendorById(id));
+        model.addAttribute("address", clientVendorService.findClientVendorAddress(id));
+
+        return "clientVendor/clientVendor-update";
+    }
+
+    @PostMapping("/update/{id}")
+    public String updateClientVendor(Model model, @PathVariable("id") Long id, @Valid @ModelAttribute ClientVendorDto clientVendorDto, BindingResult bindingResult){
+
+        clientVendorDto.setId(id);
+
+//        if(bindingResult.hasErrors()){
+//            model.addAttribute("clientVendor", clientVendorDto);
+//            model.addAttribute("address", clientVendorService.findClientVendorAddress(id));
+//            return "clientVendor/clientVendor-update";
+//        }
+
+        clientVendorService.updateClientVendor(clientVendorDto);
+
+        return "redirect:/clientVendors/list";
     }
 }
