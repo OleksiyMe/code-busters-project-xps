@@ -9,6 +9,8 @@ public interface CategoryService {
     CategoryDto findCategoryById(Long id);
     List<CategoryDto> listAllCategories();
     CategoryDto save(CategoryDto categoryDto);
-    void edit(CategoryDto category);
+    boolean isDescriptionExist(String description);
+    CategoryDto update(CategoryDto categoryDto);
+
     void delete(Long Id);   //Soft Delete
 }

@@ -1,10 +1,9 @@
 package com.cydeo.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddressDto {
@@ -15,6 +14,6 @@ public class AddressDto {
     String city;
     String state;
     String country;
-    String zipcode;
+    String zipCode;
 
 }

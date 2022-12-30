@@ -15,12 +15,10 @@ public class UserDtoConverter implements Converter<String, UserDto> {
     }
 
     @Override
-    public UserDto convert(String source) {
-        if (source == null || source.equals("")) {
+    public UserDto convert(String username) {
+        if (username == null || username.equals("")) {
             return null;
         }
-
-
-        return userService.findByUsername(source);
+        return userService.findByUsername(username);
     }
 }
