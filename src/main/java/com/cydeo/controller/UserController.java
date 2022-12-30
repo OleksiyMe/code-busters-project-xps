@@ -14,25 +14,23 @@ import org.springframework.web.bind.annotation.*;
 
 public class UserController {
     private final UserService userService;
-    private final SecurityService securityService;
     private final CompanyService companyService;
     private final RoleService roleService;
 
 
-    public UserController(UserService userService, SecurityService securityService, CompanyService companyService, RoleService roleService) {
+    public UserController(UserService userService, CompanyService companyService, RoleService roleService) {
         this.userService = userService;
-        this.securityService = securityService;
         this.companyService = companyService;
         this.roleService = roleService;
     }
 
     @GetMapping("/list")
     public String listAllUsers(Model model) {
-        UserDto loggedInUser = securityService.getLoggedInUser();
         model.addAttribute("users",
-                userService.findAllFilterForLoggedInUser(loggedInUser));
+                userService.findAllFilterForLoggedInUser());
         return "/user/user-list";
     }
+
     @GetMapping("/create")
     public String createUser(Model model) {
 
@@ -66,7 +64,7 @@ public class UserController {
     @PostMapping("/update/{id}")
     public String updateUserFinish(@PathVariable("id") Long userId,
                                    @ModelAttribute("user") UserDto userDtoToSave, Model model) {
-        UserDto userDto =userService.findById(userId);
+        UserDto userDto = userService.findById(userId);
         userDtoToSave.setIsOnlyAdmin(userDto.getIsOnlyAdmin());
         userService.save(userDtoToSave);
         return "redirect:/users/list";

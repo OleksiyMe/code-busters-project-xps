@@ -4,7 +4,9 @@ import com.cydeo.dto.UserDto;
 import com.cydeo.entity.User;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repository.UserRepository;
+import com.cydeo.service.SecurityService;
 import com.cydeo.service.UserService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,11 +18,13 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final MapperUtil mapperUtil;
+    private final SecurityService securityService;
 
     public UserServiceImpl(UserRepository userRepository,
-                           MapperUtil mapperUtil) {
+                           MapperUtil mapperUtil, @Lazy SecurityService securityService) {
         this.userRepository = userRepository;
         this.mapperUtil = mapperUtil;
+        this.securityService = securityService;
     }
 
     @Override
@@ -44,7 +48,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> findAllFilterForLoggedInUser(UserDto loggedInUser) {
+    public List<UserDto> findAllFilterForLoggedInUser() {
+        UserDto loggedInUser = securityService.getLoggedInUser();
         switch (loggedInUser.getRole().getDescription()) {
             case "Root User":
                 return findAllOrderByCompanyAndRole().stream()
