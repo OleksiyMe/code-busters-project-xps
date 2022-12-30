@@ -62,7 +62,7 @@ public class CategoryController {
         return "category/category-update";
     }
     @PostMapping("/update/{categoryId}")
-    public String updateCategory(@Valid @ModelAttribute("category") CategoryDto categoryDto,BindingResult bindingResult, @PathVariable("categoryId") Long categoryId){
+    public String updateCategory(@Valid @ModelAttribute("category") CategoryDto categoryDto,BindingResult bindingResult, @PathVariable("categoryId") Long categoryId,Model model){
         categoryDto.setId(categoryId);
 
         boolean descriptionExist = categoryService.isDescriptionExist(categoryDto.getDescription());
