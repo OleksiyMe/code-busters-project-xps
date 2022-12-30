@@ -14,6 +14,6 @@ public class AddressDto {
     String city;
     String state;
     String country;
-    String zipcode;
+    String zipCode;
 
 }
