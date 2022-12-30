@@ -56,6 +56,7 @@ public class ClientVendorServiceImpl implements ClientVendorService {
     }
 
     @Override
+
     public ClientVendorDto updateClientVendor(ClientVendorDto clientVendorDto) {
         ClientVendor clientVendor = clientVendorRepository.findById(clientVendorDto.getId()).get();
         ClientVendor convertedClientVendor = mapperUtil.convert(clientVendorDto, new ClientVendor());
@@ -80,6 +81,7 @@ public class ClientVendorServiceImpl implements ClientVendorService {
     @Override
     public Address findClientVendorAddress(Long id) {
         return clientVendorRepository.findById(id).get().getAddress();
+
     }
 
 

@@ -11,7 +11,9 @@ public interface ClientVendorService {
 
     List<ClientVendorDto> listAllClientVendors();
 
+
     ClientVendorDto updateClientVendor(ClientVendorDto clientVendorDto);
 
     Address findClientVendorAddress(Long id);
+
 }
