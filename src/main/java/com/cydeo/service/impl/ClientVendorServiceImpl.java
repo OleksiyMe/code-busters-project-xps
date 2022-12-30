@@ -84,5 +84,12 @@ public class ClientVendorServiceImpl implements ClientVendorService {
 
     }
 
+    @Override
+    public void deleteClientVendor(Long id) {
+        ClientVendor clientVendor = clientVendorRepository.findById(id).get();
+        clientVendor.setIsDeleted(true);
+        clientVendorRepository.save(clientVendor);
+    }
+
 
 }
