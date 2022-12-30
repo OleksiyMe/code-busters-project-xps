@@ -3,6 +3,7 @@ package com.cydeo.service.impl;
 import com.cydeo.dto.CompanyDto;
 import com.cydeo.dto.UserDto;
 import com.cydeo.entity.Company;
+import com.cydeo.enums.CompanyStatus;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repository.CompanyRepository;
 import com.cydeo.service.CompanyService;
@@ -90,5 +91,19 @@ public class CompanyServiceImpl implements CompanyService {
             default:
                 return listAllCompanies();
         }
+    }
+
+    @Override
+    public void activate(Long id) {
+        Company company = companyRepository.findById(id).orElseThrow();
+        company.setCompanyStatus(CompanyStatus.ACTIVE);
+        companyRepository.save(company);
+    }
+
+    @Override
+    public void deactivate(Long id) {
+        Company company = companyRepository.findById(id).orElseThrow();
+        company.setCompanyStatus(CompanyStatus.PASSIVE);
+        companyRepository.save(company);
     }
 }
