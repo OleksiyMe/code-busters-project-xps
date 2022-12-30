@@ -10,6 +10,7 @@ import com.cydeo.repository.ProductRepository;
 import com.cydeo.service.ProductService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -27,6 +28,26 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto findProductById(Long id) {
         return mapperUtil.convert(productRepository.getProductById(id).get(), new ProductDto());
+    }
+
+    @Override
+    public List<ProductDto> listAllProducts() {
+        return null;
+    }
+
+    @Override
+    public ProductDto createProduct(ProductDto productDto) {
+        return null;
+    }
+
+    @Override
+    public ProductDto updateProduct(ProductDto productDto) {
+        return null;
+    }
+
+    @Override
+    public void deleteProduct(Long id) {
+
     }
 }
 
