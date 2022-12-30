@@ -53,8 +53,19 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public CompanyDto updateCompany(Long id) {
-        return null;
+    public CompanyDto updateCompany(CompanyDto companyDto) {
+
+        Company company = companyRepository.findById(companyDto.getId()).get();
+
+        Company convertedCompany = mapperUtil.convert(companyDto,new Company());
+
+        convertedCompany.setId(company.getId());
+
+        convertedCompany.setCompanyStatus(company.getCompanyStatus());
+
+        companyRepository.save(convertedCompany);
+
+        return findById(companyDto.getId());
     }
 
     @Override

@@ -11,7 +11,7 @@ public interface CompanyService {
 
     void createCompany(CompanyDto company);
     List<CompanyDto> listAllCompanies();
-    CompanyDto updateCompany(Long id);
+    CompanyDto updateCompany(CompanyDto companyDto);
     void deleteCompany(Long id);
 
     CompanyDto findById(long id);
