@@ -141,6 +141,7 @@ values
 -- ('2022-09-15 00:00', 2, 'false', '2022-09-15 00:00', 2, 200, 2, 0, 10, 0, 4, 1),     --sale AWAITING_APPROVAL after approval total sale (with tax) :1100 & profit (with tax) : 0
 -- ('2022-09-15 00:00', 2, 'false', '2022-09-15 00:00', 2, 300, 5, 0, 10, 0, 5, 1),      --sale AWAITING_APPROVAL after approval total sale (with tax) :2750 & profit (with tax) : 275
 --
+
 -- -- COMPANY-3 / Blue Tech
 -- ('2022-09-15 00:00', 3, 'false', '2022-09-15 00:00', 3, 200, 20, 0, 10, 0, 6, 5),     --purchase APPROVED
 -- ('2022-09-15 00:00', 3, 'false', '2022-09-15 00:00', 3, 200, 20, 10, 10, 0, 6, 5),    --purchase APPROVED
