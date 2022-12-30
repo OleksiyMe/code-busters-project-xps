@@ -9,4 +9,10 @@ public interface ClientVendorService {
     ClientVendorDto findClientVendorById(Long id);
 
     List<ClientVendorDto> listAllClientVendors();
+    ClientVendorDto save(ClientVendorDto clientVendorDto);
+    ClientVendorDto update(ClientVendorDto clientVendorDto);
+    void delete(Long id);
+
+
+
 }

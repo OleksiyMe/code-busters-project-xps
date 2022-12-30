@@ -53,5 +53,20 @@ public class ClientVendorServiceImpl implements ClientVendorService {
 
     }
 
+    @Override
+    public ClientVendorDto save(ClientVendorDto clientVendorDto) {
+        return null;
+    }
+
+    @Override
+    public ClientVendorDto update(ClientVendorDto clientVendorDto) {
+        return null;
+    }
+
+    @Override
+    public void delete(Long id) {
+
+    }
+
 
 }
