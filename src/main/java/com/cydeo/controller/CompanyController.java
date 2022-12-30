@@ -43,7 +43,16 @@ public class CompanyController {
         return "redirect:/companies/list";
 
     }
+@GetMapping("/activate/{id}")
+    public String activate(@PathVariable("id") Long id){
+        companyService.activate(id);
+        return "redirect:/companies/list";
+    }
 
-
+    @GetMapping("/deactivate/{id}")
+    public String deactivate(@PathVariable("id") Long id){
+        companyService.deactivate(id);
+        return "redirect:/companies/list";
+    }
 
 }
