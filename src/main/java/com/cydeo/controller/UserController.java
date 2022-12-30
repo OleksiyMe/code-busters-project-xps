@@ -7,7 +7,10 @@ import com.cydeo.service.SecurityService;
 import com.cydeo.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/users")
@@ -43,10 +46,20 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public String createUserFinish(@ModelAttribute("newUser") UserDto userDto) {
+    public String createUserFinish(@Valid @ModelAttribute("newUser") UserDto userDto, BindingResult bindingResult, Model model) {
+
+            boolean emailExist = userService.emailExists(userDto);
+
+            if (bindingResult.hasErrors() || emailExist){
+             if (emailExist)
+                    { bindingResult.rejectValue("username", " ", "A user with this email already exists. Please try with different email.");
+                }
+
+                return "/user/user-create";
+            }
 
         userService.save(userDto);
-        return "redirect:/user/list";
+        return "redirect:/users/list";
     }
 
 

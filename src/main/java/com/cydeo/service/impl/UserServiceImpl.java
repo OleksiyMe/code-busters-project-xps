@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -86,17 +87,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(UserDto userDto) {
-        User user = mapperUtil.convert(userDto, new User());
+    public UserDto save(UserDto userDto) {
+//        UserDto loggedInUser=securityService.getLoggedInUser();
+//        if(loggedInUser.getRole().getDescription().equals("Root User")) {
+//        userDto.setIsOnlyAdmin(true);
+//
+//        }
 
+            User user = mapperUtil.convert(userDto, new User());
 
-//        user.setInsertUserId(loggedInUser.getId());
-//        user.setLastUpdateUserId(loggedInUser.getId());
-//        user.setLastUpdateDateTime(LocalDateTime.now());
-//        user.setInsertDateTime(LocalDateTime.now());
+     userRepository.save(user);
+     return mapperUtil.convert(user,userDto);
 
-        userRepository.save(user);
+    }
+
+    @Override
+    public boolean emailExists(UserDto userDto) {
+        return false;
+    }
+
+//    @Override
+//    public boolean emailExists(UserDto userDto) {
+//        Optional<User> userWithUpdatedEmail = userRepository.findByUsername(userDto.getUsername());
+//        if (userWithUpdatedEmail == null) return false;
+//        return !userWithUpdatedEmail.get().getId().equals(userDto.getId());
+
     }
 
 
-}
+
