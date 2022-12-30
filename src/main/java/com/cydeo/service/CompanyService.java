@@ -15,4 +15,6 @@ public interface CompanyService {
     void deleteCompany(Long id);
 
     CompanyDto findById(long id);
+
+    List<CompanyDto> listAllCompaniesFilterForLoggedUser();
 }
