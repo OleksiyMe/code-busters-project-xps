@@ -64,12 +64,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUserById(Long id) {
         User user = userRepository.findById(id).get();
-
         user.setIsDeleted(true);
-
         user.setUsername(user.getUsername() + "-" + user.getId());
-
         userRepository.save(user);
+    }
+
+    @Override
+    public UserDto findById(Long userId) {
+        return mapperUtil.convert(
+                userRepository.findById(userId), new UserDto()
+        );
+    }
+
+    @Override
+    public void save(UserDto userDto) {
+        userRepository.save(mapperUtil.convert(userDto, new User()) );
     }
 
 }
