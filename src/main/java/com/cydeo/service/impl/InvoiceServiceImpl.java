@@ -6,6 +6,8 @@ import com.cydeo.repository.InvoiceRepository;
 import com.cydeo.service.InvoiceService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
 
@@ -20,5 +22,25 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public InvoiceDto findInvoiceById(Long id) {
         return mapperUtil.convert(invoiceRepository.findById(id).get(), new InvoiceDto());
+    }
+
+    @Override
+    public void createInvoice(InvoiceDto invoice) {
+
+    }
+
+    @Override
+    public List<InvoiceDto> listAllInvoices() {
+        return null;
+    }
+
+    @Override
+    public InvoiceDto updateInvoice(Long id) {
+        return null;
+    }
+
+    @Override
+    public void deleteInvoice(Long id) {
+
     }
 }
