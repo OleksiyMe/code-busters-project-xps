@@ -1,17 +1,17 @@
 package com.cydeo.service.impl;
 
-import com.cydeo.dto.ClientVendorDto;
 import com.cydeo.dto.ProductDto;
-import com.cydeo.dto.UserDto;
-import com.cydeo.entity.Product;
 import com.cydeo.entity.User;
+import com.cydeo.entity.Product;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repository.ProductRepository;
 import com.cydeo.service.ProductService;
+import com.cydeo.service.SecurityService;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -19,9 +19,12 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private MapperUtil mapperUtil;
 
-    public ProductServiceImpl(ProductRepository productRepository, MapperUtil mapperUtil) {
+    private final SecurityService securityService;
+
+    public ProductServiceImpl(ProductRepository productRepository, MapperUtil mapperUtil, SecurityService securityService) {
         this.productRepository = productRepository;
         this.mapperUtil = mapperUtil;
+        this.securityService = securityService;
     }
 
 
@@ -32,7 +35,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> listAllProducts() {
-        return null;
+        User currentUser = mapperUtil.convert(securityService.getLoggedInUser(), new User()) ;
+        List<Product> productList = productRepository.findAll();
+        return productList.stream()
+                .filter(product -> product.getCategory().getCompany().getId().equals(currentUser.getCompany().getId()))
+                .map(product -> mapperUtil.convert(product, new ProductDto()))
+                .sorted(Comparator.comparing(ProductDto::getName))
+                .collect(Collectors.toList());
     }
 
     @Override
