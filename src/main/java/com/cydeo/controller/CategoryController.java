@@ -38,7 +38,8 @@ public class CategoryController {
                                     BindingResult bindingResult, Model model) {
         boolean descriptionExist = categoryService.isDescriptionExist(categoryDto.getDescription());
         if (descriptionExist) {
-            bindingResult.rejectValue("description", " ", "This category description already exist");
+            bindingResult.rejectValue("description", " ",
+                    "This category description already exist");
         }
         if (bindingResult.hasErrors()) {
             return "/category/category-create";

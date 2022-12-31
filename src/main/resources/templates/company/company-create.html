@@ -169,7 +169,7 @@
                                                                 <div class="controls">
                                                                     <label>Country</label>
                                                                     <input type="text" th:field="*{address.country}"
-                                                                           placeholder="State"
+                                                                           placeholder="Country"
                                                                            class="form-control">
                                                                     <div th:if="${#fields.hasErrors('address.country')}">
                                                                         <ul>
@@ -189,6 +189,7 @@
                                                                     type="reset">Reset
                                                             </button>
                                                         </div>
+                                                    </div>
                                                 </form>
                                             </div>
                                         </div>
