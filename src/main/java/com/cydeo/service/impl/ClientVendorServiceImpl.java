@@ -2,16 +2,19 @@ package com.cydeo.service.impl;
 
 import com.cydeo.dto.CategoryDto;
 import com.cydeo.dto.ClientVendorDto;
+import com.cydeo.dto.RoleDto;
 import com.cydeo.dto.UserDto;
 import com.cydeo.entity.Address;
 import com.cydeo.entity.ClientVendor;
 import com.cydeo.entity.Company;
+import com.cydeo.enums.ClientVendorType;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repository.ClientVendorRepository;
 import com.cydeo.service.ClientVendorService;
 import com.cydeo.service.SecurityService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -91,5 +94,15 @@ public class ClientVendorServiceImpl implements ClientVendorService {
         clientVendorRepository.save(clientVendor);
     }
 
+    @Override
+    public List<ClientVendorType> listAllClientVendorTypes(){
+
+        List<ClientVendorType> types = new ArrayList<>();
+
+        for(ClientVendorType each: ClientVendorType.values()){
+            types.add(each);
+        }
+        return types;
+    }
 
 }
