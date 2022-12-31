@@ -19,14 +19,18 @@ public class CompanyDto {
         @Size(max = 100, min = 2, message = "Title should be 2-100 characters long.")
         private String title;
 
+        @NotBlank(message = "Phone is a required field.")
         @Pattern(regexp = "^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$" // +111 (202) 555-0125  +1 (202) 555-0125
                 + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?){2}\\d{3}$"                                  // +111 123 456 789
-                + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?)(\\d{2}[ ]?){2}\\d{2}$", message = "Phone number is required field and may be in any valid phone number format.")
+                + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?)(\\d{2}[ ]?){2}\\d{2}$",
+                message = "Phone number is required field and may be in any valid phone number format.")
         // +111 123 45 67 89
         private String phone;
 
         @NotBlank(message = "Website is a required field.")
-        @Pattern(regexp = "^http(s{0,1})://[a-zA-Z0-9/\\-\\.]+\\.([A-Za-z/]{2,5})[a-zA-Z0-9/\\&\\?\\=\\-\\.\\~\\%]*", message = "Website should have a valid format.")
+        @Size(max = 100, min = 2, message = "Website should be 2-100 characters long.")
+        @Pattern(regexp = "^http(s{0,1})://[a-zA-Z0-9/\\-\\.]+\\.([A-Za-z/]{2,5})[a-zA-Z0-9/\\&\\?\\=\\-\\.\\~\\%]*",
+                message = "Website should have a valid format.")
         private String website;
 
         @NotNull

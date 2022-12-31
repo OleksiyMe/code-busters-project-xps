@@ -106,4 +106,10 @@ public class CompanyServiceImpl implements CompanyService {
         company.setCompanyStatus(CompanyStatus.PASSIVE);
         companyRepository.save(company);
     }
+
+    @Override
+    public void save(CompanyDto companyDto) {
+        if(companyDto.getCompanyStatus()==null) companyDto.setCompanyStatus(CompanyStatus.PASSIVE);
+        companyRepository.save(mapperUtil.convert(companyDto, new Company()));
+    }
 }
