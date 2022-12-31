@@ -32,6 +32,7 @@ public class ClientVendorController {
 
         model.addAttribute("clientVendor", clientVendorService.findClientVendorById(id));
         model.addAttribute("address", clientVendorService.findClientVendorAddress(id));
+        model.addAttribute("clientVendorTypes", clientVendorService.listAllClientVendorTypes());
 
         return "clientVendor/clientVendor-update";
     }
@@ -40,12 +41,14 @@ public class ClientVendorController {
     public String updateClientVendor(Model model, @PathVariable("id") Long id, @Valid @ModelAttribute ClientVendorDto clientVendorDto, BindingResult bindingResult){
 
         clientVendorDto.setId(id);
+        clientVendorDto.setClientVendorType(clientVendorService.findClientVendorById(id).getClientVendorType());
 
-//        if(bindingResult.hasErrors()){
-//            model.addAttribute("clientVendor", clientVendorDto);
-//            model.addAttribute("address", clientVendorService.findClientVendorAddress(id));
-//            return "clientVendor/clientVendor-update";
-//        }
+        if(bindingResult.hasErrors()){
+            model.addAttribute("clientVendor", clientVendorDto);
+            model.addAttribute("address", clientVendorService.findClientVendorAddress(id));
+            model.addAttribute("clientVendorTypes", clientVendorService.listAllClientVendorTypes());
+            return "clientVendor/clientVendor-update";
+        }
 
         clientVendorService.updateClientVendor(clientVendorDto);
 
