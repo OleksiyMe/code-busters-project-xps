@@ -88,11 +88,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto save(UserDto userDto) {
-//        UserDto loggedInUser=securityService.getLoggedInUser();
-//        if(loggedInUser.getRole().getDescription().equals("Root User")) {
-//        userDto.setIsOnlyAdmin(true);
-//
-//        }
+
 
             User user = mapperUtil.convert(userDto, new User());
 
@@ -101,10 +97,6 @@ public class UserServiceImpl implements UserService {
 
     }
 
-//    @Override
-//    public boolean emailExists(UserDto userDto) {
-//        return false;
-//    }
 
     @Override
     public boolean emailExists(UserDto userDto) {
@@ -113,9 +105,7 @@ public class UserServiceImpl implements UserService {
 
         if (!userWeCreate.isPresent()) return false;
 
-        Boolean something =!userWeCreate.get().getId().equals(userDto.getId());
-
-        return something;
+        return !userWeCreate.get().getId().equals(userDto.getId());
 
     }
 }

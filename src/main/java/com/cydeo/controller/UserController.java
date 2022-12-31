@@ -60,7 +60,6 @@ public class UserController {
                 model.addAttribute("userRoles",
                         roleService.getRolesFilterForLoggedUser());
 
-
                 return "/user/user-create";
             }
 
