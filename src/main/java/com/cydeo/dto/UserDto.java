@@ -6,8 +6,7 @@ import lombok.*;
 import javax.validation.constraints.*;
 
 
-@Getter
-@Setter
+
 @AllArgsConstructor
 @NoArgsConstructor
 
@@ -19,12 +18,17 @@ public class UserDto {
     @Email(message = "Email is a required field.")
     String username;
 
-    @NotBlank (message = "Password is a required field.")
-    @Pattern(regexp = "(?=.\\d)(?=.[a-z])(?=.*[A-Z]).{4,}")
-    String password;
+    @NotBlank(message = "Password is a required field.")
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{4,}$",
+            message = "Password must contain at least: " +
+                    "1 lowercase, " +
+                    "1 uppercase, " +
+                    "1 special, " +
+                    "1 digit")
+    private String password;
 
     @NotBlank (message = "Password needs to match")
-    @Pattern(regexp = "(?=.\\d)(?=.[a-z])(?=.*[A-Z]).{4,}")
+
     String confirmPassword;
 
     @NotBlank(message = "First Name is a required field.")
@@ -39,15 +43,92 @@ public class UserDto {
             + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?)(\\d{2}[ ]?){2}\\d{2}$", message = "Phone number is required field and may be in any valid phone number format.")
     String phone;
 
-    @NotBlank (message = "Please select a role")
+    @NotNull (message = "Please select a role")
     RoleDto role;
-    @NotBlank (message = "Please select a customer")
+
+    @NotNull(message = "Please select a customer")
     CompanyDto company;
 
     Boolean isOnlyAdmin;
 
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 
+    public String getUsername() {
+        return username;
+    }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public RoleDto getRole() {
+        return role;
+    }
+
+    public void setRole(RoleDto role) {
+        this.role = role;
+    }
+
+    public CompanyDto getCompany() {
+        return company;
+    }
+
+    public void setCompany(CompanyDto company) {
+        this.company = company;
+    }
+
+    public Boolean getIsOnlyAdmin() {
+        return isOnlyAdmin;
+    }
+
+    public void setIsOnlyAdmin(Boolean onlyAdmin) {
+        isOnlyAdmin = onlyAdmin;
+    }
 }

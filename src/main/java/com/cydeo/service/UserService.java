@@ -13,5 +13,7 @@ public interface UserService {
 
     UserDto findById(Long userId);
 
-    void save(UserDto userDto);
+    UserDto save(UserDto userDto);
+
+    boolean emailExists (UserDto userDto);
 }
