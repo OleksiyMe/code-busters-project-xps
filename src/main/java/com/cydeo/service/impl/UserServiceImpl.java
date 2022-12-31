@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
                         .collect(Collectors.toList());
             case "Admin":
                 return findAllOrderByCompanyAndRole().stream()
-                        .filter(user -> user.getCompany().equals(loggedInUser.getCompany()))
+                        .filter(user -> user.getCompany().getId().equals(loggedInUser.getCompany().getId()))
                         .collect(Collectors.toList());
             default:
                 return findAllOrderByCompanyAndRole();
@@ -89,18 +89,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto save(UserDto userDto) {
 
-
-            User user = mapperUtil.convert(userDto, new User());
-
-     userRepository.save(user);
-     return mapperUtil.convert(user,userDto);
+        User user = mapperUtil.convert(userDto, new User());
+//temporary
+        user.setEnabled(true);
+        userRepository.save(user);
+        return mapperUtil.convert(user, userDto);
 
     }
 
 
     @Override
     public boolean emailExists(UserDto userDto) {
-       Optional<User> userWeCreate =
+        Optional<User> userWeCreate =
                 userRepository.findByUsername(userDto.getUsername());
 
         if (!userWeCreate.isPresent()) return false;
