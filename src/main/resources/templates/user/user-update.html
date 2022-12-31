@@ -160,7 +160,7 @@
                                                                     <label>Company</label>
                                                                     <select class="custom-select" id="company" name="company"
                                                                             th:with="company=*{company}"
-                                                                            th:disabled="${user.isOnlyAdmin}">
+                                                                            th:readonly="${user.isOnlyAdmin}">
                                                                         <option th:each="company:${companies}"
                                                                                 th:value="${company.id}"
                                                                                 th:text="${company.getTitle()}"
