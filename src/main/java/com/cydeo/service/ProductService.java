@@ -1,6 +1,7 @@
 package com.cydeo.service;
 
 import com.cydeo.dto.ProductDto;
+import com.cydeo.enums.ProductUnit;
 
 import java.util.List;
 
@@ -16,6 +17,9 @@ public interface ProductService {
     ProductDto updateProduct(ProductDto productDto);
 
     void deleteProduct(Long id);
+
+    List<ProductUnit> listAllProductUnits();
+
 
 }
 

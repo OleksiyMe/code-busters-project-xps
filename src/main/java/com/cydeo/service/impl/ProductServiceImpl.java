@@ -3,12 +3,14 @@ package com.cydeo.service.impl;
 import com.cydeo.dto.ProductDto;
 import com.cydeo.entity.User;
 import com.cydeo.entity.Product;
+import com.cydeo.enums.ProductUnit;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repository.ProductRepository;
 import com.cydeo.service.ProductService;
 import com.cydeo.service.SecurityService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,6 +48,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto createProduct(ProductDto productDto) {
+
+        Product product = mapperUtil.convert(productDto,new Product());
+
+
+
+        productRepository.save(product);
+
+
         return null;
     }
 
@@ -58,6 +68,20 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(Long id) {
 
     }
+
+    @Override
+    public List<ProductUnit> listAllProductUnits() {
+
+        List<ProductUnit> listOfProductUnits = new ArrayList<>();
+
+        for(ProductUnit each : ProductUnit.values()){
+            listOfProductUnits.add(each);
+        }
+
+        return listOfProductUnits;
+    }
+
+
 }
 
 
