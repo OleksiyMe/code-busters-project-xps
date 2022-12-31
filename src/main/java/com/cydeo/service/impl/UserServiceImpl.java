@@ -101,18 +101,24 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    @Override
-    public boolean emailExists(UserDto userDto) {
-        return false;
-    }
-
 //    @Override
 //    public boolean emailExists(UserDto userDto) {
-//        Optional<User> userWithUpdatedEmail = userRepository.findByUsername(userDto.getUsername());
-//        if (userWithUpdatedEmail == null) return false;
-//        return !userWithUpdatedEmail.get().getId().equals(userDto.getId());
+//        return false;
+//    }
+
+    @Override
+    public boolean emailExists(UserDto userDto) {
+       Optional<User> userWeCreate =
+                userRepository.findByUsername(userDto.getUsername());
+
+        if (!userWeCreate.isPresent()) return false;
+
+        Boolean something =!userWeCreate.get().getId().equals(userDto.getId());
+
+        return something;
 
     }
+}
 
 
 

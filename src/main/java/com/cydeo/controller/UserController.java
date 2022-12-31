@@ -54,6 +54,12 @@ public class UserController {
              if (emailExist)
                     { bindingResult.rejectValue("username", " ", "A user with this email already exists. Please try with different email.");
                 }
+                model.addAttribute("newUser", userDto);
+                model.addAttribute("companies",
+                        companyService.listAllCompaniesFilterForLoggedUser());
+                model.addAttribute("userRoles",
+                        roleService.getRolesFilterForLoggedUser());
+
 
                 return "/user/user-create";
             }
