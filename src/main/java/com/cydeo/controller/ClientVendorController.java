@@ -61,7 +61,7 @@ public class ClientVendorController {
     }
 
     @PostMapping("/update/{id}")
-    public String updateClientVendor(Model model, @PathVariable("id") Long id, @Valid @ModelAttribute ClientVendorDto clientVendorDto, BindingResult bindingResult) {
+    public String updateClientVendor(Model model, @PathVariable("id") Long id, @Valid @ModelAttribute("clientVendor") ClientVendorDto clientVendorDto, BindingResult bindingResult) {
 
         clientVendorDto.setId(id);
         clientVendorDto.setClientVendorType(clientVendorService.findClientVendorById(id).getClientVendorType());
