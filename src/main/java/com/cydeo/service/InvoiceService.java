@@ -13,6 +13,11 @@ public interface InvoiceService {
     InvoiceDto updateInvoice(Long id);
     void deleteInvoice(Long id);
 
+    List<InvoiceDto> listAllPurchaseInvoices();
+
+
+
+
 
 
 }
