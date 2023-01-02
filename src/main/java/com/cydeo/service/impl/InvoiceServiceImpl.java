@@ -1,12 +1,18 @@
 package com.cydeo.service.impl;
 
+import com.cydeo.dto.ClientVendorDto;
 import com.cydeo.dto.InvoiceDto;
+import com.cydeo.entity.Invoice;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repository.InvoiceRepository;
 import com.cydeo.service.InvoiceService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
@@ -31,7 +37,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public List<InvoiceDto> listAllInvoices() {
-        return null;
+        return invoiceRepository.findAll().stream().map(invoice -> mapperUtil.convert(invoice, new InvoiceDto())).collect(Collectors.toList());
     }
 
     @Override
@@ -43,4 +49,24 @@ public class InvoiceServiceImpl implements InvoiceService {
     public void deleteInvoice(Long id) {
 
     }
+    @Override
+    public InvoiceDto createPurchaseInvoice(InvoiceDto invoiceDto) {
+        invoiceDto.setInvoiceNo(generatePurchaseInvoiceNumber());
+
+        invoiceRepository.save(mapperUtil.convert(invoiceDto, new Invoice()));
+        return invoiceDto;
+    }
+
+    @Override
+    public String generatePurchaseInvoiceNumber() {
+        return "P - " ;
+    }
+
+    @Override
+    public String generateDate() {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM dd, y");
+        return LocalDate.now().format(df);
+    }
+
+
 }

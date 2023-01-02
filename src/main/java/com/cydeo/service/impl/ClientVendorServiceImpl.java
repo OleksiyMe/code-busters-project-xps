@@ -120,4 +120,11 @@ public class ClientVendorServiceImpl implements ClientVendorService {
         clientVendorRepository.save(clientVendor);
     }
 
+    @Override
+    public List<ClientVendor> listAllVendors() {
+        return clientVendorRepository.findAll().stream()
+                .filter(clientVendor -> clientVendor.getClientVendorType().getValue().equals("Vendor"))
+                .collect(Collectors.toList());
+    }
+
 }

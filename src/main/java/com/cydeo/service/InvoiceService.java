@@ -1,8 +1,10 @@
 package com.cydeo.service;
 
+import com.cydeo.dto.ClientVendorDto;
 import com.cydeo.dto.CompanyDto;
 import com.cydeo.dto.InvoiceDto;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface InvoiceService {
@@ -13,6 +15,10 @@ public interface InvoiceService {
     InvoiceDto updateInvoice(Long id);
     void deleteInvoice(Long id);
 
+    InvoiceDto createPurchaseInvoice(InvoiceDto invoiceDto);
 
+    String generatePurchaseInvoiceNumber();
+
+    String generateDate();
 
 }
