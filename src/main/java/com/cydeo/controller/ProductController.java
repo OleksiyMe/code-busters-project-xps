@@ -7,10 +7,13 @@ import com.cydeo.service.CategoryService;
 import com.cydeo.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/products")
@@ -46,7 +49,14 @@ public class ProductController {
     }
 
     @PostMapping("/create")
-    public String postCreatedProduct(@ModelAttribute("newProduct") ProductDto productDto){
+    public String postCreatedProduct(@Valid @ModelAttribute("newProduct") ProductDto productDto, BindingResult bindingResult, Model model){
+
+        if (bindingResult.hasErrors()) {
+
+            model.addAttribute("categories",categoryService.listAllCategories());
+            model.addAttribute("productUnits",productService.listAllProductUnits());
+            return "/product/product-create";
+        }
 
         productService.createProduct(productDto);
 
