@@ -19,9 +19,6 @@ public class UserDto {
     String username;
 
     @NotBlank(message = "Password is a required field.")
-//    @Pattern(regexp = "^(?=.*([0-9])(?=.*[a-z])(?=.*[A-Z])" +
-//            "(?=.*[\\\\~!()/@#$%^&+=*])(?=\\S+$).{4,}$",
-//    @Pattern(regexp = "^(?=.*[!-@])(?=.*[\\[-_])(?=.*[{-~])(?=.*[a-z])(?=.*[A-Z]).{4,}$",
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])" +
                     "(?=.*([ -/]|[:-@]|[Z-_]|[{-~]))(?=\\S+$).{4,}$",
             message = "Password must contain at least: " +
