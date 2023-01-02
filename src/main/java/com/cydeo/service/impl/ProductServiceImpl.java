@@ -37,8 +37,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> listAllProducts() {
-        User currentUser = mapperUtil.convert(securityService.getLoggedInUser(), new User()) ;
-        List<Product> productList = productRepository.findAll();
+        User currentUser = mapperUtil.convert(securityService.getLoggedInUser(), new User());
+        List<Product> productList = productRepository.findAllNotDeleted();
         return productList.stream()
                 .filter(product -> product.getCategory().getCompany().getId().equals(currentUser.getCompany().getId()))
                 .map(product -> mapperUtil.convert(product, new ProductDto()))
@@ -49,8 +49,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto createProduct(ProductDto productDto) {
 
-        Product product = mapperUtil.convert(productDto,new Product());
-
+        Product product = mapperUtil.convert(productDto, new Product());
 
 
         productRepository.save(product);
@@ -65,8 +64,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProduct(Long id) {
-
+    public void deleteProductById(Long id) {
+        Product product = productRepository.findById(id).get();
+        product.setIsDeleted(true);
+        product.setName(product.getName() + "-" + product.getId());
+        productRepository.save(product);
     }
 
     @Override
@@ -74,11 +76,19 @@ public class ProductServiceImpl implements ProductService {
 
         List<ProductUnit> listOfProductUnits = new ArrayList<>();
 
-        for(ProductUnit each : ProductUnit.values()){
+        for (ProductUnit each : ProductUnit.values()) {
             listOfProductUnits.add(each);
         }
 
         return listOfProductUnits;
+    }
+
+    @Override
+    public Boolean productListedInInvoice(Long productId) {
+
+        //let it be stubbed for now
+        if (productId==111L) return true;
+        return false;
     }
 
 

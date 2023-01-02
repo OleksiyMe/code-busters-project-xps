@@ -16,9 +16,12 @@ public interface ProductService {
 
     ProductDto updateProduct(ProductDto productDto);
 
-    void deleteProduct(Long id);
+    void deleteProductById(Long id);
 
     List<ProductUnit> listAllProductUnits();
+
+
+    Boolean productListedInInvoice(Long productId);
 
 
 }
