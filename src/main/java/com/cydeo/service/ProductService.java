@@ -21,7 +21,9 @@ public interface ProductService {
     List<ProductUnit> listAllProductUnits();
 
 
-    Boolean productNotInInvoice(Long productId);
+    Boolean productListedInInvoice(Long productId);
+
+
 }
 
 

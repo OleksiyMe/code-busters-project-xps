@@ -84,11 +84,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Boolean productNotInInvoice(Long productId) {
+    public Boolean productListedInInvoice(Long productId) {
 
         //let it be stubbed for now
         if (productId==111L) return true;
-        return true;
+        return false;
     }
 
 
