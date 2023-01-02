@@ -21,4 +21,5 @@ public interface ClientVendorService {
 
     List<ClientVendorType> listAllClientVendorTypes();
 
+    void save(ClientVendorDto clientVendorDto);
 }

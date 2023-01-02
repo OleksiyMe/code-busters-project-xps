@@ -1,8 +1,6 @@
 package com.cydeo.service.impl;
 
-import com.cydeo.dto.CategoryDto;
 import com.cydeo.dto.ClientVendorDto;
-import com.cydeo.dto.RoleDto;
 import com.cydeo.dto.UserDto;
 import com.cydeo.entity.Address;
 import com.cydeo.entity.ClientVendor;
@@ -11,11 +9,12 @@ import com.cydeo.enums.ClientVendorType;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repository.ClientVendorRepository;
 import com.cydeo.service.ClientVendorService;
+import com.cydeo.service.CompanyService;
 import com.cydeo.service.SecurityService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,11 +24,13 @@ public class ClientVendorServiceImpl implements ClientVendorService {
     private final ClientVendorRepository clientVendorRepository;
     private final MapperUtil mapperUtil;
     private final SecurityService securityService;
+    private final CompanyService companyService;
 
-    public ClientVendorServiceImpl(ClientVendorRepository clientVendorRepository, MapperUtil mapperUtil, SecurityService securityService) {
+    public ClientVendorServiceImpl(ClientVendorRepository clientVendorRepository, MapperUtil mapperUtil, SecurityService securityService, CompanyService companyService) {
         this.clientVendorRepository = clientVendorRepository;
         this.mapperUtil = mapperUtil;
         this.securityService = securityService;
+        this.companyService = companyService;
     }
 
     @Override
@@ -42,7 +43,7 @@ public class ClientVendorServiceImpl implements ClientVendorService {
     @Override
     public List<ClientVendorDto> listAllClientVendors() {
 
-        List<ClientVendor> clientVendorList=clientVendorRepository.listSortedClientVendor();
+        List<ClientVendor> clientVendorList = clientVendorRepository.listSortedClientVendor();
 
         UserDto loggedInUser = securityService.getLoggedInUser();
 
@@ -51,9 +52,8 @@ public class ClientVendorServiceImpl implements ClientVendorService {
 
         return clientVendorList.stream()
                 .filter(clientVendor -> clientVendor.getCompany().getId().equals(loggedInUser.getCompany().getId()))
-                .map(clientVendor-> mapperUtil.convert(clientVendor, new ClientVendorDto()))
+                .map(clientVendor -> mapperUtil.convert(clientVendor, new ClientVendorDto()))
                 .collect(Collectors.toList());
-
 
 
     }
@@ -95,14 +95,29 @@ public class ClientVendorServiceImpl implements ClientVendorService {
     }
 
     @Override
-    public List<ClientVendorType> listAllClientVendorTypes(){
+    public List<ClientVendorType> listAllClientVendorTypes() {
 
         List<ClientVendorType> types = new ArrayList<>();
 
-        for(ClientVendorType each: ClientVendorType.values()){
+        for (ClientVendorType each : ClientVendorType.values()) {
             types.add(each);
         }
         return types;
+    }
+
+    @Override
+    public void save(ClientVendorDto clientVendorDto) {
+        ClientVendor clientVendor = mapperUtil.convert(clientVendorDto, new ClientVendor());
+        UserDto loggedInUser = securityService.getLoggedInUser();
+        clientVendor.setCompany(mapperUtil.convert(
+                companyService.findCompanyById(loggedInUser.getCompany().getId()), new Company()
+        ));
+        clientVendor.setInsertUserId(loggedInUser.getId());
+        clientVendor.setLastUpdateUserId(loggedInUser.getId());
+        clientVendor.setLastUpdateDateTime(LocalDateTime.now());
+        clientVendor.setInsertDateTime(LocalDateTime.now());
+
+        clientVendorRepository.save(clientVendor);
     }
 
 }
