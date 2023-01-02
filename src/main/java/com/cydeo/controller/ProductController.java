@@ -2,16 +2,13 @@ package com.cydeo.controller;
 
 import com.cydeo.dto.ProductDto;
 import com.cydeo.entity.Product;
-import com.cydeo.enums.ProductUnit;
 import com.cydeo.service.CategoryService;
 import com.cydeo.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import java.util.NoSuchElementException;
 
 import javax.validation.Valid;
 
@@ -63,7 +60,13 @@ public class ProductController {
         return "redirect:/products/list";
     }
 
+    @GetMapping("/delete/{id}")
+    public String deleteProduct(@PathVariable("id") Long productId) {
 
-
+        if (productService.productNotInInvoice(productId))
+            productService.deleteProductById(productId);
+        else throw new NoSuchElementException("Product is listed in invoice");
+        return "redirect:/products/list";
+    }
 
 }
