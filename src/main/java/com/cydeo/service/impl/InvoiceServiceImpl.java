@@ -1,8 +1,10 @@
 package com.cydeo.service.impl;
 
 import com.cydeo.dto.InvoiceDto;
+import com.cydeo.dto.UserDto;
 import com.cydeo.entity.Company;
 import com.cydeo.entity.Invoice;
+import com.cydeo.enums.InvoiceType;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repository.InvoiceRepository;
 import com.cydeo.service.InvoiceService;
@@ -39,7 +41,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public List<InvoiceDto> listAllInvoices() {
-        return invoiceRepository.findAll().stream().map(invoice -> mapperUtil.convert(invoice, new InvoiceDto())).collect(Collectors.toList());
+        UserDto loggedInUser = securityService.getLoggedInUser();
+        return invoiceRepository.findAllNotDeleted().stream()
+                .filter(invoice -> invoice.getCompany().getId().equals(loggedInUser.getCompany().getId()))
+                .map(invoice -> mapperUtil.convert(invoice, new InvoiceDto()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -79,6 +85,16 @@ public class InvoiceServiceImpl implements InvoiceService {
     public String generateDate() {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM dd, y");
         return LocalDate.now().format(df);
+    }
+
+    @Override
+    public List<InvoiceDto> listAllPurchaseInvoices() {
+        UserDto loggedInUser = securityService.getLoggedInUser();
+        return invoiceRepository.findAllNotDeleted().stream()
+                .filter(invoice -> invoice.getCompany().getId().equals(loggedInUser.getCompany().getId()))
+                .filter(invoice -> invoice.getInvoiceType().equals(InvoiceType.PURCHASE))
+                .map(invoice -> mapperUtil.convert(invoice, new InvoiceDto()))
+                .collect(Collectors.toList());
     }
 
 

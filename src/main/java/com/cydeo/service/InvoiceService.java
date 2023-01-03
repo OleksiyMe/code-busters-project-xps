@@ -21,4 +21,5 @@ public interface InvoiceService {
 
     String generateDate();
 
+    List<InvoiceDto> listAllPurchaseInvoices();
 }
