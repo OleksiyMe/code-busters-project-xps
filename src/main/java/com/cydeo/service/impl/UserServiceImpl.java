@@ -1,18 +1,15 @@
 package com.cydeo.service.impl;
 
-import com.cydeo.dto.CategoryDto;
 import com.cydeo.dto.UserDto;
-import com.cydeo.entity.Category;
-import com.cydeo.entity.Company;
 import com.cydeo.entity.User;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repository.UserRepository;
 import com.cydeo.service.SecurityService;
 import com.cydeo.service.UserService;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -24,12 +21,14 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final MapperUtil mapperUtil;
     private final SecurityService securityService;
+    private final PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserRepository userRepository,
-                           MapperUtil mapperUtil, @Lazy SecurityService securityService) {
+                           MapperUtil mapperUtil, @Lazy SecurityService securityService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.mapperUtil = mapperUtil;
         this.securityService = securityService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -78,6 +77,17 @@ public class UserServiceImpl implements UserService {
         user.setUsername(user.getUsername() + "-" + user.getId());
         userRepository.save(user);
     }
+
+    @Override
+    public void update(UserDto userDto) {
+        User user = userRepository.findById(userDto.getId()).get();
+        User convertedUser = mapperUtil.convert(userDto, new User());
+        convertedUser.setId(user.getId());
+        convertedUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        convertedUser.setEnabled(user.isEnabled());
+        userRepository.save(convertedUser);
+    }
+
 
     @Override
     public UserDto findById(Long userId) {
