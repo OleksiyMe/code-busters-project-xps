@@ -89,11 +89,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public List<InvoiceDto> listAllPurchaseInvoices() {
-        UserDto loggedInUser = securityService.getLoggedInUser();
-        return invoiceRepository.findAllNotDeleted().stream()
-                .filter(invoice -> invoice.getCompany().getId().equals(loggedInUser.getCompany().getId()))
-                .filter(invoice -> invoice.getInvoiceType().equals(InvoiceType.PURCHASE))
-                .map(invoice -> mapperUtil.convert(invoice, new InvoiceDto()))
+        return listAllInvoices().stream()
+                .filter(invoiceDto -> invoiceDto.getInvoiceType().equals(InvoiceType.PURCHASE))
                 .collect(Collectors.toList());
     }
 

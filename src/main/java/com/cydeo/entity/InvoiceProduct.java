@@ -21,7 +21,7 @@ public class InvoiceProduct extends BaseEntity {
     BigDecimal price;
     int tax;
     BigDecimal profitLoss;
-    int remainingQty;
+    int remainingQuantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "invoice_id")
