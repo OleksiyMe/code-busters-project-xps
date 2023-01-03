@@ -10,7 +10,7 @@ public interface UserService {
     List<UserDto> findAllFilterForLoggedInUser();
 
     void deleteUserById(Long id);
-
+    void update(UserDto userDto);
     UserDto findById(Long userId);
 
     UserDto save(UserDto userDto);

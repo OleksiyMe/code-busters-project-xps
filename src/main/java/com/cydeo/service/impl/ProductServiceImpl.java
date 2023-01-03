@@ -60,6 +60,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto updateProduct(ProductDto productDto) {
+
         Product product = productRepository.save(mapperUtil.convert(productDto, new Product()));
         return mapperUtil.convert(product, new ProductDto());
     }
