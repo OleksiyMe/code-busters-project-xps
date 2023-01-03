@@ -15,4 +15,11 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
 
     @Query("SELECT max(c.invoiceNo) from Invoice c where c.invoiceType = 'PURCHASE' and c.company.id = ?1 ")
     String findMaxId(Long id);
+
+//alternatives
+//    Invoice findInvoiceById(Long id);
+//    List<Invoice> findInvoicesByCompanyAndInvoiceType(Company company, InvoiceType invoiceType);
+//    List<Invoice> findInvoicesByCompanyAndInvoiceStatus(Company company, InvoiceStatus invoiceStatus);
+//    List<Invoice> findInvoicesByCompanyAndInvoiceStatusOrderByDateDesc(Company company, InvoiceStatus invoiceStatus);
+//    Integer countAllByCompanyAndClientVendor_Id(Company company, Long clientVendorId);
 }
