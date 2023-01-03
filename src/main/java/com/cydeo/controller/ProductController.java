@@ -76,5 +76,22 @@ public class ProductController {
 
         return "redirect:/products/list";
     }
+    @GetMapping("/update/{id}")
+    public String updateProduct(@PathVariable("id") Long id, Model model) {
 
+        model.addAttribute("product", productService.findProductById(id));
+        model.addAttribute("categories", categoryService.listAllCategories());
+        model.addAttribute("productUnits", productService.listAllProductUnits());
+
+        return "product/product-update";
+    }
+
+    @PostMapping("/update/{id}")
+    public String updateProduct(@ModelAttribute("newProduct") ProductDto productDto) {
+
+        productService.updateProduct(productDto);
+
+        return "redirect:/products/list";
+
+    }
 }
