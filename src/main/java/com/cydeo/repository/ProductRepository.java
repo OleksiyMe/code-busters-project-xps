@@ -14,4 +14,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("Select p from Product p where p.isDeleted=false ORDER BY p.name")
     public List<Product> findAllNotDeleted();
 
+
+
+//    List<Product> findAllByCategoryCompany(Company company);
+//
+//    List<Product> findByCategoryId(Long categoryId);
+//
+//    boolean existsByName(String name);
+//
+//    Product findByNameAndCategoryCompany(String name, Company actualCompany);
 }

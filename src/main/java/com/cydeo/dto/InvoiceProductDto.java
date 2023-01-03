@@ -1,7 +1,10 @@
 package com.cydeo.dto;
 
 import lombok.*;
+import org.hibernate.validator.constraints.Range;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Getter
@@ -10,14 +13,28 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class InvoiceProductDto {
 
-    Long id;
-    Integer quantity;
-    BigDecimal price;
-    Integer tax;
-    BigDecimal total;
-    BigDecimal profitLoss;
-    Integer remainingQty;
-    InvoiceDto invoice;
-    ProductDto product;
+    private Long id;
+
+    @NotNull(message = "Quantity is a required field.")
+    @Range(min = 1, max = 100, message = "Maximum order count is 100")
+    private Integer quantity;
+
+    @NotNull(message = "Price is a required field.")
+    @Range(min = 1, message = "Price should be at least $1")
+    private BigDecimal price;
+
+    @NotNull(message = "Tax is a required field.")
+    @Range(min = 0, max = 20, message = "Tax should be between 5% and 20%")
+    private Integer tax;
+
+    private BigDecimal total;
+    private BigDecimal profitLoss;
+    private int remainingQuantity;
+
+    private InvoiceDto invoice;
+
+    @NotNull(message = "Product is a required field.")
+    @Valid
+    private ProductDto product;
 
 }
