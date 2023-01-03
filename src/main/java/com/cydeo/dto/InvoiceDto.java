@@ -3,9 +3,13 @@ package com.cydeo.dto;
 import com.cydeo.entity.InvoiceProduct;
 import com.cydeo.enums.InvoiceStatus;
 import com.cydeo.enums.InvoiceType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -17,6 +21,7 @@ import java.util.List;
 public class InvoiceDto {
 
     Long id;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     String invoiceNo;
     InvoiceStatus invoiceStatus;
     InvoiceType invoiceType;

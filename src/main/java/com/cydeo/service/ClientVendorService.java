@@ -2,8 +2,10 @@ package com.cydeo.service;
 
 import com.cydeo.dto.ClientVendorDto;
 import com.cydeo.entity.Address;
+import com.cydeo.entity.ClientVendor;
 import com.cydeo.enums.ClientVendorType;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ClientVendorService {
@@ -22,4 +24,6 @@ public interface ClientVendorService {
     List<ClientVendorType> listAllClientVendorTypes();
 
     void save(ClientVendorDto clientVendorDto);
+
+    List<ClientVendor> listAllVendors();
 }
