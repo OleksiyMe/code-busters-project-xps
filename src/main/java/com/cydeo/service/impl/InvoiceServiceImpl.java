@@ -9,7 +9,8 @@ import com.cydeo.service.InvoiceService;
 import com.cydeo.service.SecurityService;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,13 +18,13 @@ import java.util.stream.Collectors;
 public class InvoiceServiceImpl implements InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
-    private final MapperUtil mapperUtil;
     private final SecurityService securityService;
+    private final MapperUtil mapperUtil;
 
-    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, MapperUtil mapperUtil, SecurityService securityService) {
+    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, SecurityService securityService, MapperUtil mapperUtil) {
         this.invoiceRepository = invoiceRepository;
-        this.mapperUtil = mapperUtil;
         this.securityService = securityService;
+        this.mapperUtil = mapperUtil;
     }
 
     @Override
@@ -38,7 +39,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public List<InvoiceDto> listAllInvoices() {
-        return null;
+        return invoiceRepository.findAll().stream().map(invoice -> mapperUtil.convert(invoice, new InvoiceDto())).collect(Collectors.toList());
     }
 
     @Override
@@ -50,18 +51,35 @@ public class InvoiceServiceImpl implements InvoiceService {
     public void deleteInvoice(Long id) {
 
     }
+    @Override
+    public InvoiceDto createPurchaseInvoice(InvoiceDto invoiceDto) {
+        invoiceDto.setInvoiceNo(generatePurchaseInvoiceNumber());
+
+        invoiceRepository.save(mapperUtil.convert(invoiceDto, new Invoice()));
+        return invoiceDto;
+    }
 
     @Override
-    public List<InvoiceDto> listAllPurchaseInvoices() {
-
+    public String generatePurchaseInvoiceNumber() {
         Company currentCompany = mapperUtil.convert(
                 securityService.getLoggedInUser().getCompany(), new Company());
 
-        List<Invoice> list = invoiceRepository.findAll();
+        String max = invoiceRepository.findMaxId(currentCompany.getId()).toString();
 
-        return list.stream().filter(invoice -> invoice.getCompany().getId().equals(currentCompany.getId()))
-                .filter(invoice -> invoice.getInvoiceType()
-                .getValue().equals("Purchase")).sorted(Comparator.comparing(Invoice::getInvoiceNo).reversed())
-                .map(invoice -> mapperUtil.convert(invoice,new InvoiceDto())).collect(Collectors.toList());
+        String num = "";
+
+        for (int i = 0; i <max.length() ; i++) {
+            if(Character.isDigit(max.charAt(i))) num += max.charAt(i);
+        }
+
+        return "P-" + String.format("%03d",Integer.parseInt(num) + 1 );
     }
+
+    @Override
+    public String generateDate() {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM dd, y");
+        return LocalDate.now().format(df);
+    }
+
+
 }
