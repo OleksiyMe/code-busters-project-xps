@@ -130,7 +130,7 @@ values
 ('2022-11-20 00:00', 3, 'false', '2022-11-20 00:00', 3, '2022-11-20', 'S-004', 'SALES', 'AWAITING_APPROVAL', 6, 3),
 ('2022-11-21 00:00', 3, 'false', '2022-11-21 00:00', 3, '2022-11-21', 'S-005', 'SALES', 'AWAITING_APPROVAL', 6, 3),
 ('2022-12-15 00:00', 3, 'false', '2022-12-15 00:00', 3, '2022-12-15', 'P-003', 'PURCHASE', 'AWAITING_APPROVAL', 6, 3);
-
+--
 -- insert into invoice_products(insert_date_time, insert_user_id, is_deleted, last_update_date_time, last_update_user_id,
 --                              price,quantity, remaining_quantity, tax, profit_loss, invoice_id, product_id)
 -- values
@@ -141,7 +141,7 @@ values
 -- ('2022-09-15 00:00', 2, 'false', '2022-09-15 00:00', 2, 200, 2, 0, 10, 0, 4, 1),     --sale AWAITING_APPROVAL after approval total sale (with tax) :1100 & profit (with tax) : 0
 -- ('2022-09-15 00:00', 2, 'false', '2022-09-15 00:00', 2, 300, 5, 0, 10, 0, 5, 1),      --sale AWAITING_APPROVAL after approval total sale (with tax) :2750 & profit (with tax) : 275
 --
---
+
 -- -- COMPANY-3 / Blue Tech
 -- ('2022-09-15 00:00', 3, 'false', '2022-09-15 00:00', 3, 200, 20, 0, 10, 0, 6, 5),     --purchase APPROVED
 -- ('2022-09-15 00:00', 3, 'false', '2022-09-15 00:00', 3, 200, 20, 10, 10, 0, 6, 5),    --purchase APPROVED
@@ -153,3 +153,4 @@ values
 -- ('2022-09-15 00:00', 3, 'false', '2022-09-15 00:00', 3, 1200, 5, 0, 10, 0, 10, 6),     --sale AWAITING_APPROVAL after approval total sale (with tax) : 24420 & profit (with tax) : 5280+1540=6820
 -- ('2022-09-15 00:00', 3, 'false', '2022-09-15 00:00', 3, 1200, 2, 0, 10, 0, 11, 6),    --sale AWAITING_APPROVAL after approval total sale (with tax) : 27060 & profit (with tax) : 6820+440=7260
 -- ('2022-12-15 00:00', 3, 'false', '2022-12-15 00:00', 3, 600, 4, 0, 10, 0, 13, 7);    --purchase AWAITING_APPROVAL
+--
