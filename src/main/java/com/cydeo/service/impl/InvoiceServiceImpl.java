@@ -6,9 +6,12 @@ import com.cydeo.entity.Company;
 import com.cydeo.entity.Invoice;
 import com.cydeo.enums.InvoiceType;
 import com.cydeo.mapper.MapperUtil;
+import com.cydeo.repository.InvoiceProductRepository;
 import com.cydeo.repository.InvoiceRepository;
+import com.cydeo.service.InvoiceProductService;
 import com.cydeo.service.InvoiceService;
 import com.cydeo.service.SecurityService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,11 +25,17 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final InvoiceRepository invoiceRepository;
     private final SecurityService securityService;
     private final MapperUtil mapperUtil;
+    private final InvoiceProductService invoiceProductService;
+    private final InvoiceProductRepository invoiceProductRepository;
 
-    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, SecurityService securityService, MapperUtil mapperUtil) {
+
+    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, SecurityService securityService, MapperUtil mapperUtil, InvoiceProductService invoiceProductService, InvoiceProductRepository invoiceProductRepository, @Lazy InvoiceService invoiceService) {
         this.invoiceRepository = invoiceRepository;
         this.securityService = securityService;
         this.mapperUtil = mapperUtil;
+        this.invoiceProductService = invoiceProductService;
+        this.invoiceProductRepository = invoiceProductRepository;
+
     }
 
     @Override
@@ -55,6 +64,14 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public void deleteInvoice(Long id) {
+
+        Invoice invoice = invoiceRepository.findById(id).get();
+
+        invoice.setIsDeleted(true);
+
+        invoiceProductService.deleteIpByInvoiceId(id);
+
+        invoiceRepository.save(invoice);
 
     }
     @Override

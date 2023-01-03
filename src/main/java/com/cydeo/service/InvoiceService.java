@@ -12,7 +12,10 @@ public interface InvoiceService {
 
     void createInvoice(InvoiceDto invoice);
     List<InvoiceDto> listAllInvoices();
+
+
     InvoiceDto updateInvoice(Long id);
+
     void deleteInvoice(Long id);
 
     InvoiceDto createPurchaseInvoice(InvoiceDto invoiceDto);

@@ -6,10 +6,7 @@ import com.cydeo.service.ClientVendorService;
 import com.cydeo.service.InvoiceService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
@@ -48,4 +45,12 @@ public class PurchaseInvoiceController {
         return "redirect:/purchaseInvoices/create";
     }
 
+
+    @GetMapping("/delete/{id}")
+    public String deletePurchaseInvoice(@PathVariable("id") Long id) {
+
+        invoiceService.deleteInvoice(id);
+
+        return "redirect:/purchaseInvoices/list";
+    }
 }

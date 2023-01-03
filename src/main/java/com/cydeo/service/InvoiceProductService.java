@@ -1,7 +1,6 @@
 package com.cydeo.service;
 
 import com.cydeo.dto.InvoiceProductDto;
-import com.cydeo.*;
 import com.cydeo.entity.InvoiceProduct;
 import com.cydeo.entity.Product;
 import com.cydeo.enums.InvoiceType;
@@ -14,6 +13,7 @@ public interface InvoiceProductService {
     List<InvoiceProductDto> getInvoiceProductsOfInvoice(Long invoiceId);
     void save(Long invoiceId, InvoiceProductDto invoiceProductDto);
     void delete(Long invoiceProductId);
+    void deleteIpByInvoiceId(Long id); //uo
     void completeApprovalProcedures(Long invoiceId, InvoiceType type);
     boolean checkProductQuantity(InvoiceProductDto salesInvoiceProduct);
     List<InvoiceProduct> findInvoiceProductsByInvoiceTypeAndProductRemainingQuantity(InvoiceType type, Product product, Integer remainingQuantity);
