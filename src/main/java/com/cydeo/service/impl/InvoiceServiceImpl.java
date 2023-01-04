@@ -104,11 +104,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 
             Invoice invoice = invoiceRepository.findById(id).get();  //found the invoice by its Id from Repo
 
-            if (currentCompany.getId().equals(invoice.getCompany().getId())) {   //if the logged in User' and Invoice' id match
+            if (currentCompany.getId().equals(invoice.getCompany().getId()))   //if the logged in User' and Invoice' id match
+                {invoice.setIsDeleted(true); }                                    //soft delete that invoice
 
-                invoice.setIsDeleted(true); }                                    //soft delete that invoice
-
-            invoiceProductService.deleteIpByInvoiceId(id);    //delete the related InvoiceProducts of that invoice as well
+            if(currentCompany.getCompanyStatus().equals("Vendor")){    //if it is a Vendor all the related InvoiceProducts should also be deleted
+            invoiceProductService.deleteIpByInvoiceId(id); }   //delete the related InvoiceProducts of that invoice as well
 
             invoiceRepository.save(invoice);                //save to repo to have a soft delete
 
