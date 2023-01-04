@@ -39,9 +39,9 @@ public class PurchaseInvoiceController {
     }
 
     @GetMapping("/create")
-    public String createPurchaseInvoice(Model model){
+    public String createPurchaseInvoice(Model model) {
 
-        InvoiceDto invoiceDto=new InvoiceDto();
+        InvoiceDto invoiceDto = new InvoiceDto();
         invoiceDto.setInvoiceNo(invoiceService.generatePurchaseInvoiceNumber());
         invoiceDto.setDate(LocalDate.now());
         model.addAttribute("newPurchaseInvoice", invoiceDto);
@@ -51,15 +51,15 @@ public class PurchaseInvoiceController {
     }
 
     @PostMapping("/create")
-    public String savePurchaseInvoice(@Valid @ModelAttribute("newPurchaseInvoice") InvoiceDto invoiceDto, BindingResult bindingResult, Model model){
+    public String savePurchaseInvoice(@Valid @ModelAttribute("newPurchaseInvoice") InvoiceDto invoiceDto, BindingResult bindingResult, Model model) {
 
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             model.addAttribute("newPurchaseInvoice", new InvoiceDto());
             model.addAttribute("vendors", clientVendorService.listAllVendors());
             return "/invoice/purchase-invoice-create";
         }
 
-        InvoiceProductDto invoiceProductDto=new InvoiceProductDto();
+        InvoiceProductDto invoiceProductDto = new InvoiceProductDto();
         invoiceProductDto.setInvoice(invoiceDto);
         model.addAttribute("newInvoiceProduct", invoiceProductDto);
         model.addAttribute("invoice", invoiceDto);
@@ -78,5 +78,13 @@ public class PurchaseInvoiceController {
         return "redirect:/purchaseInvoices/list";
     }
 
+    @GetMapping("/delete/{id}")
+    public String deletePurchaseInvoice(@PathVariable("id") Long id) {
 
+        invoiceService.deleteInvoice(id);
+
+        return "redirect:/purchaseInvoices/list";
+
+
+    }
 }

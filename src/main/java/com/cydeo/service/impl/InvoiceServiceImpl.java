@@ -96,10 +96,24 @@ public class InvoiceServiceImpl implements InvoiceService {
         return null;
     }
 
-    @Override
-    public void deleteInvoice(Long id) {
+        @Override
+        public void deleteInvoice(Long id) {
+            UserDto loggedInUser = securityService.getLoggedInUser(); //got the logged in User
+            Company currentCompany = mapperUtil.convert(
+                    securityService.getLoggedInUser().getCompany(), new Company()); //Got &Converted logged In User's CompDto to Entity
 
-    }
+            Invoice invoice = invoiceRepository.findById(id).get();  //found the invoice by its Id from Repo
+
+            if (currentCompany.getId().equals(invoice.getCompany().getId())) {   //if the logged in User' and Invoice' id match
+
+                invoice.setIsDeleted(true); }                                    //soft delete that invoice
+
+            invoiceProductService.deleteIpByInvoiceId(id);    //delete the related InvoiceProducts of that invoice as well
+
+            invoiceRepository.save(invoice);                //save to repo to have a soft delete
+
+        }
+
 
     @Override
     public InvoiceDto createPurchaseInvoice(InvoiceDto invoiceDto) {
