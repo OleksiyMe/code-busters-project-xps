@@ -49,9 +49,12 @@ public class ProductController {
 
     @PostMapping("/create")
     public String postCreatedProduct(@Valid @ModelAttribute("newProduct") ProductDto productDto, BindingResult bindingResult, Model model) {
+        Boolean productNameExists = productService.productNameExists(productDto);
 
-        if (bindingResult.hasErrors()) {
-
+        if (bindingResult.hasErrors() || productNameExists) {
+            if (productNameExists) {
+                bindingResult.rejectValue("name", " ", "A product with this name already exists. Please try different name.");
+            }
             model.addAttribute("categories", categoryService.listAllCategories());
             model.addAttribute("productUnits", productService.listAllProductUnits());
             return "/product/product-create";
@@ -68,7 +71,7 @@ public class ProductController {
         if (productService.productListedInInvoice(productId)) {
             model.addAttribute("products", productService.listAllProducts());
             model.addAttribute("errorMessage",
-                    "Product with id "+productId+
+                    "Product with id " + productId +
                             " is listed in invoice! You can not delete it");
             return "/product/product-list";
         }
@@ -76,6 +79,7 @@ public class ProductController {
 
         return "redirect:/products/list";
     }
+
     @GetMapping("/update/{id}")
     public String updateProduct(@PathVariable("id") Long id, Model model) {
 
