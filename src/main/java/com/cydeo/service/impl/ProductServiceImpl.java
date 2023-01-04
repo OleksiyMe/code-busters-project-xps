@@ -9,11 +9,13 @@ import com.cydeo.repository.ProductRepository;
 import com.cydeo.service.InvoiceProductService;
 import com.cydeo.service.ProductService;
 import com.cydeo.service.SecurityService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +28,7 @@ public class ProductServiceImpl implements ProductService {
     private final InvoiceProductService invoiceProductService;
 
     public ProductServiceImpl(ProductRepository productRepository, MapperUtil mapperUtil,
-                              SecurityService securityService, InvoiceProductService invoiceProductService) {
+                              SecurityService securityService, @Lazy InvoiceProductService invoiceProductService) {
         this.productRepository = productRepository;
         this.mapperUtil = mapperUtil;
         this.securityService = securityService;
@@ -35,8 +37,10 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public ProductDto findProductById(Long Id) {
-        return null;
+    public ProductDto findProductById(Long id) {
+        return listAllProducts().stream()
+                .filter(productDto -> productDto.getId().equals(id))
+                .findFirst().orElseThrow(()->new NoSuchElementException("No product with id "+id));
     }
 
     @Override
@@ -93,6 +97,11 @@ public class ProductServiceImpl implements ProductService {
     public Boolean productListedInInvoice(Long productId) {
         return invoiceProductService.findAllNotDeleted().stream()
                 .anyMatch(invoiceDto -> invoiceDto.getProduct().getId().equals(productId));
+    }
+
+    @Override
+    public void save(ProductDto productDto) {
+        productRepository.save(mapperUtil.convert(productDto, new Product()));
     }
 
 

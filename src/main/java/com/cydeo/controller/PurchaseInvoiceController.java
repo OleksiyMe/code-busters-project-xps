@@ -4,14 +4,11 @@ import com.cydeo.dto.InvoiceDto;
 import com.cydeo.dto.ProductDto;
 import com.cydeo.service.ClientVendorService;
 import com.cydeo.service.InvoiceService;
+import com.cydeo.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 
 @Controller
 @RequestMapping("/purchaseInvoices")
@@ -26,14 +23,14 @@ public class PurchaseInvoiceController {
     }
 
     @GetMapping("/list")
-    public String purchaseInvoiceList(Model model){
+    public String purchaseInvoiceList(Model model) {
         model.addAttribute("invoices", invoiceService.listAllPurchaseInvoices());
 
         return "/invoice/purchase-invoice-list";
     }
 
     @GetMapping("/create")
-    public String createPurchaseInvoice(Model model){
+    public String createPurchaseInvoice(Model model) {
         model.addAttribute("newPurchaseInvoice", new InvoiceDto());
         model.addAttribute("vendors", clientVendorService.listAllVendors());
         model.addAttribute("date", invoiceService.generateDate());
@@ -43,10 +40,16 @@ public class PurchaseInvoiceController {
     }
 
     @PostMapping("create")
-    public String savePurchaseInvoice(@ModelAttribute("invoice") InvoiceDto invoiceDto){
-
-
+    public String savePurchaseInvoice(@ModelAttribute("invoice") InvoiceDto invoiceDto) {
         return "redirect:/purchaseInvoices/create";
     }
+
+    @GetMapping("/approve/{id}")
+    public String approvePurchaseInvoice(@PathVariable("id") Long id, Model model) {
+        invoiceService.approve(id);
+
+        return "redirect:/purchaseInvoices/list";
+    }
+
 
 }

@@ -22,4 +22,6 @@ public interface InvoiceService {
     String generateDate();
 
     List<InvoiceDto> listAllPurchaseInvoices();
+
+    void approve(Long id);
 }
