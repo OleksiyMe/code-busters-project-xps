@@ -38,7 +38,7 @@ public class InvoiceDto {
     ClientVendorDto clientVendor;
 
     BigDecimal price;
-    Integer tax;
+    BigDecimal tax;
     BigDecimal total;
     List<InvoiceProduct> invoiceProducts;
 

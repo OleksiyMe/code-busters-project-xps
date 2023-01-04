@@ -41,7 +41,7 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
     }
 
     @Override
-    public List<InvoiceProductDto> getInvoiceProductsOfInvoice(Long invoiceId) {
+    public List<InvoiceProductDto> getInvoiceProductsByInvoiceId(Long invoiceId) {
         Invoice invoice = mapperUtil.convert(invoiceService.findInvoiceById(invoiceId), new Invoice());
         return invoiceProductRepository
                 .findAllByInvoice(invoice)

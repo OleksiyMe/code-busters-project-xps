@@ -1,6 +1,7 @@
 package com.cydeo.service.impl;
 
 import com.cydeo.dto.InvoiceDto;
+import com.cydeo.dto.InvoiceProductDto;
 import com.cydeo.dto.UserDto;
 import com.cydeo.entity.ClientVendor;
 import com.cydeo.entity.Company;
@@ -9,10 +10,13 @@ import com.cydeo.enums.InvoiceStatus;
 import com.cydeo.enums.InvoiceType;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repository.InvoiceRepository;
+import com.cydeo.service.InvoiceProductService;
 import com.cydeo.service.InvoiceService;
+import com.cydeo.service.ProductService;
 import com.cydeo.service.SecurityService;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -23,11 +27,13 @@ import java.util.stream.Collectors;
 public class InvoiceServiceImpl implements InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
+    private final InvoiceProductService invoiceProductService;
     private final SecurityService securityService;
     private final MapperUtil mapperUtil;
 
-    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, SecurityService securityService, MapperUtil mapperUtil) {
+    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, InvoiceProductService invoiceProductService, SecurityService securityService, MapperUtil mapperUtil) {
         this.invoiceRepository = invoiceRepository;
+        this.invoiceProductService = invoiceProductService;
         this.securityService = securityService;
         this.mapperUtil = mapperUtil;
     }
@@ -47,7 +53,26 @@ public class InvoiceServiceImpl implements InvoiceService {
         UserDto loggedInUser = securityService.getLoggedInUser();
         return invoiceRepository.findAllNotDeleted().stream()
                 .filter(invoice -> invoice.getCompany().getId().equals(loggedInUser.getCompany().getId()))
-                .map(invoice -> mapperUtil.convert(invoice, new InvoiceDto()))
+                .map(invoice -> {
+                    InvoiceDto invoiceDto = mapperUtil.convert(invoice, new InvoiceDto());
+                    List<InvoiceProductDto> list =
+                            invoiceProductService.getInvoiceProductsByInvoiceId(invoice.getId());
+                    BigDecimal price = new BigDecimal(0);
+                    BigDecimal tax= new BigDecimal(0);
+                    BigDecimal total= new BigDecimal(0);
+                    for (InvoiceProductDto eachProduct : list) {
+                        BigDecimal eachTotalBeforeTax =
+                                eachProduct.getPrice().multiply(BigDecimal.valueOf(eachProduct.getQuantity()));
+                        BigDecimal eachTaxAmount =eachProduct.getTotal().subtract(eachTotalBeforeTax);
+                        price=price.add(eachTotalBeforeTax);
+                        tax=tax.add(eachTaxAmount);
+                        total=total.add(eachProduct.getTotal());
+                    }
+                    invoiceDto.setPrice(price);
+                    invoiceDto.setTax(tax);
+                    invoiceDto.setTotal(total);
+                    return invoiceDto;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -60,6 +85,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     public void deleteInvoice(Long id) {
 
     }
+
     @Override
     public InvoiceDto createPurchaseInvoice(InvoiceDto invoiceDto) {
 
@@ -84,11 +110,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         String num = "";
 
-        for (int i = 0; i <max.length() ; i++) {
-            if(Character.isDigit(max.charAt(i))) num += max.charAt(i);
+        for (int i = 0; i < max.length(); i++) {
+            if (Character.isDigit(max.charAt(i))) num += max.charAt(i);
         }
 
-        return "P-" + String.format("%03d",Integer.parseInt(num) + 1 );
+        return "P-" + String.format("%03d", Integer.parseInt(num) + 1);
     }
 
 //    @Override
@@ -105,9 +131,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public List<InvoiceDto> listAllPurchaseInvoices() {
-        return listAllInvoices().stream()
+
+        List<InvoiceDto> list= listAllInvoices().stream()
                 .filter(invoiceDto -> invoiceDto.getInvoiceType().equals(InvoiceType.PURCHASE))
                 .collect(Collectors.toList());
+        return list;
     }
 
 
