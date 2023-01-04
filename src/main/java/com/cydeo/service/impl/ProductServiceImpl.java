@@ -1,6 +1,7 @@
 package com.cydeo.service.impl;
 
 import com.cydeo.dto.ProductDto;
+import com.cydeo.dto.UserDto;
 import com.cydeo.entity.User;
 import com.cydeo.entity.Product;
 import com.cydeo.enums.ProductUnit;
@@ -12,10 +13,7 @@ import com.cydeo.service.SecurityService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,7 +38,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto findProductById(Long id) {
         return listAllProducts().stream()
                 .filter(productDto -> productDto.getId().equals(id))
-                .findFirst().orElseThrow(()->new NoSuchElementException("No product with id "+id));
+                .findFirst().orElseThrow(() -> new NoSuchElementException("No product with id " + id));
     }
 
     @Override
@@ -102,6 +100,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void save(ProductDto productDto) {
         productRepository.save(mapperUtil.convert(productDto, new Product()));
+    }
+
+    @Override
+    public Boolean productNameExists(ProductDto productDtoToSave) {
+
+        return listAllProducts().stream()
+                .anyMatch(productDto -> productDto.getName().equals(productDtoToSave.getName()));
+
     }
 
 
