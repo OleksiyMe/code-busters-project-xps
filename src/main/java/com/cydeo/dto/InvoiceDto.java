@@ -40,6 +40,6 @@ public class InvoiceDto {
     BigDecimal price;
     BigDecimal tax;
     BigDecimal total;
-    List<InvoiceProduct> invoiceProducts;
+    List<InvoiceProductDto> invoiceProducts;
 
 }

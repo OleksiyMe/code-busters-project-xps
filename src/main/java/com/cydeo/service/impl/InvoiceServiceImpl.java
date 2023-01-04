@@ -2,6 +2,7 @@ package com.cydeo.service.impl;
 
 import com.cydeo.dto.InvoiceDto;
 import com.cydeo.dto.InvoiceProductDto;
+import com.cydeo.dto.ProductDto;
 import com.cydeo.dto.UserDto;
 import com.cydeo.entity.ClientVendor;
 import com.cydeo.entity.Company;
@@ -14,6 +15,7 @@ import com.cydeo.service.InvoiceProductService;
 import com.cydeo.service.InvoiceService;
 import com.cydeo.service.ProductService;
 import com.cydeo.service.SecurityService;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -21,6 +23,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,17 +33,28 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final InvoiceProductService invoiceProductService;
     private final SecurityService securityService;
     private final MapperUtil mapperUtil;
+    private final ProductService productService;
 
-    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, InvoiceProductService invoiceProductService, SecurityService securityService, MapperUtil mapperUtil) {
+
+    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, InvoiceProductService invoiceProductService, SecurityService securityService, MapperUtil mapperUtil, ProductService productService) {
         this.invoiceRepository = invoiceRepository;
         this.invoiceProductService = invoiceProductService;
         this.securityService = securityService;
         this.mapperUtil = mapperUtil;
+        this.productService = productService;
     }
 
     @Override
     public InvoiceDto findInvoiceById(Long id) {
-        return mapperUtil.convert(invoiceRepository.findById(id).get(), new InvoiceDto());
+//        InvoiceDto invoiceDto = mapperUtil.convert(invoiceRepository.findById(id), new InvoiceDto());
+//        List<InvoiceProductDto> list = invoiceProductService.getInvoiceProductsByInvoiceId(id);
+//        invoiceDto.setInvoiceProducts(list);
+//        return invoiceDto;
+//I added 3 calculated fields in listAllInvoices() method. No sense to repeat it here, so I modified code
+// OleksiyMe
+        List<InvoiceDto> list = listAllInvoices();
+        return list.stream().filter(invoiceDto -> invoiceDto.getId().equals(id)).findFirst()
+                .orElseThrow(() -> new NoSuchElementException("No Invoice with this id " + id));
     }
 
     @Override
@@ -58,19 +72,20 @@ public class InvoiceServiceImpl implements InvoiceService {
                     List<InvoiceProductDto> list =
                             invoiceProductService.getInvoiceProductsByInvoiceId(invoice.getId());
                     BigDecimal price = new BigDecimal(0);
-                    BigDecimal tax= new BigDecimal(0);
-                    BigDecimal total= new BigDecimal(0);
+                    BigDecimal tax = new BigDecimal(0);
+                    BigDecimal total = new BigDecimal(0);
                     for (InvoiceProductDto eachProduct : list) {
                         BigDecimal eachTotalBeforeTax =
                                 eachProduct.getPrice().multiply(BigDecimal.valueOf(eachProduct.getQuantity()));
-                        BigDecimal eachTaxAmount =eachProduct.getTotal().subtract(eachTotalBeforeTax);
-                        price=price.add(eachTotalBeforeTax);
-                        tax=tax.add(eachTaxAmount);
-                        total=total.add(eachProduct.getTotal());
+                        BigDecimal eachTaxAmount = eachProduct.getTotal().subtract(eachTotalBeforeTax);
+                        price = price.add(eachTotalBeforeTax);
+                        tax = tax.add(eachTaxAmount);
+                        total = total.add(eachProduct.getTotal());
                     }
                     invoiceDto.setPrice(price);
                     invoiceDto.setTax(tax);
                     invoiceDto.setTotal(total);
+                    invoiceDto.setInvoiceProducts(list);
                     return invoiceDto;
                 })
                 .collect(Collectors.toList());
@@ -132,10 +147,23 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public List<InvoiceDto> listAllPurchaseInvoices() {
 
-        List<InvoiceDto> list= listAllInvoices().stream()
+        List<InvoiceDto> list = listAllInvoices().stream()
                 .filter(invoiceDto -> invoiceDto.getInvoiceType().equals(InvoiceType.PURCHASE))
                 .collect(Collectors.toList());
         return list;
+    }
+
+    @Override
+    public void approve(Long id) {
+        InvoiceDto invoiceDto = findInvoiceById(id);
+        invoiceDto.setInvoiceStatus(InvoiceStatus.APPROVED);
+        invoiceDto.setDate(LocalDate.now());
+        for (InvoiceProductDto invoiceProductDto : invoiceProductService.getInvoiceProductsByInvoiceId(id)) {
+            ProductDto productDto = productService.findProductById(invoiceProductDto.getProduct().getId());
+            productDto.setQuantityInStock(productDto.getQuantityInStock() + invoiceProductDto.getQuantity());
+            productService.save(productDto);
+        }
+        invoiceRepository.save(mapperUtil.convert(invoiceDto, new Invoice()));
     }
 
 
