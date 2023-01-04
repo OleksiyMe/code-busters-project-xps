@@ -132,17 +132,6 @@ public class InvoiceServiceImpl implements InvoiceService {
         return "P-" + String.format("%03d", Integer.parseInt(num) + 1);
     }
 
-//    @Override
-//    public String generateDate() {
-//        DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM dd, y");
-//        return LocalDate.now().format(df);
-//    }
-
-    @Override
-    public String generateDate() {
-        LocalDate now = LocalDate.now();
-        return DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(now);
-    }
 
     @Override
     public List<InvoiceDto> listAllPurchaseInvoices() {
