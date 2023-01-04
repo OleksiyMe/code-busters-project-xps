@@ -49,7 +49,7 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
                 .sorted(Comparator.comparing((InvoiceProduct each) -> each.getInvoice().getInvoiceNo()).reversed())
                 .map(each -> {
                     InvoiceProductDto dto = mapperUtil.convert(each, new InvoiceProductDto());
-                    dto.setTotal(each.getPrice().multiply(BigDecimal.valueOf(each.getQuantity() * (each.getTax()+100)/100d)));
+                    dto.setTotal(each.getPrice().multiply(BigDecimal.valueOf(each.getQuantity() * (each.getTax() + 100) / 100d)));
                     return dto;
                 })
                 .collect(Collectors.toList());
@@ -83,6 +83,14 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
     @Override
     public List<InvoiceProduct> findAllInvoiceProductsByProductId(Long id) {
         return null;
+    }
+
+    @Override
+    public List<InvoiceProductDto> findAllNotDeleted() {
+        return invoiceProductRepository.findAll().stream()
+                .filter(invoiceProduct -> invoiceProduct.getIsDeleted().equals(false))
+                .map(invoiceProduct -> mapperUtil.convert(invoiceProduct, new InvoiceProductDto()))
+                .collect(Collectors.toList());
     }
 
 }

@@ -6,6 +6,7 @@ import com.cydeo.entity.Product;
 import com.cydeo.enums.ProductUnit;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repository.ProductRepository;
+import com.cydeo.service.InvoiceProductService;
 import com.cydeo.service.ProductService;
 import com.cydeo.service.SecurityService;
 import org.springframework.stereotype.Service;
@@ -22,11 +23,14 @@ public class ProductServiceImpl implements ProductService {
     private MapperUtil mapperUtil;
 
     private final SecurityService securityService;
+    private final InvoiceProductService invoiceProductService;
 
-    public ProductServiceImpl(ProductRepository productRepository, MapperUtil mapperUtil, SecurityService securityService) {
+    public ProductServiceImpl(ProductRepository productRepository, MapperUtil mapperUtil,
+                              SecurityService securityService, InvoiceProductService invoiceProductService) {
         this.productRepository = productRepository;
         this.mapperUtil = mapperUtil;
         this.securityService = securityService;
+        this.invoiceProductService = invoiceProductService;
     }
 
 
@@ -87,10 +91,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Boolean productListedInInvoice(Long productId) {
-
-        //let it be stubbed for now
-        if (productId==111L) return true;
-        return false;
+        return invoiceProductService.findAllNotDeleted().stream()
+                .anyMatch(invoiceDto -> invoiceDto.getProduct().getId().equals(productId));
     }
 
 
