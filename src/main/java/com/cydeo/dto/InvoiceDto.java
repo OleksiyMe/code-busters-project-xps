@@ -28,7 +28,7 @@ public class InvoiceDto {
     InvoiceStatus invoiceStatus;
     InvoiceType invoiceType;
 
-//    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @DateTimeFormat(pattern = "MMMM dd, yy")
     LocalDate date;
 
     CompanyDto company;
