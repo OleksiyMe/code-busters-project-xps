@@ -6,12 +6,10 @@ import com.cydeo.entity.Company;
 import com.cydeo.entity.Invoice;
 import com.cydeo.enums.InvoiceType;
 import com.cydeo.mapper.MapperUtil;
-import com.cydeo.repository.InvoiceProductRepository;
 import com.cydeo.repository.InvoiceRepository;
 import com.cydeo.service.InvoiceProductService;
 import com.cydeo.service.InvoiceService;
 import com.cydeo.service.SecurityService;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -26,17 +24,14 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final SecurityService securityService;
     private final MapperUtil mapperUtil;
     private final InvoiceProductService invoiceProductService;
-    private final InvoiceProductRepository invoiceProductRepository;
 
-
-    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, SecurityService securityService, MapperUtil mapperUtil, InvoiceProductService invoiceProductService, InvoiceProductRepository invoiceProductRepository, @Lazy InvoiceService invoiceService) {
+    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, SecurityService securityService, MapperUtil mapperUtil, InvoiceProductService invoiceProductService) {
         this.invoiceRepository = invoiceRepository;
         this.securityService = securityService;
         this.mapperUtil = mapperUtil;
         this.invoiceProductService = invoiceProductService;
-        this.invoiceProductRepository = invoiceProductRepository;
-
     }
+
 
     @Override
     public InvoiceDto findInvoiceById(Long id) {
@@ -64,14 +59,19 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public void deleteInvoice(Long id) {
+        UserDto loggedInUser = securityService.getLoggedInUser(); //got the logged in User
+        Company currentCompany = mapperUtil.convert(
+              securityService.getLoggedInUser().getCompany(), new Company()); //Got &Converted logged In User's CompDto to Entity
 
-        Invoice invoice = invoiceRepository.findById(id).get();
+        Invoice invoice = invoiceRepository.findById(id).get();  //found the invoice by its Id from Repo
 
-        invoice.setIsDeleted(true);
+        if (currentCompany.getId().equals(invoice.getCompany().getId())) {   //if the logged in User' and Invoice' id match
 
-        invoiceProductService.deleteIpByInvoiceId(id);
+        invoice.setIsDeleted(true); }                                    //soft delete that invoice
 
-        invoiceRepository.save(invoice);
+        invoiceProductService.deleteIpByInvoiceId(id);    //delete the related InvoiceProducts of that invoice as well
+
+        invoiceRepository.save(invoice);                //save to repo to have a soft delete
 
     }
     @Override
