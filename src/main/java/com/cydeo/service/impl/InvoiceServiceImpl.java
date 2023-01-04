@@ -4,6 +4,7 @@ import com.cydeo.dto.InvoiceDto;
 import com.cydeo.dto.InvoiceProductDto;
 import com.cydeo.dto.ProductDto;
 import com.cydeo.dto.UserDto;
+import com.cydeo.entity.ClientVendor;
 import com.cydeo.entity.Company;
 import com.cydeo.entity.Invoice;
 import com.cydeo.enums.InvoiceStatus;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -101,9 +103,16 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public InvoiceDto createPurchaseInvoice(InvoiceDto invoiceDto) {
-        invoiceDto.setInvoiceNo(generatePurchaseInvoiceNumber());
 
-        invoiceRepository.save(mapperUtil.convert(invoiceDto, new Invoice()));
+        Invoice invoice = mapperUtil.convert(invoiceDto, new Invoice());
+        invoice.setInvoiceNo(invoiceDto.getInvoiceNo());
+        invoice.setDate(invoiceDto.getDate());
+        invoice.setClientVendor(mapperUtil.convert(invoiceDto.getClientVendor(), new ClientVendor()));
+        invoice.setInvoiceType(InvoiceType.PURCHASE);
+        invoice.setInvoiceStatus(InvoiceStatus.AWAITING_APPROVAL);
+        invoice.setId(invoiceDto.getId());
+
+        invoiceRepository.save(invoice);
         return invoiceDto;
     }
 
@@ -123,10 +132,16 @@ public class InvoiceServiceImpl implements InvoiceService {
         return "P-" + String.format("%03d", Integer.parseInt(num) + 1);
     }
 
+//    @Override
+//    public String generateDate() {
+//        DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM dd, y");
+//        return LocalDate.now().format(df);
+//    }
+
     @Override
     public String generateDate() {
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM dd, y");
-        return LocalDate.now().format(df);
+        LocalDate now = LocalDate.now();
+        return DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(now);
     }
 
     @Override
