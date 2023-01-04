@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Controller
 @RequestMapping("/purchaseInvoices")
@@ -38,13 +39,14 @@ public class PurchaseInvoiceController {
     @GetMapping("/create")
     public String createPurchaseInvoice(Model model){
 
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("MM,dd,y");
+//        return LocalDate.now().format(df);
+
         InvoiceDto invoiceDto=new InvoiceDto();
         invoiceDto.setInvoiceNo(invoiceService.generatePurchaseInvoiceNumber());
         invoiceDto.setDate(LocalDate.now());
         model.addAttribute("newPurchaseInvoice", invoiceDto);
         model.addAttribute("vendors", clientVendorService.listAllVendors());
-     //   model.addAttribute("date", invoiceService.generateDate());
-   //     model.addAttribute("invoiceNumber", invoiceService.generatePurchaseInvoiceNumber());
 
         return "/invoice/purchase-invoice-create";
     }
@@ -60,19 +62,35 @@ public class PurchaseInvoiceController {
             return "/invoice/purchase-invoice-create";
         }
 
-
         InvoiceProductDto invoiceProductDto=new InvoiceProductDto();
         invoiceProductDto.setInvoice(invoiceDto);
         model.addAttribute("newInvoiceProduct", invoiceProductDto);
         model.addAttribute("invoice", invoiceDto);
         model.addAttribute("vendors", clientVendorService.listAllVendors());
-//        model.addAttribute("date", invoiceDto.getDate());
-//        model.addAttribute("invoiceNo", invoiceDto.getInvoiceNo());
         model.addAttribute("products", productService.listAllProducts());
 
-        invoiceService.createInvoice(invoiceDto);
-        return "/invoice/purchase-invoice-update";
+        invoiceService.createPurchaseInvoice(invoiceDto);
+        return "invoice/purchase-invoice-update";
     }
+
+
+//    @GetMapping("/update")
+//    public String getUpdatePurchaseInvoice(@ModelAttribute("newPurchaseInvoice") InvoiceDto invoiceDto, Model model){
+//        InvoiceDto invoice = invoiceService.findInvoiceById(invoiceDto.getId());
+//
+//        InvoiceProductDto invoiceProductDto=new InvoiceProductDto();
+//        invoiceProductDto.setInvoice(invoiceDto);
+//
+//        model.addAttribute("newInvoiceProduct", invoiceProductDto);
+//        model.addAttribute("invoice", invoiceDto);
+//        model.addAttribute("vendors", clientVendorService.listAllVendors());
+////        model.addAttribute("date", invoiceDto.getDate());
+////        model.addAttribute("invoiceNo", invoiceDto.getInvoiceNo());
+//        model.addAttribute("products", productService.listAllProducts());
+//
+//
+//        return "/invoice/purchase-invoice-update";
+//    }
 
 
 }
