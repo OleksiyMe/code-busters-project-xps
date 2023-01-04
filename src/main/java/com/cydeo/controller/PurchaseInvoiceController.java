@@ -9,6 +9,7 @@ import com.cydeo.service.InvoiceService;
 import com.cydeo.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,7 @@ public class PurchaseInvoiceController {
     }
 
     @GetMapping("/list")
-    public String purchaseInvoiceList(Model model){
+    public String purchaseInvoiceList(Model model) {
         model.addAttribute("invoices", invoiceService.listAllPurchaseInvoices());
 
         return "/invoice/purchase-invoice-list";
@@ -90,6 +91,14 @@ public class PurchaseInvoiceController {
 //
 //        return "/invoice/purchase-invoice-update";
 //    }
+
+
+    @GetMapping("/approve/{id}")
+    public String approvePurchaseInvoice(@PathVariable("id") Long id, Model model) {
+        invoiceService.approve(id);
+
+        return "redirect:/purchaseInvoices/list";
+    }
 
 
 }

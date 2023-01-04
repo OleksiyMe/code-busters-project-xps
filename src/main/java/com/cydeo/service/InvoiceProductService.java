@@ -17,4 +17,6 @@ public interface InvoiceProductService {
     boolean checkProductQuantity(InvoiceProductDto salesInvoiceProduct);
     List<InvoiceProduct> findInvoiceProductsByInvoiceTypeAndProductRemainingQuantity(InvoiceType type, Product product, Integer remainingQuantity);
     List<InvoiceProduct> findAllInvoiceProductsByProductId(Long id);
+
+    List<InvoiceProductDto> findAllNotDeleted();
 }
