@@ -55,6 +55,11 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
 
     @Override
     public void save(Long invoiceId, InvoiceProductDto invoiceProductDto) {
+        Invoice invoice = mapperUtil.convert(invoiceService.findInvoiceById(invoiceId), new Invoice());
+        InvoiceProduct invoiceProduct = mapperUtil.convert(invoiceProductDto, new InvoiceProduct());
+        invoiceProduct.setInvoice(invoice);
+        invoiceProduct.setProfitLoss(BigDecimal.ZERO);
+        invoiceProductRepository.save(invoiceProduct);
 
     }
 
@@ -70,17 +75,17 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
 
     @Override
     public boolean checkProductQuantity(InvoiceProductDto salesInvoiceProduct) {
-        return false;
+        return salesInvoiceProduct.getProduct().getQuantityInStock() >= salesInvoiceProduct.getQuantity();
     }
 
     @Override
     public List<InvoiceProduct> findInvoiceProductsByInvoiceTypeAndProductRemainingQuantity(InvoiceType type, Product product, Integer remainingQuantity) {
-        return null;
+        return invoiceProductRepository.findInvoiceProductsByInvoiceInvoiceTypeAndProductAndRemainingQuantityNotOrderByIdAsc(type, product, remainingQuantity);
     }
 
     @Override
     public List<InvoiceProduct> findAllInvoiceProductsByProductId(Long id) {
-        return null;
+        return invoiceProductRepository.findAllInvoiceProductByProductId(id);
     }
 
     @Override
