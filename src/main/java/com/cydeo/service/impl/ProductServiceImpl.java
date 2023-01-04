@@ -6,13 +6,16 @@ import com.cydeo.entity.Product;
 import com.cydeo.enums.ProductUnit;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repository.ProductRepository;
+import com.cydeo.service.InvoiceProductService;
 import com.cydeo.service.ProductService;
 import com.cydeo.service.SecurityService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,17 +25,22 @@ public class ProductServiceImpl implements ProductService {
     private MapperUtil mapperUtil;
 
     private final SecurityService securityService;
+    private final InvoiceProductService invoiceProductService;
 
-    public ProductServiceImpl(ProductRepository productRepository, MapperUtil mapperUtil, SecurityService securityService) {
+    public ProductServiceImpl(ProductRepository productRepository, MapperUtil mapperUtil,
+                              SecurityService securityService, @Lazy InvoiceProductService invoiceProductService) {
         this.productRepository = productRepository;
         this.mapperUtil = mapperUtil;
         this.securityService = securityService;
+        this.invoiceProductService = invoiceProductService;
     }
 
 
     @Override
     public ProductDto findProductById(Long id) {
-        return mapperUtil.convert(productRepository.getProductById(id).get(), new ProductDto());
+        return listAllProducts().stream()
+                .filter(productDto -> productDto.getId().equals(id))
+                .findFirst().orElseThrow(()->new NoSuchElementException("No product with id "+id));
     }
 
     @Override
@@ -60,7 +68,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto updateProduct(ProductDto productDto) {
-        return null;
+
+        Product product = productRepository.save(mapperUtil.convert(productDto, new Product()));
+        return mapperUtil.convert(product, new ProductDto());
     }
 
     @Override
@@ -85,10 +95,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Boolean productListedInInvoice(Long productId) {
+        return invoiceProductService.findAllNotDeleted().stream()
+                .anyMatch(invoiceDto -> invoiceDto.getProduct().getId().equals(productId));
+    }
 
-        //let it be stubbed for now
-        if (productId==111L) return true;
-        return false;
+    @Override
+    public void save(ProductDto productDto) {
+        productRepository.save(mapperUtil.convert(productDto, new Product()));
     }
 
 

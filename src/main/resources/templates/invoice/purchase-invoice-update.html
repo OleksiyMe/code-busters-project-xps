@@ -45,7 +45,7 @@
                                                             <div class="form-group">
                                                                 <div class="controls">
                                                                     <label>Vendor</label>
-                                                                    <select id="clientVendor" name="clientVendor" class="custom-select" th:with="clientVendor=*{clientVendor}">
+                                                                    <select id="clientVendor" name="clientVendor" class="custom-select" th:with="clientVendor=*{clientVendor.id}">
                                                                         <option th:each= "clientVendor:${vendors}"
                                                                                 th:value="${clientVendor.id}"
                                                                                 th:text="${clientVendor.getClientVendorName}"

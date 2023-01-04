@@ -10,6 +10,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -21,19 +23,23 @@ import java.util.List;
 public class InvoiceDto {
 
     Long id;
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ReadOnlyProperty
     String invoiceNo;
     InvoiceStatus invoiceStatus;
     InvoiceType invoiceType;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "MMMM dd, yy")
     LocalDate date;
 
     CompanyDto company;
+
+    @NotNull(message = "This is a required field.")
+    @Valid
     ClientVendorDto clientVendor;
+
     BigDecimal price;
-    Integer tax;
+    BigDecimal tax;
     BigDecimal total;
-    List<InvoiceProduct> invoiceProducts;
+    List<InvoiceProductDto> invoiceProducts;
 
 }

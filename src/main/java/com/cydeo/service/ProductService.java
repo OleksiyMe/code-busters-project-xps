@@ -24,6 +24,7 @@ public interface ProductService {
     Boolean productListedInInvoice(Long productId);
 
 
+    void save(ProductDto productDto);
 }
 
 
