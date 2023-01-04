@@ -41,9 +41,6 @@ public class PurchaseInvoiceController {
     @GetMapping("/create")
     public String createPurchaseInvoice(Model model){
 
-//        DateTimeFormatter df = DateTimeFormatter.ofPattern("MM,dd,y");
-//        return LocalDate.now().format(df);
-
         InvoiceDto invoiceDto=new InvoiceDto();
         invoiceDto.setInvoiceNo(invoiceService.generatePurchaseInvoiceNumber());
         invoiceDto.setDate(LocalDate.now());
@@ -72,25 +69,6 @@ public class PurchaseInvoiceController {
         invoiceService.createPurchaseInvoice(invoiceDto);
         return "invoice/purchase-invoice-update";
     }
-
-
-//    @GetMapping("/update")
-//    public String getUpdatePurchaseInvoice(@ModelAttribute("newPurchaseInvoice") InvoiceDto invoiceDto, Model model){
-//        InvoiceDto invoice = invoiceService.findInvoiceById(invoiceDto.getId());
-//
-//        InvoiceProductDto invoiceProductDto=new InvoiceProductDto();
-//        invoiceProductDto.setInvoice(invoiceDto);
-//
-//        model.addAttribute("newInvoiceProduct", invoiceProductDto);
-//        model.addAttribute("invoice", invoiceDto);
-//        model.addAttribute("vendors", clientVendorService.listAllVendors());
-////        model.addAttribute("date", invoiceDto.getDate());
-////        model.addAttribute("invoiceNo", invoiceDto.getInvoiceNo());
-//        model.addAttribute("products", productService.listAllProducts());
-//
-//
-//        return "/invoice/purchase-invoice-update";
-//    }
 
 
     @GetMapping("/approve/{id}")
