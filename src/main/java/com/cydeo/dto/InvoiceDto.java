@@ -23,12 +23,12 @@ import java.util.List;
 public class InvoiceDto {
 
     Long id;
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ReadOnlyProperty
     String invoiceNo;
     InvoiceStatus invoiceStatus;
     InvoiceType invoiceType;
 
-//    @DateTimeFormat(pattern = "MMMM dd, y")
+    @DateTimeFormat(pattern = "MMMM dd, yy")
     LocalDate date;
 
     CompanyDto company;

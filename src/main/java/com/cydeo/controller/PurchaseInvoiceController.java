@@ -41,7 +41,7 @@ public class PurchaseInvoiceController {
     @GetMapping("/create")
     public String createPurchaseInvoice(Model model){
 
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("MM,dd,y");
+//        DateTimeFormatter df = DateTimeFormatter.ofPattern("MM,dd,y");
 //        return LocalDate.now().format(df);
 
         InvoiceDto invoiceDto=new InvoiceDto();
@@ -59,8 +59,6 @@ public class PurchaseInvoiceController {
         if(bindingResult.hasErrors()){
             model.addAttribute("newPurchaseInvoice", new InvoiceDto());
             model.addAttribute("vendors", clientVendorService.listAllVendors());
-            model.addAttribute("date", invoiceService.generateDate());
-            model.addAttribute("invoiceNumber", invoiceService.generatePurchaseInvoiceNumber());
             return "/invoice/purchase-invoice-create";
         }
 
