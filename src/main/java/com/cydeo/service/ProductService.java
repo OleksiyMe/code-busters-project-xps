@@ -25,6 +25,8 @@ public interface ProductService {
 
 
     void save(ProductDto productDto);
+
+    Boolean productNameExists(ProductDto productDto);
 }
 
 

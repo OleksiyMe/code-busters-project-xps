@@ -1,6 +1,7 @@
 package com.cydeo.service.impl;
 
 import com.cydeo.dto.InvoiceProductDto;
+import com.cydeo.dto.UserDto;
 import com.cydeo.entity.*;
 import com.cydeo.entity.InvoiceProduct;
 import com.cydeo.entity.Product;
@@ -10,6 +11,7 @@ import com.cydeo.repository.InvoiceProductRepository;
 import com.cydeo.service.InvoiceProductService;
 import com.cydeo.service.InvoiceService;
 import com.cydeo.service.ProductService;
+import com.cydeo.service.SecurityService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -25,14 +27,16 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
     private final InvoiceService invoiceService;
     private final ProductService productService;
     private final MapperUtil mapperUtil;
+    private final SecurityService securityService;
 
     public InvoiceProductServiceImpl(InvoiceProductRepository invoiceProductRepository,
                                      @Lazy InvoiceService invoiceService, ProductService productService,
-                                     MapperUtil mapperUtil) {
+                                     MapperUtil mapperUtil, SecurityService securityService) {
         this.invoiceProductRepository = invoiceProductRepository;
         this.invoiceService = invoiceService;
         this.productService = productService;
         this.mapperUtil = mapperUtil;
+        this.securityService = securityService;
     }
 
     @Override
@@ -65,6 +69,18 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
 
     @Override
     public void delete(Long invoiceProductId) {
+
+    }
+
+    @Override
+    public void deleteIpByInvoiceId(Long id) {
+        UserDto loggedInUser = securityService.getLoggedInUser(); //got the logged in User
+
+        List<InvoiceProduct> invoiceProductList=invoiceProductRepository.findAllByInvoice_Id(id);//found all the related InvoiceProducts
+
+        invoiceProductList.stream().filter(invoiceProduct -> invoiceProduct.getInvoice().getCompany().getId()
+                .equals(loggedInUser.getCompany().getId())).forEach(invoiceProduct->delete(invoiceProduct.getId())) ;
+        //if Id of invoiceProducts of that Invoice match the Id of that logged in user's Company Id then delete each of the Invoice Products
 
     }
 

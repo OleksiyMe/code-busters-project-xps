@@ -13,6 +13,7 @@ public interface InvoiceProductService {
     List<InvoiceProductDto> getInvoiceProductsByInvoiceId(Long invoiceId);
     void save(Long invoiceId, InvoiceProductDto invoiceProductDto);
     void delete(Long invoiceProductId);
+    void deleteIpByInvoiceId(Long id); //uo
     void completeApprovalProcedures(Long invoiceId, InvoiceType type);
     boolean checkProductQuantity(InvoiceProductDto salesInvoiceProduct);
     List<InvoiceProduct> findInvoiceProductsByInvoiceTypeAndProductRemainingQuantity(InvoiceType type, Product product, Integer remainingQuantity);
