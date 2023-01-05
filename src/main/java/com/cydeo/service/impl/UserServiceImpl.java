@@ -39,7 +39,8 @@ public class UserServiceImpl implements UserService {
 
     private List<UserDto> findAllOrderByCompanyAndRole() {
 
-        List<UserDto> list = userRepository.findAllNotDeletedWithActiveCompanyOrderByCompanyAndRole().stream()
+        List<UserDto> list = userRepository
+                .findAllNotDeletedWithActiveCompanyOrderByCompanyAndRole().stream()
                 .map(currentUser -> {
                     Boolean isOnlyAdmin =
                             currentUser.getRole().getDescription().equals("Admin");
@@ -137,10 +138,11 @@ public class UserServiceImpl implements UserService {
             return "!!ERROR!!: Only Root User can delete Admin user. And your role is "
                     +loggedInUser.getRole().getDescription();
         if(!userToBeDeleted.getCompany().getId().equals(loggedInUser.getCompany().getId()) &&
-        !loggedInUser.getRole().equals("Root User"))
-            return "!!ERROR!!: As Admin user you can only delete managers and employees only from your own company";
+        !loggedInUser.getRole().getDescription().equals("Root User"))
+            return "!!ERROR!!: As Admin user you can delete managers and employees only from " +
+                    "your own company";
 
-        return "";
+        return "";  //empty string -- user can be deleted
     }
 }
 
