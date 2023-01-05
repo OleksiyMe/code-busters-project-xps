@@ -141,6 +141,7 @@ public class UserServiceImpl implements UserService {
         !loggedInUser.getRole().getDescription().equals("Root User"))
             return "!!ERROR!!: As Admin user you can delete managers and employees only from " +
                     "your own company";
+        //return not empty string -- user can not be deleted
 
         return "";  //empty string -- user can be deleted
     }
