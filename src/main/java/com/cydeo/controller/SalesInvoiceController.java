@@ -23,7 +23,13 @@ public class SalesInvoiceController {
 
         return "redirect:/salesInvoices/list";
     }
+    @GetMapping("/approve/{id}")
+    public String approveSalesInvoice(@PathVariable Long id) {
 
+        invoiceService.approve(id);
+
+        return "redirect:/salesInvoices/list";
+    }
 
 
 }
