@@ -54,6 +54,7 @@ public class ProductController {
         if (bindingResult.hasErrors() || productNameExists) {
             if (productNameExists) {
                 bindingResult.rejectValue("name", " ", "A product with this name already exists. Please try different name.");
+
             }
             model.addAttribute("categories", categoryService.listAllCategories());
             model.addAttribute("productUnits", productService.listAllProductUnits());

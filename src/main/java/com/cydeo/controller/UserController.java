@@ -3,7 +3,6 @@ package com.cydeo.controller;
 import com.cydeo.dto.UserDto;
 import com.cydeo.service.CompanyService;
 import com.cydeo.service.RoleService;
-import com.cydeo.service.SecurityService;
 import com.cydeo.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,7 +38,7 @@ public class UserController {
 
         model.addAttribute("newUser", new UserDto());
         model.addAttribute("companies",
-                companyService.listAllCompaniesFilterForLoggedUser());
+                companyService.listAllActiveCompaniesForLoggedInUser());
         model.addAttribute("userRoles",
                 roleService.getRolesFilterForLoggedUser());
         return "/user/user-create";
@@ -56,7 +55,7 @@ public class UserController {
             }
             model.addAttribute("newUser", userDto);
             model.addAttribute("companies",
-                    companyService.listAllCompaniesFilterForLoggedUser());
+                    companyService.listAllActiveCompaniesForLoggedInUser());
             model.addAttribute("userRoles",
                     roleService.getRolesFilterForLoggedUser());
 
@@ -73,7 +72,7 @@ public class UserController {
 
         model.addAttribute("user", userService.findById(userId));
         model.addAttribute("companies",
-                companyService.listAllCompaniesFilterForLoggedUser());
+                companyService.listAllActiveCompaniesForLoggedInUser());
         model.addAttribute("userRoles",
                 roleService.getRolesFilterForLoggedUser());
         return "/user/user-update";
