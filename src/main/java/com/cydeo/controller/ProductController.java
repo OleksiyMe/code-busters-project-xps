@@ -72,7 +72,7 @@ public class ProductController {
         if (productService.productListedInInvoice(productId)) {
             model.addAttribute("products", productService.listAllProducts());
             model.addAttribute("errorMessage",
-                    "Product with id " + productId +
+                    "!!ERROR!!: Product with id " + productId +
                             " is listed in invoice! You can not delete it");
             return "/product/product-list";
         }
