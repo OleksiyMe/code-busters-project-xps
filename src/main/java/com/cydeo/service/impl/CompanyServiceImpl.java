@@ -48,11 +48,24 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public List<CompanyDto> listAllCompanies() {
         List<Company> companyList = companyRepository.findAll();
-        return companyList.stream().filter(company -> company.getId() != 1).map(company ->
+        return companyList.stream()
+                .filter(company -> company.getId() != 1).map(company ->
                         mapperUtil.convert(company, new CompanyDto()))
                 .sorted(Comparator.comparing(CompanyDto::getCompanyStatus))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<CompanyDto> listAllActiveCompanies() {
+        List<Company> companyList = companyRepository.findAll();
+        return companyList.stream()
+                .filter(company -> company.getCompanyStatus().equals(CompanyStatus.ACTIVE))
+                .filter(company -> company.getId() != 1).map(company ->
+                        mapperUtil.convert(company, new CompanyDto()))
+                .sorted(Comparator.comparing(CompanyDto::getCompanyStatus))
+                .collect(Collectors.toList());
+    }
+
 
     @Override
     public CompanyDto updateCompany(CompanyDto companyDto) {
@@ -81,15 +94,15 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public List<CompanyDto> listAllCompaniesFilterForLoggedUser() {
+    public List<CompanyDto> listAllActiveCompaniesForLoggedInUser() {
         UserDto loggedInUser = securityService.getLoggedInUser();
         switch (loggedInUser.getRole().getDescription()) {
             case "Admin":
-                return listAllCompanies().stream()
+                return listAllActiveCompanies().stream()
                         .filter(company -> company.getId().equals(loggedInUser.getCompany().getId()))
                         .collect(Collectors.toList());
             default:
-                return listAllCompanies();
+                return listAllActiveCompanies();
         }
     }
 
@@ -109,7 +122,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public void save(CompanyDto companyDto) {
-        if(companyDto.getCompanyStatus()==null) companyDto.setCompanyStatus(CompanyStatus.PASSIVE);
+        if (companyDto.getCompanyStatus() == null) companyDto.setCompanyStatus(CompanyStatus.PASSIVE);
         companyRepository.save(mapperUtil.convert(companyDto, new Company()));
     }
 }
