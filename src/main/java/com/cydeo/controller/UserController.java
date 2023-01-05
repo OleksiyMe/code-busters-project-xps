@@ -80,7 +80,7 @@ public class UserController {
 
     @PostMapping("/update/{id}")
     public String updateUserFinish(@PathVariable("id") Long userId,
-                                   @ModelAttribute("user") UserDto userDtoToSave, BindingResult bindingResult, Model model) {
+                                  @Valid @ModelAttribute("user") UserDto userDtoToSave, BindingResult bindingResult, Model model) {
         boolean emailExist = userService.emailExists(userDtoToSave);
 
         if (bindingResult.hasErrors() || emailExist) {
@@ -90,7 +90,7 @@ public class UserController {
             UserDto userDto = userService.findById(userId);
             userDtoToSave.setIsOnlyAdmin(userDto.getIsOnlyAdmin());
             userService.save(userDtoToSave);
-            return "redirect:/users/list";
+            return "/user/user-update";
         }
         userService.update(userDtoToSave);
         return "redirect:/users/list";
