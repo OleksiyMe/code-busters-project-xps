@@ -13,10 +13,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUsername(String username);
 
-    @Query("Select u from User u where u.isDeleted=?1 order by u.company.title, u.role.description ")
-    List<User> findAllOrderByCompanyAndRole(Boolean deleted);
+    @Query("Select u from User u where u.isDeleted=false and u.company.companyStatus='ACTIVE'" +
+            "and u.company.isDeleted=false order by u.company.title, u.role.description ")
+    List<User> findAllNotDeletedWithActiveCompanyOrderByCompanyAndRole();
 
-
+    @Query("Select u from User u where u.isDeleted=false and u.id=?1")
+    Optional<User> findNotDeletedById(Long id);
 
 }
 

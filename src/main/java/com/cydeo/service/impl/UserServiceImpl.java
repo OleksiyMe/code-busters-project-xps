@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
     private List<UserDto> findAllOrderByCompanyAndRole() {
 
-        List<UserDto> list = userRepository.findAllOrderByCompanyAndRole(false).stream()
+        List<UserDto> list = userRepository.findAllNotDeletedWithActiveCompanyOrderByCompanyAndRole().stream()
                 .map(currentUser -> {
                     Boolean isOnlyAdmin =
                             currentUser.getRole().getDescription().equals("Admin");
@@ -117,6 +117,30 @@ public class UserServiceImpl implements UserService {
 
         return !userWeCreate.get().getId().equals(userDto.getId());
 
+    }
+
+    @Override
+    public String userCanNotBeDeleted(Long id) {
+        UserDto loggedInUser = securityService.getLoggedInUser();
+        Optional<User> userToBeDeletedOptional = userRepository.findNotDeletedById(id);
+        User userToBeDeleted = new User();
+        if (userToBeDeletedOptional.isPresent())
+            userToBeDeleted = userToBeDeletedOptional.get();
+        else return "!!ERROR!!: There is no user with id " + id;
+        if (userToBeDeleted.getRole().getDescription().equals("Root User"))
+            return "!!ERROR!!: Only God can delete Root User :)";
+        if (!userToBeDeleted.getRole().getDescription().equals("Admin") &&
+                loggedInUser.getRole().getDescription().equals("Root User"))
+            return "!!ERROR!!: As a Root User you can only create and delete Admin users";
+        if (userToBeDeleted.getRole().getDescription().equals("Admin") &&
+                !loggedInUser.getRole().getDescription().equals("Root User"))
+            return "!!ERROR!!: Only Root User can delete Admin user. And your role is "
+                    +loggedInUser.getRole().getDescription();
+        if(!userToBeDeleted.getCompany().getId().equals(loggedInUser.getCompany().getId()) &&
+        !loggedInUser.getRole().equals("Root User"))
+            return "!!ERROR!!: As Admin user you can only delete managers and employees only from your own company";
+
+        return "";
     }
 }
 
