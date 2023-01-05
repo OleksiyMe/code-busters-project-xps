@@ -16,4 +16,6 @@ public interface UserService {
     UserDto save(UserDto userDto);
 
     boolean emailExists (UserDto userDto);
+
+    String userCanNotBeDeleted(Long id);
 }

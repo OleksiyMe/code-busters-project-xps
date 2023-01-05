@@ -97,12 +97,18 @@ public class UserController {
     }
 
 
-
-        @GetMapping("/delete/{id}")
-        public String deleteUser (@PathVariable("id") Long id){
-
-            userService.deleteUserById(id);
-            return "redirect:/users/list";
+    @GetMapping("/delete/{id}")
+    public String deleteUser(@PathVariable("id") Long id,  Model model) {
+        String errormessage = userService.userCanNotBeDeleted(id);
+        if (!errormessage.isBlank()) {
+            model.addAttribute("users",
+                    userService.findAllFilterForLoggedInUser());
+            model.addAttribute("errorMessage", errormessage);
+            return "/user/user-list";
         }
+
+        userService.deleteUserById(id);
+        return "redirect:/users/list";
     }
+}
 

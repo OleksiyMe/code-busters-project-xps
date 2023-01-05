@@ -9,7 +9,7 @@
         <div class="menu-list">
             <nav class="navbar navbar-expand-lg bg-success-light">
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav flex-column">
+                    <ul class="navbar-nav flex-column" >
                         <li class="nav-divider"></li>
                         <li class="nav-item" sec:authorize="hasAnyAuthority('Root User')" >
                             <a class="nav-link active bg-success-light text-dark"
@@ -21,7 +21,7 @@
                                 <i class="fa fa-fw fa-list-ul"></i>CYDEO
                                 <span class="badge badge-success"></span>
                             </a>
-                            <div id="submenu-1" class="collapse submenu bg-success">
+                            <div id="submenu-1" class="collapse submenu">
                                 <ul class="nav flex-column">
                                     <li class="nav-item" sec:authorize="hasAnyAuthority('Root User')">
                                         <a class="nav-link text-white" th:href="@{/companies/list}">Company Registration</a></li>
@@ -30,7 +30,7 @@
                                 </ul>
                             </div>
                         </li>
-                        <li class="nav-divider"></li>
+                        <li class="nav-divider" style="background-color: #579BB1"></li>
                         <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Manager', 'Employee')">
                             <a class="nav-link active bg-success-light text-dark"
                                href="#"
@@ -41,7 +41,7 @@
                                 <i class="fa fa-fw fa-list-ul"></i>Management
                                 <span class="badge badge-success"></span>
                             </a>
-                            <div id="submenu-2" class="collapse submenu bg-success">
+                            <div id="submenu-2" class="collapse submenu ">
                                 <ul class="nav flex-column">
                                     <li class="nav-item" sec:authorize="hasAnyAuthority('Admin')">
                                         <a class="nav-link text-white" th:href="@{/users/list}">User Registration</a></li>
@@ -61,8 +61,8 @@
                                 <i class="fa fa-fw fa-list-ul"></i>Stock Management
                                 <span class="badge badge-success"></span>
                             </a>
-                            <div id="submenu-3" class="collapse submenu bg-success" style="">
-                                <ul class="nav flex-column">
+                            <div id="submenu-3" class="collapse submenu " style="">
+                                <ul class="nav flex-column" style="color: #579BB1">
                                     <li class="nav-item">
                                         <a class="nav-link text-white" th:href="@{/categories/list}">Category</a></li>
                                     <li class="nav-item">
@@ -81,7 +81,7 @@
                                 <i class="fa fa-fw fa-list-ul"></i>Invoices
                                 <span class="badge badge-success"></span>
                             </a>
-                            <div id="submenu-4" class="collapse submenu bg-success" style="">
+                            <div id="submenu-4" class="collapse submenu " style="">
                                 <ul class="nav flex-column">
                                     <li class="nav-item">
                                         <a class="nav-link text-white" th:href="@{/purchaseInvoices/list}">Purchase Invoice</a></li>
@@ -101,7 +101,7 @@
                                 <i class="fa fa-fw fa-list-ul"></i>Reporting
                                 <span class="badge badge-success"></span>
                             </a>
-                            <div id="submenu-5" class="collapse submenu bg-success" style="">
+                            <div id="submenu-5" class="collapse submenu " style="">
                                 <ul class="nav flex-column">
                                     <li class="nav-item">
                                         <a class="nav-link text-white" th:href="@{/reports/profitLossData}">Profit/Loss Report</a></li>
