@@ -22,7 +22,7 @@ public class CategoryController {
     @GetMapping("/list")
 
     public String listAllCategories(Model model) {
-        model.addAttribute("categories", categoryService.listAllCategories());
+        model.addAttribute("categories", categoryService.listAllNotDeletedCategoriesForCurrentCompany());
 
         return "/category/category-list";
     }
@@ -49,8 +49,14 @@ public class CategoryController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteCategory(@PathVariable("id") Long id) {
-
+    public String deleteCategory(@PathVariable("id") Long id, Model model) {
+        String errormessage = categoryService.categoryCanNotBeDeleted(id);
+        if (!errormessage.isBlank()) {
+            model.addAttribute("categories",
+                    categoryService.listAllNotDeletedCategoriesForCurrentCompany());
+            model.addAttribute("errorMessage", errormessage);
+            return "/category/category-list";
+        }
 
 
 
