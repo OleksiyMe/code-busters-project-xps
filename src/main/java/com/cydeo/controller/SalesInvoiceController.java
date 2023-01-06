@@ -44,21 +44,22 @@ public class SalesInvoiceController {
     public String saveSalesInvoice(@Valid @ModelAttribute("newSalesInvoice") InvoiceDto invoiceDto, BindingResult bindingResult, Model model){
 
         if(bindingResult.hasErrors()){
-            model.addAttribute("newSalesInvoice", invoiceDto);
             model.addAttribute("clients", clientVendorService.listAllClients());
-            return "redirect:/salesInvoices/create";
+            return "invoice/sales-invoice-create";
         }
 
         InvoiceProductDto invoiceProductDto = new InvoiceProductDto();
-        invoiceProductDto.setInvoice(invoiceDto);
         model.addAttribute("newInvoiceProduct", invoiceProductDto);
         model.addAttribute("invoice", invoiceDto);
         model.addAttribute("clients", clientVendorService.listAllClients());
         model.addAttribute("products", productService.listAllProducts());
 
+        invoiceDto.setInvoiceType(InvoiceType.SALES);
         invoiceService.save(invoiceDto);
         return "/invoice/sales-invoice-update";
     }
+
+
 
     @GetMapping("/delete/{id}")
     public String deleteSalesInvoice(@PathVariable("id") Long id) {
