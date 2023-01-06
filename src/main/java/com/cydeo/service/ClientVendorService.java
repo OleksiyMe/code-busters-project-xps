@@ -26,4 +26,7 @@ public interface ClientVendorService {
     void save(ClientVendorDto clientVendorDto);
 
     List<ClientVendor> listAllVendors();
+
+    String clientVendorCanNotBeDeleted(Long id);
+
 }
