@@ -34,7 +34,6 @@ public class InvoiceDto {
     CompanyDto company;
 
     @NotNull(message = "This is a required field.")
-    @Valid
     ClientVendorDto clientVendor;
 
     BigDecimal price;

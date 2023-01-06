@@ -116,13 +116,13 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 
     @Override
-    public InvoiceDto createPurchaseInvoice(InvoiceDto invoiceDto) {
+    public InvoiceDto save(InvoiceDto invoiceDto) {
 
         Invoice invoice = mapperUtil.convert(invoiceDto, new Invoice());
         invoice.setInvoiceNo(invoiceDto.getInvoiceNo());
         invoice.setDate(invoiceDto.getDate());
         invoice.setClientVendor(mapperUtil.convert(invoiceDto.getClientVendor(), new ClientVendor()));
-        invoice.setInvoiceType(InvoiceType.PURCHASE);
+        invoice.setInvoiceType(invoiceDto.getInvoiceType());
         invoice.setInvoiceStatus(InvoiceStatus.AWAITING_APPROVAL);
         invoice.setId(invoiceDto.getId());
 
@@ -131,19 +131,28 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public String generatePurchaseInvoiceNumber() {
+    public String generateInvoiceNumber(InvoiceType invoiceType) {
         Company currentCompany = mapperUtil.convert(
                 securityService.getLoggedInUser().getCompany(), new Company());
 
-        String max = invoiceRepository.findMaxId(currentCompany.getId()).toString();
+        String maxInvoiceId = invoiceRepository.findMaxId(currentCompany.getId()).toString();
+        String maxSalesId = invoiceRepository.findMaxSalesId(currentCompany.getId()).toString();
 
         String num = "";
 
-        for (int i = 0; i < max.length(); i++) {
-            if (Character.isDigit(max.charAt(i))) num += max.charAt(i);
+        if(invoiceType.getValue().equals("Purchase")){
+            for (int i = 0; i < maxInvoiceId.length(); i++) {
+                if (Character.isDigit(maxInvoiceId.charAt(i))) num += maxInvoiceId.charAt(i);
+            }
+            return "P-" + String.format("%03d", Integer.parseInt(num) + 1);
+
+        } else {
+            for (int i = 0; i < maxSalesId.length(); i++) {
+                if (Character.isDigit(maxSalesId.charAt(i))) num += maxSalesId.charAt(i);
+            }
+            return "S-" + String.format("%03d", Integer.parseInt(num) + 1);
         }
 
-        return "P-" + String.format("%03d", Integer.parseInt(num) + 1);
     }
 
 
