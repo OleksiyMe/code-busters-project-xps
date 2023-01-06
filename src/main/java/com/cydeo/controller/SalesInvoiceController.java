@@ -2,6 +2,7 @@ package com.cydeo.controller;
 
 import com.cydeo.service.InvoiceService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,13 @@ public class SalesInvoiceController {
         invoiceService.approve(id);
 
         return "redirect:/salesInvoices/list";
+    }
+
+    @GetMapping("/list")
+    public String salesInvoiceList(Model model) {
+        model.addAttribute("invoices", invoiceService.listAllSalesInvoices());
+
+        return "/invoice/sales-invoice-list";
     }
 
 

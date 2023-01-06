@@ -25,4 +25,7 @@ public interface InvoiceService {
     List<InvoiceDto> listAllPurchaseInvoices();
 
     void approve(Long id);
+
+    List<InvoiceDto> listAllSalesInvoices();
+
 }

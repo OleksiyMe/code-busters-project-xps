@@ -169,5 +169,15 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoiceRepository.save(mapperUtil.convert(invoiceDto, new Invoice()));
     }
 
+    @Override
+    public List<InvoiceDto> listAllSalesInvoices() {
+
+        List<InvoiceDto> list = listAllInvoices().stream()
+                .filter(invoiceDto -> invoiceDto.getInvoiceType().equals(InvoiceType.SALES))
+                .collect(Collectors.toList());
+
+        return list;
+    }
+
 
 }
