@@ -1,6 +1,7 @@
 package com.cydeo.service;
 
 import com.cydeo.dto.InvoiceDto;
+import com.cydeo.enums.InvoiceType;
 
 import java.util.List;
 
@@ -15,9 +16,9 @@ public interface InvoiceService {
 
     void deleteInvoice(Long id);
 
-    InvoiceDto createPurchaseInvoice(InvoiceDto invoiceDto);
+    InvoiceDto save(InvoiceDto invoiceDto);
 
-    String generatePurchaseInvoiceNumber();
+    String generateInvoiceNumber(InvoiceType invoiceType);
 
     List<InvoiceDto> listAllPurchaseInvoices();
 
