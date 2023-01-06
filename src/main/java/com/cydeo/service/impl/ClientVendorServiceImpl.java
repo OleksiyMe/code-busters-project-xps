@@ -131,6 +131,13 @@ public class ClientVendorServiceImpl implements ClientVendorService {
     }
 
     @Override
+    public List<ClientVendor> listAllClients() {
+        return clientVendorRepository.findAll().stream()
+                .filter(clientVendor -> clientVendor.getClientVendorType().getValue().equals("Client"))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public String clientVendorCanNotBeDeleted(Long id) {
         ClientVendorDto clientVendorDto = findClientVendorById(id);
         if (invoiceService.listAllInvoices().stream()

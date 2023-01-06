@@ -1,20 +1,63 @@
 package com.cydeo.controller;
 
+import com.cydeo.dto.InvoiceDto;
+import com.cydeo.dto.InvoiceProductDto;
+import com.cydeo.enums.InvoiceType;
+import com.cydeo.service.ClientVendorService;
 import com.cydeo.service.InvoiceService;
+import com.cydeo.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.time.LocalDate;
 
 @Controller
 @RequestMapping("/salesInvoices")
 public class SalesInvoiceController {
 
     private final InvoiceService invoiceService;
+    private final ClientVendorService clientVendorService;
+    private final ProductService productService;
 
-    public SalesInvoiceController(InvoiceService invoiceService) {
+    public SalesInvoiceController(InvoiceService invoiceService, ClientVendorService clientVendorService, ProductService productService) {
         this.invoiceService = invoiceService;
+        this.clientVendorService = clientVendorService;
+        this.productService = productService;
+    }
+
+    @GetMapping("/create")
+    public String createSalesInvoice(Model model){
+
+        InvoiceDto invoiceDto = new InvoiceDto();
+        invoiceDto.setInvoiceNo(invoiceService.generateInvoiceNumber(InvoiceType.SALES));
+        invoiceDto.setDate(LocalDate.now());
+        model.addAttribute("newSalesInvoice", invoiceDto);
+        model.addAttribute("clients", clientVendorService.listAllClients());
+
+        return "/invoice/sales-invoice-create";
+    }
+
+    @PostMapping("/create")
+    public String saveSalesInvoice(@Valid @ModelAttribute("newSalesInvoice") InvoiceDto invoiceDto, BindingResult bindingResult, Model model){
+
+        if(bindingResult.hasErrors()){
+            model.addAttribute("newSalesInvoice", invoiceDto);
+            model.addAttribute("clients", clientVendorService.listAllClients());
+            return "redirect:/salesInvoices/create";
+        }
+
+        InvoiceProductDto invoiceProductDto = new InvoiceProductDto();
+        invoiceProductDto.setInvoice(invoiceDto);
+        model.addAttribute("newInvoiceProduct", invoiceProductDto);
+        model.addAttribute("invoice", invoiceDto);
+        model.addAttribute("clients", clientVendorService.listAllClients());
+        model.addAttribute("products", productService.listAllProducts());
+
+        invoiceService.save(invoiceDto);
+        return "/invoice/sales-invoice-update";
     }
 
     @GetMapping("/delete/{id}")

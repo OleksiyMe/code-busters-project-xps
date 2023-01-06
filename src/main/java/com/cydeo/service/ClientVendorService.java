@@ -27,6 +27,8 @@ public interface ClientVendorService {
 
     List<ClientVendor> listAllVendors();
 
+    List<ClientVendor> listAllClients();
+
     String clientVendorCanNotBeDeleted(Long id);
 
 }
