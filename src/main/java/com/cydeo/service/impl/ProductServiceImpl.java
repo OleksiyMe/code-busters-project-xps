@@ -48,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
         return productList.stream()
                 .filter(product -> product.getCategory().getCompany().getId().equals(currentUser.getCompany().getId()))
                 .map(product -> mapperUtil.convert(product, new ProductDto()))
-                .sorted(Comparator.comparing(ProductDto::getName))
+                .sorted(Comparator.comparing(productDto -> productDto.getCategory().getDescription()))
                 .collect(Collectors.toList());
     }
 

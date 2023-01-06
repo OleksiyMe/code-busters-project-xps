@@ -51,7 +51,7 @@ public class CompanyServiceImpl implements CompanyService {
         return companyList.stream()
                 .filter(company -> company.getId() != 1).map(company ->
                         mapperUtil.convert(company, new CompanyDto()))
-                .sorted(Comparator.comparing(CompanyDto::getCompanyStatus))
+                .sorted(Comparator.comparing(CompanyDto::getCompanyStatus).thenComparing(CompanyDto::getTitle))
                 .collect(Collectors.toList());
     }
 
