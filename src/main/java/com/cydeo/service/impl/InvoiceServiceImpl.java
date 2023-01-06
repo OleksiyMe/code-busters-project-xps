@@ -7,6 +7,7 @@ import com.cydeo.dto.UserDto;
 import com.cydeo.entity.ClientVendor;
 import com.cydeo.entity.Company;
 import com.cydeo.entity.Invoice;
+import com.cydeo.entity.User;
 import com.cydeo.enums.InvoiceStatus;
 import com.cydeo.enums.InvoiceType;
 import com.cydeo.mapper.MapperUtil;
@@ -115,13 +116,16 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public InvoiceDto save(InvoiceDto invoiceDto) {
 
+        User user = mapperUtil.convert(securityService.getLoggedInUser(), new User());
+
         Invoice invoice = mapperUtil.convert(invoiceDto, new Invoice());
         invoice.setInvoiceNo(invoiceDto.getInvoiceNo());
         invoice.setDate(invoiceDto.getDate());
         invoice.setClientVendor(mapperUtil.convert(invoiceDto.getClientVendor(), new ClientVendor()));
         invoice.setInvoiceType(invoiceDto.getInvoiceType());
+        invoice.setCompany(user.getCompany());
         invoice.setInvoiceStatus(InvoiceStatus.AWAITING_APPROVAL);
-        invoice.setId(invoiceDto.getId());
+        invoiceDto.setId(invoice.getId());
 
         invoiceRepository.save(invoice);
         return invoiceDto;

@@ -55,9 +55,8 @@ public class PurchaseInvoiceController {
     public String savePurchaseInvoice(@Valid @ModelAttribute("newPurchaseInvoice") InvoiceDto invoiceDto, BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("newPurchaseInvoice", new InvoiceDto());
             model.addAttribute("vendors", clientVendorService.listAllVendors());
-            return "redirect:/purchaseInvoices/create";
+            return "invoice/purchase-invoice-create";
         }
 
         InvoiceProductDto invoiceProductDto = new InvoiceProductDto();
@@ -67,8 +66,9 @@ public class PurchaseInvoiceController {
         model.addAttribute("vendors", clientVendorService.listAllVendors());
         model.addAttribute("products", productService.listAllNotDeletedProductsForCurrentCompany());
 
+        invoiceDto.setInvoiceType(InvoiceType.PURCHASE);
         invoiceService.save(invoiceDto);
-        return "invoice/purchase-invoice-update";
+        return "/invoice/purchase-invoice-update";
     }
 
 
