@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     Optional<Invoice> findById(Long id);
-    @Query("select i from Invoice i where i.isDeleted=false order by i.invoiceNo")
+    @Query("select i from Invoice i where i.isDeleted=false order by i.invoiceNo DESC")
     List<Invoice> findAllNotDeleted();
 
     @Query("SELECT max(c.invoiceNo) from Invoice c where c.invoiceType = 'PURCHASE' and c.company.id = ?1 ")
