@@ -22,4 +22,5 @@ public interface CompanyService {
 
     void save(CompanyDto companyDto);
     List<CompanyDto> listAllActiveCompanies();
+    CompanyDto getCompanyByLoggedInUser();
 }

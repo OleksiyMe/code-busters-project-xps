@@ -125,4 +125,10 @@ public class CompanyServiceImpl implements CompanyService {
         if (companyDto.getCompanyStatus() == null) companyDto.setCompanyStatus(CompanyStatus.PASSIVE);
         companyRepository.save(mapperUtil.convert(companyDto, new Company()));
     }
+
+    @Override
+    public CompanyDto getCompanyByLoggedInUser() {
+
+        return securityService.getLoggedInUser().getCompany();
+    }
 }

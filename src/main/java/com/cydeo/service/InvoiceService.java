@@ -27,5 +27,6 @@ public interface InvoiceService {
     void approve(Long id);
 
     List<InvoiceDto> listAllSalesInvoices();
+    List<InvoiceDto> getLastThreeInvoices();
 
 }
