@@ -1,6 +1,7 @@
 package com.cydeo.service.impl;
 
 import com.cydeo.dto.ClientVendorDto;
+import com.cydeo.dto.InvoiceDto;
 import com.cydeo.dto.UserDto;
 import com.cydeo.entity.Address;
 import com.cydeo.entity.ClientVendor;
@@ -8,9 +9,7 @@ import com.cydeo.entity.Company;
 import com.cydeo.enums.ClientVendorType;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repository.ClientVendorRepository;
-import com.cydeo.service.ClientVendorService;
-import com.cydeo.service.CompanyService;
-import com.cydeo.service.SecurityService;
+import com.cydeo.service.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,12 +24,16 @@ public class ClientVendorServiceImpl implements ClientVendorService {
     private final MapperUtil mapperUtil;
     private final SecurityService securityService;
     private final CompanyService companyService;
+    private final InvoiceService invoiceService;
+    private final InvoiceProductService invoiceProductService;
 
-    public ClientVendorServiceImpl(ClientVendorRepository clientVendorRepository, MapperUtil mapperUtil, SecurityService securityService, CompanyService companyService) {
+    public ClientVendorServiceImpl(ClientVendorRepository clientVendorRepository, MapperUtil mapperUtil, SecurityService securityService, CompanyService companyService, InvoiceService invoiceService, InvoiceProductService invoiceProductService) {
         this.clientVendorRepository = clientVendorRepository;
         this.mapperUtil = mapperUtil;
         this.securityService = securityService;
         this.companyService = companyService;
+        this.invoiceService = invoiceService;
+        this.invoiceProductService = invoiceProductService;
     }
 
     @Override
@@ -125,6 +128,18 @@ public class ClientVendorServiceImpl implements ClientVendorService {
         return clientVendorRepository.findAll().stream()
                 .filter(clientVendor -> clientVendor.getClientVendorType().getValue().equals("Vendor"))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public String clientVendorCanNotBeDeleted(Long id) {
+        ClientVendorDto clientVendorDto = findClientVendorById(id);
+        if (invoiceService.listAllInvoices().stream()
+                .anyMatch(invoiceDto -> invoiceDto.getClientVendor().getId().equals(id)))
+            return "!!ERROR!!: You can not delete ClientVendor " + clientVendorDto.getClientVendorName() +
+                    ". It is listed in invoice(invoices).";
+//return not empty string -- we can not delete ClientVendor
+//return empty string -- we can delete ClientVendor
+        return "";
     }
 
 }
