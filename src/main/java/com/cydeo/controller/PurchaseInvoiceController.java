@@ -2,7 +2,6 @@ package com.cydeo.controller;
 
 import com.cydeo.dto.InvoiceDto;
 import com.cydeo.dto.InvoiceProductDto;
-import com.cydeo.entity.InvoiceProduct;
 import com.cydeo.service.ClientVendorService;
 import com.cydeo.service.InvoiceProductService;
 import com.cydeo.service.InvoiceService;
@@ -11,11 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @Controller
 @RequestMapping("/purchaseInvoices")
@@ -64,7 +61,7 @@ public class PurchaseInvoiceController {
         model.addAttribute("newInvoiceProduct", invoiceProductDto);
         model.addAttribute("invoice", invoiceDto);
         model.addAttribute("vendors", clientVendorService.listAllVendors());
-        model.addAttribute("products", productService.listAllProducts());
+        model.addAttribute("products", productService.listAllNotDeletedProductsForCurrentCompany());
 
         invoiceService.createPurchaseInvoice(invoiceDto);
         return "invoice/purchase-invoice-update";

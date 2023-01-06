@@ -6,12 +6,8 @@ import com.cydeo.service.CategoryService;
 import com.cydeo.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.MapBindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
-
-import java.util.NoSuchElementException;
 
 import javax.validation.Valid;
 
@@ -30,7 +26,7 @@ public class ProductController {
 
     @GetMapping("/list")
     public String listAllProducts(Model model) {
-        model.addAttribute("products", productService.listAllProducts());
+        model.addAttribute("products", productService.listAllNotDeletedProductsForCurrentCompany());
         return "/product/product-list";
     }
 
@@ -39,7 +35,7 @@ public class ProductController {
 
         model.addAttribute("newProduct", new Product());
 
-        model.addAttribute("categories", categoryService.listAllCategories());
+        model.addAttribute("categories", categoryService.listAllNotDeletedCategoriesForCurrentCompany());
 
         model.addAttribute("productUnits", productService.listAllProductUnits());
 
@@ -56,7 +52,7 @@ public class ProductController {
                 bindingResult.rejectValue("name", " ", "A product with this name already exists. Please try different name.");
 
             }
-            model.addAttribute("categories", categoryService.listAllCategories());
+            model.addAttribute("categories", categoryService.listAllNotDeletedCategoriesForCurrentCompany());
             model.addAttribute("productUnits", productService.listAllProductUnits());
             return "/product/product-create";
         }
@@ -70,7 +66,7 @@ public class ProductController {
     public String deleteProduct(@PathVariable("id") Long productId, Model model) {
 
         if (productService.productListedInInvoice(productId)) {
-            model.addAttribute("products", productService.listAllProducts());
+            model.addAttribute("products", productService.listAllNotDeletedProductsForCurrentCompany());
             model.addAttribute("errorMessage",
                     "!!ERROR!!: Product with id " + productId +
                             " is listed in invoice! You can not delete it");
@@ -85,7 +81,7 @@ public class ProductController {
     public String updateProduct(@PathVariable("id") Long id, Model model) {
 
         model.addAttribute("product", productService.findProductById(id));
-        model.addAttribute("categories", categoryService.listAllCategories());
+        model.addAttribute("categories", categoryService.listAllNotDeletedCategoriesForCurrentCompany());
         model.addAttribute("productUnits", productService.listAllProductUnits());
 
         return "product/product-update";

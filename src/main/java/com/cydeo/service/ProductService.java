@@ -10,7 +10,8 @@ public interface ProductService {
 
     ProductDto findProductById(Long Id);
 
-    List<ProductDto> listAllProducts();
+    List<ProductDto> listAllNotDeletedProductsForCurrentCompany();
+    List<ProductDto> listAllNotDeletedProducts();
 
     ProductDto createProduct(ProductDto productDto);
 

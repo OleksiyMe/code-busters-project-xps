@@ -15,13 +15,10 @@ import com.cydeo.service.InvoiceProductService;
 import com.cydeo.service.InvoiceService;
 import com.cydeo.service.ProductService;
 import com.cydeo.service.SecurityService;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -50,9 +47,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 //        List<InvoiceProductDto> list = invoiceProductService.getInvoiceProductsByInvoiceId(id);
 //        invoiceDto.setInvoiceProducts(list);
 //        return invoiceDto;
-//I added 3 calculated fields in listAllInvoices() method. No sense to repeat it here, so I modified code
-// OleksiyMe
-        List<InvoiceDto> list = listAllInvoices();
+//I added 3 calculated fields in listAllNotDeletedInvoicesForLoggedInUser() method.
+//No sense to repeat it here, so I modified code. OleksiyMe
+        List<InvoiceDto> list = listAllNotDeletedInvoicesForLoggedInUser();
         return list.stream().filter(invoiceDto -> invoiceDto.getId().equals(id)).findFirst()
                 .orElseThrow(() -> new NoSuchElementException("No Invoice with this id " + id));
     }
@@ -63,7 +60,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public List<InvoiceDto> listAllInvoices() {
+    public List<InvoiceDto> listAllNotDeletedInvoicesForLoggedInUser() {
         UserDto loggedInUser = securityService.getLoggedInUser();
         return invoiceRepository.findAllNotDeleted().stream()
                 .filter(invoice -> invoice.getCompany().getId().equals(loggedInUser.getCompany().getId()))
@@ -150,7 +147,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public List<InvoiceDto> listAllPurchaseInvoices() {
 
-        List<InvoiceDto> list = listAllInvoices().stream()
+        List<InvoiceDto> list = listAllNotDeletedInvoicesForLoggedInUser().stream()
                 .filter(invoiceDto -> invoiceDto.getInvoiceType().equals(InvoiceType.PURCHASE))
                 .collect(Collectors.toList());
         return list;
@@ -171,11 +168,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public List<InvoiceDto> listAllSalesInvoices() {
-
-        List<InvoiceDto> list = listAllInvoices().stream()
+        List<InvoiceDto> list = listAllNotDeletedInvoicesForLoggedInUser().stream()
                 .filter(invoiceDto -> invoiceDto.getInvoiceType().equals(InvoiceType.SALES))
                 .collect(Collectors.toList());
-
         return list;
     }
 

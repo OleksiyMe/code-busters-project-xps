@@ -1,7 +1,6 @@
 package com.cydeo.service.impl;
 
 import com.cydeo.dto.ProductDto;
-import com.cydeo.dto.UserDto;
 import com.cydeo.entity.User;
 import com.cydeo.entity.Product;
 import com.cydeo.enums.ProductUnit;
@@ -36,13 +35,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto findProductById(Long id) {
-        return listAllProducts().stream()
+        return listAllNotDeletedProductsForCurrentCompany().stream()
                 .filter(productDto -> productDto.getId().equals(id))
                 .findFirst().orElseThrow(() -> new NoSuchElementException("No product with id " + id));
     }
 
     @Override
-    public List<ProductDto> listAllProducts() {
+    public List<ProductDto> listAllNotDeletedProductsForCurrentCompany() {
         User currentUser = mapperUtil.convert(securityService.getLoggedInUser(), new User());
         List<Product> productList = productRepository.findAllNotDeleted();
         return productList.stream()
@@ -53,14 +52,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductDto> listAllNotDeletedProducts() {
+        return productRepository.findAllNotDeleted().stream()
+                .map(product -> mapperUtil.convert(product, new ProductDto()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public ProductDto createProduct(ProductDto productDto) {
-
         Product product = mapperUtil.convert(productDto, new Product());
-
-
         productRepository.save(product);
-
-
         return null;
     }
 
@@ -105,7 +106,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Boolean productNameExists(ProductDto productDtoToSave) {
 
-        return listAllProducts().stream()
+        return listAllNotDeletedProductsForCurrentCompany().stream()
                 .anyMatch(productDto -> productDto.getName().equals(productDtoToSave.getName()));
 
     }
