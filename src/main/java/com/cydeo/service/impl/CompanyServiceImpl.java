@@ -51,7 +51,7 @@ public class CompanyServiceImpl implements CompanyService {
         return companyList.stream()
                 .filter(company -> company.getId() != 1).map(company ->
                         mapperUtil.convert(company, new CompanyDto()))
-                .sorted(Comparator.comparing(CompanyDto::getCompanyStatus))
+                .sorted(Comparator.comparing(CompanyDto::getCompanyStatus).thenComparing(CompanyDto::getTitle))
                 .collect(Collectors.toList());
     }
 
@@ -124,5 +124,11 @@ public class CompanyServiceImpl implements CompanyService {
     public void save(CompanyDto companyDto) {
         if (companyDto.getCompanyStatus() == null) companyDto.setCompanyStatus(CompanyStatus.PASSIVE);
         companyRepository.save(mapperUtil.convert(companyDto, new Company()));
+    }
+
+    @Override
+    public CompanyDto getCompanyByLoggedInUser() {
+
+        return securityService.getLoggedInUser().getCompany();
     }
 }

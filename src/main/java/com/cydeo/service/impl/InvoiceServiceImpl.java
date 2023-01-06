@@ -174,5 +174,10 @@ public class InvoiceServiceImpl implements InvoiceService {
         return list;
     }
 
+    @Override
+    public List<InvoiceDto> getLastThreeInvoices() {
+        return null;
+    }
+
 
 }
