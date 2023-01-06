@@ -1,7 +1,6 @@
 package com.cydeo.service.impl;
 
 import com.cydeo.dto.ClientVendorDto;
-import com.cydeo.dto.InvoiceDto;
 import com.cydeo.dto.UserDto;
 import com.cydeo.entity.Address;
 import com.cydeo.entity.ClientVendor;
@@ -140,7 +139,7 @@ public class ClientVendorServiceImpl implements ClientVendorService {
     @Override
     public String clientVendorCanNotBeDeleted(Long id) {
         ClientVendorDto clientVendorDto = findClientVendorById(id);
-        if (invoiceService.listAllInvoices().stream()
+        if (invoiceService.listAllNotDeletedInvoicesForLoggedInUser().stream()
                 .anyMatch(invoiceDto -> invoiceDto.getClientVendor().getId().equals(id)))
             return "!!ERROR!!: You can not delete ClientVendor " + clientVendorDto.getClientVendorName() +
                     ". It is listed in invoice(invoices).";

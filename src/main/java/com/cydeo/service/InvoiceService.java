@@ -1,18 +1,15 @@
 package com.cydeo.service;
 
-import com.cydeo.dto.ClientVendorDto;
-import com.cydeo.dto.CompanyDto;
 import com.cydeo.dto.InvoiceDto;
 import com.cydeo.enums.InvoiceType;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface InvoiceService {
     InvoiceDto findInvoiceById(Long id);
 
     void createInvoice(InvoiceDto invoice);
-    List<InvoiceDto> listAllInvoices();
+    List<InvoiceDto> listAllNotDeletedInvoicesForLoggedInUser();
 
 
     InvoiceDto updateInvoice(Long id);

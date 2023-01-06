@@ -183,10 +183,12 @@
                                                         <button class="btn btn-outline-success mb-2 mb-sm-0 mr-sm-2"
                                                                 type="submit" name="action" value="save">Save
                                                         </button>
-                                                        <button class="btn btn-danger mb-2 mb-sm-0 mr-sm-2"
-                                                                type="reset">
-                                                            Reset
-                                                        </button>
+                                                        <a href="/users/list">
+                                                            <button class="btn btn-danger mb-2 mb-sm-0 mr-sm-2"
+                                                                    type="button">
+                                                                Cancel
+                                                            </button>
+                                                        </a>
                                                     </div>
                                                     <div th:if="${ user.isOnlyAdmin }" class="row">
                                                         <div class="col-12 col-md-8">
