@@ -54,7 +54,7 @@ public class SalesInvoiceController {
         model.addAttribute("newInvoiceProduct", invoiceProductDto);
         model.addAttribute("invoice", invoiceDto);
         model.addAttribute("clients", clientVendorService.listAllClients());
-        model.addAttribute("products", productService.listAllProducts());
+        model.addAttribute("products", productService.listAllNotDeletedProductsForCurrentCompany());
 
         invoiceService.save(invoiceDto);
         return "/invoice/sales-invoice-update";
