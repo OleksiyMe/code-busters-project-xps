@@ -64,16 +64,14 @@ public class ProductController {
 
     @GetMapping("/delete/{id}")
     public String deleteProduct(@PathVariable("id") Long productId, Model model) {
-
-        if (productService.productListedInInvoice(productId)) {
-            model.addAttribute("products", productService.listAllNotDeletedProductsForCurrentCompany());
-            model.addAttribute("errorMessage",
-                    "!!ERROR!!: Product with id " + productId +
-                            " is listed in invoice! You can not delete it");
+        String errorMessage = productService.productCanNotBeDeleted(productId);
+        if (!errorMessage.isBlank()) {
+            model.addAttribute("products",
+                    productService.listAllNotDeletedProductsForCurrentCompany());
+            model.addAttribute("errorMessage", errorMessage);
             return "/product/product-list";
         }
         productService.deleteProductById(productId);
-
         return "redirect:/products/list";
     }
 

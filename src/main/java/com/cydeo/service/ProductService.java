@@ -22,7 +22,7 @@ public interface ProductService {
     List<ProductUnit> listAllProductUnits();
 
 
-    Boolean productListedInInvoice(Long productId);
+    String productCanNotBeDeleted(Long productId);
 
 
     void save(ProductDto productDto);

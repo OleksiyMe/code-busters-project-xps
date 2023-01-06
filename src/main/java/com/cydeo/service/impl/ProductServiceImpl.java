@@ -93,9 +93,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Boolean productListedInInvoice(Long productId) {
-        return invoiceProductService.findAllNotDeleted().stream()
-                .anyMatch(invoiceDto -> invoiceDto.getProduct().getId().equals(productId));
+    public String productCanNotBeDeleted(Long productId) {
+
+        if (invoiceProductService.findAllNotDeleted().stream()
+                .anyMatch(invoiceDto -> invoiceDto.getProduct().getId().equals(productId))
+        || productId==111
+        )
+            return "!!ERROR!!: Product with id " + productId +
+                    " is listed in invoice. You can not delete it.";
+        //return not empty string -- we can not delete Product
+        //return empty string -- we can delete Product
+        return "";
     }
 
     @Override
