@@ -108,11 +108,19 @@ public class PurchaseInvoiceController {
                                              @ModelAttribute("invoice") InvoiceDto invoiceDto) {
         invoiceProductDto.setId(null); //need to set null, because id from ModelAttribute is equal invoice id, do not know why
         Long invoiceId = invoiceDto.getId();
-        invoiceProductService.save(invoiceId,invoiceProductDto);
-        return "redirect:/purchaseInvoices/update/" +invoiceId;
+        invoiceProductService.save(invoiceId, invoiceProductDto);
+        return "redirect:/purchaseInvoices/update/" + invoiceId;
     }
 
+    @GetMapping("/purchaseInvoices/removeInvoiceProduct/{invoiceId}/{invoiceProuductId}")
+    public String deleteInvoiceProductFromPurchaseInvoice(@PathVariable("invoiceId") Long invoiceId,
+                                                          @PathVariable("invoiceProduct")Long invoiceProductId){
+//check if it eligible for deleting
 
+        invoiceProductService.deleteIpByInvoiceId(invoiceProductId);
+
+
+    }
 
 }
 

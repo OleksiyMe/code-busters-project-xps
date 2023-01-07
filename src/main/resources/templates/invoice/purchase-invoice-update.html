@@ -27,8 +27,10 @@
                                                             <div class="form-group">
                                                                 <div class="controls">
                                                                     <label>Invoice No</label>
-                                                                    <input type="text" th:field="*{invoiceNo}" placeholder="Invoice No" readonly
-                                                                           class="form-control" required="required" aria-invalid="false">
+                                                                    <input type="text" th:field="*{invoiceNo}"
+                                                                           placeholder="Invoice No" readonly
+                                                                           class="form-control" required="required"
+                                                                           aria-invalid="false">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -36,8 +38,10 @@
                                                             <div class="form-group">
                                                                 <div class="controls">
                                                                     <label>Date</label>
-                                                                    <input type="text" th:field="*{date}" placeholder="Date" readonly
-                                                                           class="form-control" required="required" aria-invalid="false">
+                                                                    <input type="text" th:field="*{date}"
+                                                                           placeholder="Date" readonly
+                                                                           class="form-control" required="required"
+                                                                           aria-invalid="false">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -45,8 +49,10 @@
                                                             <div class="form-group">
                                                                 <div class="controls">
                                                                     <label>Vendor</label>
-                                                                    <select id="clientVendor" name="clientVendor" class="custom-select" th:with="clientVendor=*{clientVendor.id}">
-                                                                        <option th:each= "clientVendor:${vendors}"
+                                                                    <select id="clientVendor" name="clientVendor"
+                                                                            class="custom-select"
+                                                                            th:with="clientVendor=*{clientVendor.id}">
+                                                                        <option th:each="clientVendor:${vendors}"
                                                                                 th:value="${clientVendor.id}"
                                                                                 th:text="${clientVendor.getClientVendorName}"
                                                                                 th:selected="${clientVendor.id} == ${invoice.clientVendor.id}"></option>
@@ -88,10 +94,12 @@
                                                             <div class="form-group">
                                                                 <div class="controls">
                                                                     <label>Product Name</label>
-                                                                    <select id="product" class="form-control" th:field="*{product}">
+                                                                    <select id="product" class="form-control"
+                                                                            th:field="*{product}">
                                                                         <option th:if="${products.size() > 1}"
-                                                                                th:value="''" th:text="'Select'" selected></option>
-                                                                        <option th:each= "product:${products}"
+                                                                                th:value="''" th:text="'Select'"
+                                                                                selected></option>
+                                                                        <option th:each="product:${products}"
                                                                                 th:value="${product.id}"
                                                                                 th:text="${product.name}"></option>
                                                                     </select>
@@ -109,7 +117,8 @@
                                                             <div class="form-group">
                                                                 <div class="controls">
                                                                     <label>Quantity</label>
-                                                                    <input type="number" th:field="*{quantity}" placeholder="Quantity"
+                                                                    <input type="number" th:field="*{quantity}"
+                                                                           placeholder="Quantity"
                                                                            class="form-control" aria-invalid="false">
                                                                 </div>
                                                                 <div th:if="${#fields.hasErrors('quantity')}">
@@ -125,7 +134,8 @@
                                                             <div class="form-group">
                                                                 <div class="controls">
                                                                     <label>Price (without tax)</label>
-                                                                    <input type="number" th:field="*{price}" placeholder="Price" step=".01"
+                                                                    <input type="number" th:field="*{price}"
+                                                                           placeholder="Price" step=".01"
                                                                            class="form-control" aria-invalid="false">
                                                                 </div>
                                                                 <div th:if="${#fields.hasErrors('price')}">
@@ -141,7 +151,8 @@
                                                             <div class="form-group">
                                                                 <div class="controls">
                                                                     <label>Tax Rate</label>
-                                                                    <input type="number" th:field="*{tax}" placeholder="Tax"
+                                                                    <input type="number" th:field="*{tax}"
+                                                                           placeholder="Tax"
                                                                            class="form-control" aria-invalid="false">
                                                                 </div>
                                                                 <div th:if="${#fields.hasErrors('tax')}">
@@ -200,8 +211,11 @@
                                                                 <td th:text="${invoiceProduct.tax}"></td>
                                                                 <td th:text="${invoiceProduct.total}"></td>
                                                                 <td class="actions">
-                                                                    <a th:href="@{/purchaseInvoices/removeInvoiceProduct/{invoiceId}/{invoiceProuductId}(invoiceId=${invoice.getId()}, invoiceProuductId=${invoiceProduct.getId()})}">
-                                                                        <button class="ft-minus btn-danger bg-light-primary" type="submit"></button>
+                                                                    <a th:href="@{/purchaseInvoices/removeInvoiceProduct/{invoiceId}/{invoiceProuductId}
+                                                                    (invoiceId=${invoice.getId()}, invoiceProuductId=${invoiceProduct.getId()})}">
+                                                                        <button class="btn btn-danger mb-2 mb-sm-0 mr-sm-2">
+                                                                            Delete
+                                                                        </button>
                                                                     </a>
                                                                 </td>
                                                             </tr>
@@ -221,7 +235,8 @@
                             <form>
                                 <div class="col-12 col-sm-6 col-lg-3 d-flex align-items-right">
                                     <a id="companylistlink" class="btn bg-dark text-light mb-1"
-                                       th:href="@{/purchaseInvoices/list}"><i class="fa fa-list mr-1"></i>Purchase Invoice List</a>
+                                       th:href="@{/purchaseInvoices/list}"><i class="fa fa-list mr-1"></i>Purchase
+                                        Invoice List</a>
                                 </div>
                             </form>
                         </div>
