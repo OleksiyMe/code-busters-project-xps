@@ -75,17 +75,22 @@ public class PurchaseInvoiceController {
     @GetMapping("/approve/{id}")
     public String approvePurchaseInvoice(@PathVariable("id") Long id, Model model) {
         invoiceService.approve(id);
-
         return "redirect:/purchaseInvoices/list";
     }
 
     @GetMapping("/delete/{id}")
     public String deletePurchaseInvoice(@PathVariable("id") Long id) {
-
         invoiceService.deleteInvoice(id);
-
         return "redirect:/purchaseInvoices/list";
+   }
 
+    @GetMapping("/update/{id}")
+    public String createPurchaseInvoice(@PathVariable("id") Long id, Model model) {
 
+        InvoiceDto invoiceDto = invoiceService.findInvoiceById(id);
+        model.addAttribute("invoice", invoiceDto);
+        model.addAttribute("vendors", clientVendorService.listAllVendors());
+
+        return "/invoice/purchase-invoice-update";
     }
 }
