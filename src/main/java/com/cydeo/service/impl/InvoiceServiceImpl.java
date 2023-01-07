@@ -44,12 +44,6 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public InvoiceDto findInvoiceById(Long id) {
-//        InvoiceDto invoiceDto = mapperUtil.convert(invoiceRepository.findById(id), new InvoiceDto());
-//        List<InvoiceProductDto> list = invoiceProductService.getInvoiceProductsByInvoiceId(id);
-//        invoiceDto.setInvoiceProducts(list);
-//        return invoiceDto;
-//I added 3 calculated fields in listAllNotDeletedInvoicesForLoggedInUser() method.
-//No sense to repeat it here, so I modified code. OleksiyMe
         List<InvoiceDto> list = listAllNotDeletedInvoicesForLoggedInUser();
         return list.stream().filter(invoiceDto -> invoiceDto.getId().equals(id)).findFirst()
                 .orElseThrow(() -> new NoSuchElementException("No Invoice with this id " + id));
