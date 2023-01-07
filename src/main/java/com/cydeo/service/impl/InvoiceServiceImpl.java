@@ -1,9 +1,6 @@
 package com.cydeo.service.impl;
 
-import com.cydeo.dto.InvoiceDto;
-import com.cydeo.dto.InvoiceProductDto;
-import com.cydeo.dto.ProductDto;
-import com.cydeo.dto.UserDto;
+import com.cydeo.dto.*;
 import com.cydeo.entity.ClientVendor;
 import com.cydeo.entity.Company;
 import com.cydeo.entity.Invoice;
@@ -17,8 +14,9 @@ import com.cydeo.service.ProductService;
 import com.cydeo.service.SecurityService;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
-
+import static java.util.Comparator.comparing;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -169,5 +167,30 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoiceRepository.save(mapperUtil.convert(invoiceDto, new Invoice()));
     }
 
+    @Override
+    public List<InvoiceDto> lastThreeTransactions() {
+
+        UserDto loggedInUser = securityService.getLoggedInUser();
+
+        return invoiceProductService.FindAllInvoiceProducts().stream()
+                .filter(invoiceProduct -> invoiceProduct.getInvoice().getCompany().getId().equals(loggedInUser.getCompany().getId()))
+                .map(invoiceProduct -> {
+
+                    BigDecimal tax = BigDecimal.valueOf(invoiceProduct.getTax());
+                    InvoiceDto invoiceDto = new InvoiceDto();
+                    invoiceDto.setInvoiceNo(invoiceProduct.getInvoice().getInvoiceNo());
+                    invoiceDto.setClientVendor(mapperUtil.convert(invoiceProduct.getInvoice().getClientVendor(), new ClientVendorDto()));
+                    invoiceDto.setDate(invoiceProduct.getInvoice().getDate());
+                    invoiceDto.setTax(BigDecimal.valueOf(invoiceProduct.getTax()));
+                    invoiceDto.setTotal(invoiceProduct.getPrice().multiply(tax.divide(BigDecimal.valueOf(100))).add(invoiceProduct.getPrice()).setScale(2,RoundingMode.CEILING));
+                    return invoiceDto;
+                })
+                .sorted(comparing(InvoiceDto::getDate).reversed())
+                .limit(3)
+                .collect(Collectors.toList());
+
+    }
 
 }
+
+
