@@ -173,7 +173,13 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoiceDto.setDate(LocalDate.now());
         for (InvoiceProductDto invoiceProductDto : invoiceProductService.getInvoiceProductsByInvoiceId(id)) {
             ProductDto productDto = productService.findProductById(invoiceProductDto.getProduct().getId());
-            productDto.setQuantityInStock(productDto.getQuantityInStock() + invoiceProductDto.getQuantity());
+
+            if (invoiceProductDto.getInvoice().getInvoiceType().getValue().equals("Purchase")) {
+                productDto.setQuantityInStock(productDto.getQuantityInStock() + invoiceProductDto.getQuantity());
+            } else {
+                    productDto.setQuantityInStock(productDto.getQuantityInStock() - invoiceProductDto.getQuantity());
+            }
+
             productService.save(productDto);
         }
         invoiceRepository.save(mapperUtil.convert(invoiceDto, new Invoice()));
