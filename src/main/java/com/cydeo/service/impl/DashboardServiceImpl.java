@@ -54,4 +54,9 @@ public class DashboardServiceImpl implements DashboardService {
     public CurrencyDto getExchangeRates() {
         return null;
     }
+
+    @Override
+    public List<InvoiceDto> getLast3TransactionsByDate() {
+        return invoiceService.getLastThreeInvoices();
+    }
 }
