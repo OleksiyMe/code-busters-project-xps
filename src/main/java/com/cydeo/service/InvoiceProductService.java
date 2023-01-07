@@ -20,4 +20,6 @@ public interface InvoiceProductService {
     List<InvoiceProduct> findAllInvoiceProductsByProductId(Long id);
 
     List<InvoiceProductDto> findAllNotDeleted();
+
+    List<InvoiceProduct> FindAllInvoiceProducts();
 }

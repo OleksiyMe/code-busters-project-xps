@@ -112,4 +112,9 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<InvoiceProduct> FindAllInvoiceProducts() {
+        return invoiceProductRepository.findAll();
+    }
+
 }
