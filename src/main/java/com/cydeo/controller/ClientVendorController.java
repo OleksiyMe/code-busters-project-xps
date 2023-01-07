@@ -36,11 +36,11 @@ public class ClientVendorController {
 
     @PostMapping("/create")
     public String createClientVendorFinish(@Valid
-                                     @ModelAttribute("newClientVendor") ClientVendorDto clientVendorDto,
-                                     BindingResult bindingResult,
-                                     Model model) {
+                                           @ModelAttribute("newClientVendor") ClientVendorDto clientVendorDto,
+                                           BindingResult bindingResult,
+                                           Model model) {
 
-        if (bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             model.addAttribute("clientVendorTypes", clientVendorService.listAllClientVendorTypes());
             return "/clientVendor/clientVendor-create";
         }
@@ -79,7 +79,15 @@ public class ClientVendorController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteClientVendor(@PathVariable("id") Long id) {
+    public String deleteClientVendor(@PathVariable("id") Long id, Model model) {
+        String errormessage = clientVendorService.clientVendorCanNotBeDeleted(id);
+        if (!errormessage.isBlank()) {
+            model.addAttribute("clientVendors",
+                    clientVendorService.listAllClientVendors());
+            model.addAttribute("errorMessage", errormessage);
+            return "/clientVendor/clientVendor-list";
+        }
+
 
         clientVendorService.deleteClientVendor(id);
         return "redirect:/clientVendors/list";

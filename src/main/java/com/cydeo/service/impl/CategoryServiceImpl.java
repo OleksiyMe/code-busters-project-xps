@@ -8,6 +8,7 @@ import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repository.CategoryRepository;
 import com.cydeo.service.CategoryService;
 import com.cydeo.service.CompanyService;
+import com.cydeo.service.ProductService;
 import com.cydeo.service.SecurityService;
 import org.springframework.stereotype.Service;
 
@@ -23,13 +24,15 @@ public class CategoryServiceImpl implements CategoryService {
     private final MapperUtil mapperUtil;
     private final SecurityService securityService;
     private final CompanyService companyService;
+    private final ProductService productService;
 
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository, MapperUtil mapperUtil, SecurityService securityService, CompanyService companyService) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, MapperUtil mapperUtil, SecurityService securityService, CompanyService companyService, ProductService productService) {
         this.categoryRepository = categoryRepository;
         this.mapperUtil = mapperUtil;
         this.securityService = securityService;
         this.companyService = companyService;
+        this.productService = productService;
     }
 
 
@@ -39,11 +42,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryDto> listAllCategories() {
+    public List<CategoryDto> listAllNotDeletedCategoriesForCurrentCompany() {
         Company currentCompany = mapperUtil.convert(
                 securityService.getLoggedInUser().getCompany(), new Company());
 
-        return categoryRepository.findAll().stream()
+        return categoryRepository.findAllNotDeleted().stream()
                 .filter(category -> category.getCompany().getId().equals(currentCompany.getId()))
                 .map(category -> mapperUtil.convert(category, new CategoryDto()))
                 .sorted(Comparator.comparing(CategoryDto::getDescription))
@@ -81,14 +84,22 @@ public class CategoryServiceImpl implements CategoryService {
     public void delete(Long id) {
 
         Category category = categoryRepository.getCategoryById(id).get();
-
         category.setIsDeleted(true);
-
         categoryRepository.save(category);
 
         //where clause ??? we added it to Category Entity?
 
+    }
 
+    @Override
+    public String categoryCanNotBeDeleted(Long id) {
+        CategoryDto categoryDto = findCategoryById(id);
+        if (productService.listAllNotDeletedProducts().stream()
+                .anyMatch(productDto -> productDto.getCategory().getId().equals(id)))
+            return "!!ERROR!!: You can not delete this Category. It has products inside.";
+//return not empty string -- we can not delete ClientVendor
+//return empty string -- we can delete ClientVendor
+        return "";
     }
 
 

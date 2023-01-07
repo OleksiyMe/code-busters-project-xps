@@ -3,6 +3,7 @@ package com.cydeo.controller;
 import com.cydeo.dto.InvoiceDto;
 import com.cydeo.dto.InvoiceProductDto;
 import com.cydeo.entity.InvoiceProduct;
+import com.cydeo.enums.InvoiceType;
 import com.cydeo.service.ClientVendorService;
 import com.cydeo.service.InvoiceProductService;
 import com.cydeo.service.InvoiceService;
@@ -42,7 +43,7 @@ public class PurchaseInvoiceController {
     public String createPurchaseInvoice(Model model) {
 
         InvoiceDto invoiceDto = new InvoiceDto();
-        invoiceDto.setInvoiceNo(invoiceService.generatePurchaseInvoiceNumber());
+        invoiceDto.setInvoiceNo(invoiceService.generateInvoiceNumber(InvoiceType.PURCHASE));
         invoiceDto.setDate(LocalDate.now());
         model.addAttribute("newPurchaseInvoice", invoiceDto);
         model.addAttribute("vendors", clientVendorService.listAllVendors());
@@ -54,9 +55,8 @@ public class PurchaseInvoiceController {
     public String savePurchaseInvoice(@Valid @ModelAttribute("newPurchaseInvoice") InvoiceDto invoiceDto, BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("newPurchaseInvoice", new InvoiceDto());
             model.addAttribute("vendors", clientVendorService.listAllVendors());
-            return "/invoice/purchase-invoice-create";
+            return "invoice/purchase-invoice-create";
         }
 
         InvoiceProductDto invoiceProductDto = new InvoiceProductDto();
@@ -64,10 +64,11 @@ public class PurchaseInvoiceController {
         model.addAttribute("newInvoiceProduct", invoiceProductDto);
         model.addAttribute("invoice", invoiceDto);
         model.addAttribute("vendors", clientVendorService.listAllVendors());
-        model.addAttribute("products", productService.listAllProducts());
+        model.addAttribute("products", productService.listAllNotDeletedProductsForCurrentCompany());
 
-        invoiceService.createPurchaseInvoice(invoiceDto);
-        return "invoice/purchase-invoice-update";
+        invoiceDto.setInvoiceType(InvoiceType.PURCHASE);
+        invoiceService.save(invoiceDto);
+        return "/invoice/purchase-invoice-update";
     }
 
 

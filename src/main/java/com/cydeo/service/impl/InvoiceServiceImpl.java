@@ -1,9 +1,13 @@
 package com.cydeo.service.impl;
 
-import com.cydeo.dto.*;
+import com.cydeo.dto.InvoiceDto;
+import com.cydeo.dto.InvoiceProductDto;
+import com.cydeo.dto.ProductDto;
+import com.cydeo.dto.UserDto;
 import com.cydeo.entity.ClientVendor;
 import com.cydeo.entity.Company;
 import com.cydeo.entity.Invoice;
+import com.cydeo.entity.User;
 import com.cydeo.enums.InvoiceStatus;
 import com.cydeo.enums.InvoiceType;
 import com.cydeo.mapper.MapperUtil;
@@ -12,14 +16,10 @@ import com.cydeo.service.InvoiceProductService;
 import com.cydeo.service.InvoiceService;
 import com.cydeo.service.ProductService;
 import com.cydeo.service.SecurityService;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
-import static java.util.Comparator.comparing;
+
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -48,9 +48,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 //        List<InvoiceProductDto> list = invoiceProductService.getInvoiceProductsByInvoiceId(id);
 //        invoiceDto.setInvoiceProducts(list);
 //        return invoiceDto;
-//I added 3 calculated fields in listAllInvoices() method. No sense to repeat it here, so I modified code
-// OleksiyMe
-        List<InvoiceDto> list = listAllInvoices();
+//I added 3 calculated fields in listAllNotDeletedInvoicesForLoggedInUser() method.
+//No sense to repeat it here, so I modified code. OleksiyMe
+        List<InvoiceDto> list = listAllNotDeletedInvoicesForLoggedInUser();
         return list.stream().filter(invoiceDto -> invoiceDto.getId().equals(id)).findFirst()
                 .orElseThrow(() -> new NoSuchElementException("No Invoice with this id " + id));
     }
@@ -61,7 +61,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public List<InvoiceDto> listAllInvoices() {
+    public List<InvoiceDto> listAllNotDeletedInvoicesForLoggedInUser() {
         UserDto loggedInUser = securityService.getLoggedInUser();
         return invoiceRepository.findAllNotDeleted().stream()
                 .filter(invoice -> invoice.getCompany().getId().equals(loggedInUser.getCompany().getId()))
@@ -114,41 +114,53 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 
     @Override
-    public InvoiceDto createPurchaseInvoice(InvoiceDto invoiceDto) {
+    public InvoiceDto save(InvoiceDto invoiceDto) {
+
+        User user = mapperUtil.convert(securityService.getLoggedInUser(), new User());
 
         Invoice invoice = mapperUtil.convert(invoiceDto, new Invoice());
         invoice.setInvoiceNo(invoiceDto.getInvoiceNo());
         invoice.setDate(invoiceDto.getDate());
         invoice.setClientVendor(mapperUtil.convert(invoiceDto.getClientVendor(), new ClientVendor()));
-        invoice.setInvoiceType(InvoiceType.PURCHASE);
+        invoice.setInvoiceType(invoiceDto.getInvoiceType());
+        invoice.setCompany(user.getCompany());
         invoice.setInvoiceStatus(InvoiceStatus.AWAITING_APPROVAL);
-        invoice.setId(invoiceDto.getId());
+        invoiceDto.setId(invoice.getId());
 
         invoiceRepository.save(invoice);
         return invoiceDto;
     }
 
     @Override
-    public String generatePurchaseInvoiceNumber() {
+    public String generateInvoiceNumber(InvoiceType invoiceType) {
         Company currentCompany = mapperUtil.convert(
                 securityService.getLoggedInUser().getCompany(), new Company());
 
-        String max = invoiceRepository.findMaxId(currentCompany.getId()).toString();
+        String maxInvoiceId = invoiceRepository.findMaxId(currentCompany.getId()).toString();
+        String maxSalesId = invoiceRepository.findMaxSalesId(currentCompany.getId()).toString();
 
         String num = "";
 
-        for (int i = 0; i < max.length(); i++) {
-            if (Character.isDigit(max.charAt(i))) num += max.charAt(i);
+        if(invoiceType.getValue().equals("Purchase")){
+            for (int i = 0; i < maxInvoiceId.length(); i++) {
+                if (Character.isDigit(maxInvoiceId.charAt(i))) num += maxInvoiceId.charAt(i);
+            }
+            return "P-" + String.format("%03d", Integer.parseInt(num) + 1);
+
+        } else {
+            for (int i = 0; i < maxSalesId.length(); i++) {
+                if (Character.isDigit(maxSalesId.charAt(i))) num += maxSalesId.charAt(i);
+            }
+            return "S-" + String.format("%03d", Integer.parseInt(num) + 1);
         }
 
-        return "P-" + String.format("%03d", Integer.parseInt(num) + 1);
     }
 
 
     @Override
     public List<InvoiceDto> listAllPurchaseInvoices() {
 
-        List<InvoiceDto> list = listAllInvoices().stream()
+        List<InvoiceDto> list = listAllNotDeletedInvoicesForLoggedInUser().stream()
                 .filter(invoiceDto -> invoiceDto.getInvoiceType().equals(InvoiceType.PURCHASE))
                 .collect(Collectors.toList());
         return list;
@@ -168,29 +180,17 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public List<InvoiceDto> lastThreeTransactions() {
-
-        UserDto loggedInUser = securityService.getLoggedInUser();
-
-        return invoiceProductService.FindAllInvoiceProducts().stream()
-                .filter(invoiceProduct -> invoiceProduct.getInvoice().getCompany().getId().equals(loggedInUser.getCompany().getId()))
-                .map(invoiceProduct -> {
-
-                    BigDecimal tax = BigDecimal.valueOf(invoiceProduct.getTax());
-                    InvoiceDto invoiceDto = new InvoiceDto();
-                    invoiceDto.setInvoiceNo(invoiceProduct.getInvoice().getInvoiceNo());
-                    invoiceDto.setClientVendor(mapperUtil.convert(invoiceProduct.getInvoice().getClientVendor(), new ClientVendorDto()));
-                    invoiceDto.setDate(invoiceProduct.getInvoice().getDate());
-                    invoiceDto.setTax(BigDecimal.valueOf(invoiceProduct.getTax()));
-                    invoiceDto.setTotal(invoiceProduct.getPrice().multiply(tax.divide(BigDecimal.valueOf(100))).add(invoiceProduct.getPrice()).setScale(2,RoundingMode.CEILING));
-                    return invoiceDto;
-                })
-                .sorted(comparing(InvoiceDto::getDate).reversed())
-                .limit(3)
+    public List<InvoiceDto> listAllSalesInvoices() {
+        List<InvoiceDto> list = listAllNotDeletedInvoicesForLoggedInUser().stream()
+                .filter(invoiceDto -> invoiceDto.getInvoiceType().equals(InvoiceType.SALES))
                 .collect(Collectors.toList());
-
+        return list;
     }
 
+    @Override
+    public List<InvoiceDto> getLastThreeInvoices() {
+        return null;
+    }
+
+
 }
-
-
