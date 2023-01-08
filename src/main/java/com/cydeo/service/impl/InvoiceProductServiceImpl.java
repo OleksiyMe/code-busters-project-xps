@@ -68,7 +68,7 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
     }
 
     @Override
-    public void delete(Long invoiceProductId) {
+    public void SoftDelete(Long invoiceProductId) {
 
         InvoiceProduct invoiceProduct = mapperUtil.convert(findInvoiceProductById(invoiceProductId),
                 new InvoiceProduct());
@@ -83,7 +83,7 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
         List<InvoiceProduct> invoiceProductList = invoiceProductRepository.findAllByInvoice_Id(id);//found all the related InvoiceProducts
 
         invoiceProductList.stream().filter(invoiceProduct -> invoiceProduct.getInvoice().getCompany().getId()
-                .equals(loggedInUser.getCompany().getId())).forEach(invoiceProduct -> delete(invoiceProduct.getId()));
+                .equals(loggedInUser.getCompany().getId())).forEach(invoiceProduct -> SoftDelete(invoiceProduct.getId()));
         //if Id of invoiceProducts of that Invoice match the Id of that logged in user's Company Id then delete each of the Invoice Products
 
     }

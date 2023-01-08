@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 @RequestMapping("/purchaseInvoices")
@@ -55,7 +56,8 @@ public class PurchaseInvoiceController {
     }
 
     @PostMapping("/create")
-    public String savePurchaseInvoice(@Valid @ModelAttribute("newPurchaseInvoice") InvoiceDto invoiceDto, BindingResult bindingResult, Model model) {
+    public String savePurchaseInvoice(@Valid @ModelAttribute("newPurchaseInvoice") InvoiceDto invoiceDto,
+                                      BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("vendors", clientVendorService.listAllVendors());
@@ -70,8 +72,8 @@ public class PurchaseInvoiceController {
         model.addAttribute("products", productService.listAllNotDeletedProductsForCurrentCompany());
 
         invoiceDto.setInvoiceType(InvoiceType.PURCHASE);
-        invoiceService.save(invoiceDto);
-        return "/invoice/purchase-invoice-update";
+        invoiceDto = invoiceService.save(invoiceDto);
+        return "redirect:/purchaseInvoices/update/" + invoiceDto.getId();
     }
 
 
@@ -88,7 +90,7 @@ public class PurchaseInvoiceController {
     }
 
     @GetMapping("/update/{id}")
-    public String createPurchaseInvoice(@PathVariable("id") Long id, Model model) {
+    public String updatePurchaseInvoiceStart(@PathVariable("id") Long id, Model model) {
 
         InvoiceDto invoiceDto = invoiceService.findInvoiceById(id);
         model.addAttribute("invoice", invoiceDto);
@@ -102,6 +104,15 @@ public class PurchaseInvoiceController {
         return "/invoice/purchase-invoice-update";
     }
 
+    @PostMapping("/update/{id}")
+    public String updatePurchaseInvoiceFinish(@PathVariable("id") Long id,
+                                              @ModelAttribute("invoice") InvoiceDto invoiceDto){
+        invoiceDto.setInvoiceProducts(invoiceProductService.getInvoiceProductsByInvoiceId(invoiceDto.getId()));
+        invoiceDto.setInvoiceType(InvoiceType.PURCHASE);
+        invoiceService.save(invoiceDto);
+        return "redirect:/purchaseInvoices/list";
+    }
+
     @PostMapping("/addInvoiceProduct/{id}")
     public String addInvoiceProductToInvoice(@PathVariable("id") Long id,
                                              @ModelAttribute("newInvoiceProduct") InvoiceProductDto invoiceProductDto,
@@ -112,14 +123,15 @@ public class PurchaseInvoiceController {
         return "redirect:/purchaseInvoices/update/" + invoiceId;
     }
 
-    @GetMapping("/purchaseInvoices/removeInvoiceProduct/{invoiceId}/{invoiceProuductId}")
+    @GetMapping("/removeInvoiceProduct/{invoiceId}/{invoiceProductId}")
     public String deleteInvoiceProductFromPurchaseInvoice(@PathVariable("invoiceId") Long invoiceId,
-                                                          @PathVariable("invoiceProduct")Long invoiceProductId){
+                                                          @PathVariable("invoiceProductId") Long invoiceProductId) {
 //check if it eligible for deleting
 
-        invoiceProductService.deleteIpByInvoiceId(invoiceProductId);
+        invoiceProductService.SoftDelete(invoiceProductId);
 
 
+        return "redirect:/purchaseInvoices/update/" + invoiceId;
     }
 
 }

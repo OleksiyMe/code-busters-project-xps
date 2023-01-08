@@ -9,10 +9,8 @@ import com.cydeo.enums.InvoiceStatus;
 import com.cydeo.enums.InvoiceType;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repository.InvoiceRepository;
-import com.cydeo.service.InvoiceProductService;
-import com.cydeo.service.InvoiceService;
-import com.cydeo.service.ProductService;
-import com.cydeo.service.SecurityService;
+import com.cydeo.service.*;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -32,14 +30,18 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final SecurityService securityService;
     private final MapperUtil mapperUtil;
     private final ProductService productService;
+    private final ClientVendorService clientVendorService;
 
 
-    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, InvoiceProductService invoiceProductService, SecurityService securityService, MapperUtil mapperUtil, ProductService productService) {
+    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, InvoiceProductService invoiceProductService,
+                              SecurityService securityService, MapperUtil mapperUtil, ProductService productService,
+                              @Lazy ClientVendorService clientVendorService) {
         this.invoiceRepository = invoiceRepository;
         this.invoiceProductService = invoiceProductService;
         this.securityService = securityService;
         this.mapperUtil = mapperUtil;
         this.productService = productService;
+        this.clientVendorService = clientVendorService;
     }
 
     @Override
@@ -57,7 +59,8 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public List<InvoiceDto> listAllNotDeletedInvoicesForLoggedInUser() {
         UserDto loggedInUser = securityService.getLoggedInUser();
-        return invoiceRepository.findAllNotDeleted().stream()
+
+        List<InvoiceDto> listOfInvoicesDto = invoiceRepository.findAllNotDeleted().stream()
                 .filter(invoice -> invoice.getCompany().getId().equals(loggedInUser.getCompany().getId()))
                 .map(invoice -> {
                     InvoiceDto invoiceDto = mapperUtil.convert(invoice, new InvoiceDto());
@@ -81,6 +84,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                     return invoiceDto;
                 })
                 .collect(Collectors.toList());
+        return listOfInvoicesDto;
     }
 
     @Override
@@ -88,23 +92,26 @@ public class InvoiceServiceImpl implements InvoiceService {
         return null;
     }
 
-        @Override
-        public void deleteInvoice(Long id) {
-            UserDto loggedInUser = securityService.getLoggedInUser(); //got the logged in User
-            Company currentCompany = mapperUtil.convert(
-                    securityService.getLoggedInUser().getCompany(), new Company()); //Got &Converted logged In User's CompDto to Entity
+    @Override
+    public void deleteInvoice(Long id) {
+        UserDto loggedInUser = securityService.getLoggedInUser(); //got the logged in User
+        Company currentCompany = mapperUtil.convert(
+                securityService.getLoggedInUser().getCompany(), new Company()); //Got &Converted logged In User's CompDto to Entity
 
-            Invoice invoice = invoiceRepository.findById(id).get();  //found the invoice by its Id from Repo
+        Invoice invoice = invoiceRepository.findById(id).get();  //found the invoice by its Id from Repo
 
-            if (currentCompany.getId().equals(invoice.getCompany().getId()))   //if the logged in User' and Invoice' id match
-                {invoice.setIsDeleted(true); }                                    //soft delete that invoice
+        if (currentCompany.getId().equals(invoice.getCompany().getId()))   //if the logged in User' and Invoice' id match
+        {
+            invoice.setIsDeleted(true);
+        }                                    //soft delete that invoice
 
-            if(currentCompany.getCompanyStatus().equals("Vendor")){    //if it is a Vendor all the related InvoiceProducts should also be deleted
-            invoiceProductService.deleteIpByInvoiceId(id); }   //delete the related InvoiceProducts of that invoice as well
+        if (currentCompany.getCompanyStatus().equals("Vendor")) {    //if it is a Vendor all the related InvoiceProducts should also be deleted
+            invoiceProductService.deleteIpByInvoiceId(id);
+        }   //delete the related InvoiceProducts of that invoice as well
 
-            invoiceRepository.save(invoice);                //save to repo to have a soft delete
+        invoiceRepository.save(invoice);                //save to repo to have a soft delete
 
-        }
+    }
 
 
     @Override
@@ -115,14 +122,17 @@ public class InvoiceServiceImpl implements InvoiceService {
         Invoice invoice = mapperUtil.convert(invoiceDto, new Invoice());
         invoice.setInvoiceNo(invoiceDto.getInvoiceNo());
         invoice.setDate(invoiceDto.getDate());
-        invoice.setClientVendor(mapperUtil.convert(invoiceDto.getClientVendor(), new ClientVendor()));
         invoice.setInvoiceType(invoiceDto.getInvoiceType());
         invoice.setCompany(user.getCompany());
         invoice.setInvoiceStatus(InvoiceStatus.AWAITING_APPROVAL);
-        invoiceDto.setId(invoice.getId());
-
-        invoiceRepository.save(invoice);
-        return invoiceDto;
+        invoice.setClientVendor(mapperUtil.convert(invoiceDto.getClientVendor(),new ClientVendor()));
+        invoice = invoiceRepository.save(invoice);
+        if (invoiceDto.getInvoiceProducts() != null) {
+            for (InvoiceProductDto invoiceProduct : invoiceDto.getInvoiceProducts()) {
+                invoiceProductService.save(invoice.getId(), invoiceProduct);
+            }
+        }
+        return mapperUtil.convert(invoice, new InvoiceDto());
     }
 
     @Override
@@ -135,7 +145,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         String num = "";
 
-        if(invoiceType.getValue().equals("Purchase")){
+        if (invoiceType.getValue().equals("Purchase")) {
             for (int i = 0; i < maxInvoiceId.length(); i++) {
                 if (Character.isDigit(maxInvoiceId.charAt(i))) num += maxInvoiceId.charAt(i);
             }
