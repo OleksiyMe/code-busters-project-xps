@@ -89,7 +89,7 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
 
     }
 
-    @Transactional
+ 
     @Override
     public void completeApprovalProcedures(Long invoiceId, InvoiceType type) {
 
@@ -108,12 +108,10 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
 
                 if(invoiceProduct.getQuantity() <= invoiceProduct.getProduct().getQuantityInStock()){
                     product.setQuantityInStock(product.getQuantityInStock() - invoiceProduct.getQuantity());
-                    invoiceProduct.setRemainingQuantity(invoiceProduct.getRemainingQuantity() - invoiceProduct.getQuantity());
                     invoiceProductRepository.save(invoiceProduct);
                 } else{
                     throw new RuntimeException("Not enough products for sale");
                 }
-
             }
         }
     }
@@ -144,6 +142,18 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
     @Override
     public List<InvoiceProduct> FindAllInvoiceProducts() {
         return invoiceProductRepository.findAll();
+    }
+
+    @Override
+    public List<InvoiceProductDto> findAllNotDeletedForCurrentCompany() {
+
+        UserDto loggedInUser = securityService.getLoggedInUser();
+
+       return findAllNotDeleted().stream()
+                .filter(invoiceProductDto -> invoiceProductDto.getInvoice().getCompany().getId().equals(loggedInUser.getCompany().getId()))
+               .filter(invoiceProductDto -> invoiceProductDto.getInvoice().getInvoiceType().equals(InvoiceType.SALES))
+               .collect(Collectors.toList());
+
     }
 
 }
