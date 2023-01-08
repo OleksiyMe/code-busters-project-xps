@@ -15,6 +15,7 @@ import com.cydeo.service.SecurityService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
@@ -88,9 +89,33 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
 
     }
 
+    @Transactional
     @Override
     public void completeApprovalProcedures(Long invoiceId, InvoiceType type) {
 
+        List<InvoiceProduct> invoiceProducts = invoiceProductRepository.findAllByInvoice_Id(invoiceId);
+
+        if (type.getValue().equals("Purchase")) {
+            for(InvoiceProduct invoiceProduct: invoiceProducts){
+                Product product = invoiceProduct.getProduct();
+                product.setQuantityInStock(product.getQuantityInStock() + invoiceProduct.getQuantity());
+                invoiceProduct.setRemainingQuantity(invoiceProduct.getQuantity());
+                invoiceProductRepository.save(invoiceProduct);
+            }
+        } else {
+            for(InvoiceProduct invoiceProduct: invoiceProducts){
+                Product product = invoiceProduct.getProduct();
+
+                if(invoiceProduct.getQuantity() <= invoiceProduct.getProduct().getQuantityInStock()){
+                    product.setQuantityInStock(product.getQuantityInStock() - invoiceProduct.getQuantity());
+                    invoiceProduct.setRemainingQuantity(invoiceProduct.getRemainingQuantity() - invoiceProduct.getQuantity());
+                    invoiceProductRepository.save(invoiceProduct);
+                } else{
+                    throw new RuntimeException("Not enough products for sale");
+                }
+
+            }
+        }
     }
 
     @Override
