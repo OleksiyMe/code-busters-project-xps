@@ -18,4 +18,6 @@ public interface UserService {
     boolean emailExists (UserDto userDto);
 
     String userCanNotBeDeleted(Long id);
+
+    boolean passwordsDoNotMatch(UserDto userDto);
 }

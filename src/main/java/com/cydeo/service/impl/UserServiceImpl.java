@@ -103,6 +103,7 @@ public class UserServiceImpl implements UserService {
         User user = mapperUtil.convert(userDto, new User());
 //temporary
         user.setEnabled(true);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return mapperUtil.convert(user, userDto);
 
@@ -144,6 +145,11 @@ public class UserServiceImpl implements UserService {
         //return not empty string -- user can not be deleted
 
         return "";  //empty string -- user can be deleted
+    }
+
+    @Override
+    public boolean passwordsDoNotMatch(UserDto userDto) {
+        return !userDto.getPassword().equals(userDto.getConfirmPassword());
     }
 }
 
