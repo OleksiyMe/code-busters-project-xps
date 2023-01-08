@@ -12,7 +12,7 @@ public interface InvoiceProductService {
     InvoiceProductDto findInvoiceProductById(long id);
     List<InvoiceProductDto> getInvoiceProductsByInvoiceId(Long invoiceId);
     void save(Long invoiceId, InvoiceProductDto invoiceProductDto);
-    void delete(Long invoiceProductId);
+    void SoftDelete(Long invoiceProductId);
     void deleteIpByInvoiceId(Long id); //uo
     void completeApprovalProcedures(Long invoiceId, InvoiceType type);
     boolean checkProductQuantity(InvoiceProductDto salesInvoiceProduct);
