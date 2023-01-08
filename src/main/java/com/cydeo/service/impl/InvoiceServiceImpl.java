@@ -1,10 +1,7 @@
 package com.cydeo.service.impl;
 
 import com.cydeo.dto.*;
-import com.cydeo.entity.ClientVendor;
-import com.cydeo.entity.Company;
-import com.cydeo.entity.Invoice;
-import com.cydeo.entity.User;
+import com.cydeo.entity.*;
 import com.cydeo.enums.InvoiceStatus;
 import com.cydeo.enums.InvoiceType;
 import com.cydeo.mapper.MapperUtil;
@@ -125,7 +122,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoice.setInvoiceType(invoiceDto.getInvoiceType());
         invoice.setCompany(user.getCompany());
         invoice.setInvoiceStatus(InvoiceStatus.AWAITING_APPROVAL);
-        invoice.setClientVendor(mapperUtil.convert(invoiceDto.getClientVendor(),new ClientVendor()));
+        invoice.setClientVendor(mapperUtil.convert(invoiceDto.getClientVendor(), new ClientVendor()));
         invoice = invoiceRepository.save(invoice);
         if (invoiceDto.getInvoiceProducts() != null) {
             for (InvoiceProductDto invoiceProduct : invoiceDto.getInvoiceProducts()) {
@@ -170,23 +167,14 @@ public class InvoiceServiceImpl implements InvoiceService {
         return list;
     }
 
+
     @Override
     public void approve(Long id) {
-        InvoiceDto invoiceDto = findInvoiceById(id);
-        invoiceDto.setInvoiceStatus(InvoiceStatus.APPROVED);
-        invoiceDto.setDate(LocalDate.now());
-        for (InvoiceProductDto invoiceProductDto : invoiceProductService.getInvoiceProductsByInvoiceId(id)) {
-            ProductDto productDto = productService.findProductById(invoiceProductDto.getProduct().getId());
-
-            if (invoiceProductDto.getInvoice().getInvoiceType().getValue().equals("Purchase")) {
-                productDto.setQuantityInStock(productDto.getQuantityInStock() + invoiceProductDto.getQuantity());
-            } else {
-                    productDto.setQuantityInStock(productDto.getQuantityInStock() - invoiceProductDto.getQuantity());
-            }
-
-            productService.save(productDto);
-        }
-        invoiceRepository.save(mapperUtil.convert(invoiceDto, new Invoice()));
+        Invoice invoice = invoiceRepository.findById(id).get();
+        invoice.setInvoiceStatus(InvoiceStatus.APPROVED);
+        invoice.setDate(LocalDate.now());
+        invoiceProductService.completeApprovalProcedures(id, invoice.getInvoiceType());
+        invoiceRepository.save(invoice);
     }
 
     @Override
@@ -219,7 +207,13 @@ public class InvoiceServiceImpl implements InvoiceService {
                 .limit(3)
                 .collect(Collectors.toList());
 
+    }
 
+    @Override
+    public BigDecimal calculateProfitLossForInvoiceProduct(InvoiceDto invoiceDto) {
+
+
+        return null;
     }
 
 

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -38,7 +39,7 @@ public class DashboardServiceImpl implements DashboardService {
                 .filter(invoiceDto -> invoiceDto.getInvoiceStatus().getValue().equals("Approved"))
                 .filter(invoiceDto -> invoiceDto.getInvoiceType().getValue().equals("Purchase"))
                 .map(InvoiceDto::getTotal)
-                .reduce(BigDecimal::add).get();
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     }
 
@@ -47,7 +48,7 @@ public class DashboardServiceImpl implements DashboardService {
                 .filter(invoiceDto -> invoiceDto.getInvoiceStatus().getValue().equals("Approved"))
                 .filter(invoiceDto -> invoiceDto.getInvoiceType().getValue().equals("Sales"))
                 .map(InvoiceDto::getTotal)
-                .reduce(BigDecimal::add).get();
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     private BigDecimal calculateProfitLoss(){
