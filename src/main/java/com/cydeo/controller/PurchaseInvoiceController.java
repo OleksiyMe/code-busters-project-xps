@@ -24,15 +24,13 @@ public class PurchaseInvoiceController {
     private final InvoiceService invoiceService;
     private final ClientVendorService clientVendorService;
     private final ProductService productService;
-    private final InvoiceProductRepository invoiceProductRepository;
     private final InvoiceProductService invoiceProductService;
 
     public PurchaseInvoiceController(InvoiceService invoiceService, ClientVendorService clientVendorService, ProductService productService, InvoiceProductService invoiceProductService,
-                                     InvoiceProductRepository invoiceProductRepository, InvoiceProductService invoiceProductService1) {
+                                      InvoiceProductService invoiceProductService1) {
         this.invoiceService = invoiceService;
         this.clientVendorService = clientVendorService;
         this.productService = productService;
-        this.invoiceProductRepository = invoiceProductRepository;
         this.invoiceProductService = invoiceProductService1;
     }
 

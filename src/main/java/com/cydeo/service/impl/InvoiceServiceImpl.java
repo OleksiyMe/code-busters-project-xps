@@ -66,6 +66,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                     BigDecimal price = new BigDecimal(0);
                     BigDecimal tax = new BigDecimal(0);
                     BigDecimal total = new BigDecimal(0);
+//                    BigDecimal profitLoss = new BigDecimal(0);
                     for (InvoiceProductDto eachProduct : list) {
                         BigDecimal eachTotalBeforeTax =
                                 eachProduct.getPrice().multiply(BigDecimal.valueOf(eachProduct.getQuantity()));
@@ -73,6 +74,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                         price = price.add(eachTotalBeforeTax);
                         tax = tax.add(eachTaxAmount);
                         total = total.add(eachProduct.getTotal());
+//                        profitLoss = profitLoss.add(eachProduct.getProfitLoss());
                     }
                     invoiceDto.setPrice(price);
                     invoiceDto.setTax(tax);
@@ -211,16 +213,6 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public BigDecimal calculateProfitLossForInvoiceProduct(InvoiceDto invoiceDto) {
-
-        List<InvoiceProductDto> invoiceProductList = invoiceProductService.getInvoiceProductsByInvoiceId(invoiceDto.getId());
-
-
-        for(InvoiceProductDto invoiceProductDto: invoiceProductList){
-
-           BigDecimal salesPrice =  invoiceProductDto.getTotal();
-//           BigDecimal purchasePrice =
-
-        }
 
         return null;
     }

@@ -2,6 +2,7 @@ package com.cydeo.service.impl;
 
 import com.cydeo.dto.CurrencyDto;
 import com.cydeo.dto.InvoiceDto;
+import com.cydeo.dto.InvoiceProductDto;
 import com.cydeo.service.DashboardService;
 import com.cydeo.service.InvoiceProductService;
 import com.cydeo.service.InvoiceService;
@@ -52,7 +53,12 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     private BigDecimal calculateProfitLoss(){
-        return  null;
+
+        BigDecimal profitLossSum = BigDecimal.ZERO;
+        for (InvoiceProductDto invoiceProductDto : invoiceProductService.findAllNotDeletedForCurrentCompany()) {
+            profitLossSum = profitLossSum.add(invoiceProductDto.getProfitLoss());
+        }
+        return  profitLossSum;
     }
 
     @Override
