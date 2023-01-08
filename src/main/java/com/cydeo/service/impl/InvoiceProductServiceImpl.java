@@ -108,12 +108,12 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
 
                 if(invoiceProduct.getQuantity() <= invoiceProduct.getProduct().getQuantityInStock()){
                     product.setQuantityInStock(product.getQuantityInStock() - invoiceProduct.getQuantity());
-                    invoiceProduct.setRemainingQuantity(invoiceProduct.getRemainingQuantity() - invoiceProduct.getQuantity());
+//                    invoiceProduct.setRemainingQuantity(invoiceProduct.getRemainingQuantity() - invoiceProduct.getQuantity());
+                    invoiceService.calculateProfitLossForInvoiceProduct(invoiceService.findInvoiceById(invoiceId));
                     invoiceProductRepository.save(invoiceProduct);
                 } else{
                     throw new RuntimeException("Not enough products for sale");
                 }
-
             }
         }
     }

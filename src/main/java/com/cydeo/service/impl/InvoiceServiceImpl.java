@@ -212,6 +212,15 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public BigDecimal calculateProfitLossForInvoiceProduct(InvoiceDto invoiceDto) {
 
+        List<InvoiceProductDto> invoiceProductList = invoiceProductService.getInvoiceProductsByInvoiceId(invoiceDto.getId());
+
+
+        for(InvoiceProductDto invoiceProductDto: invoiceProductList){
+
+           BigDecimal salesPrice =  invoiceProductDto.getTotal();
+//           BigDecimal purchasePrice =
+
+        }
 
         return null;
     }
