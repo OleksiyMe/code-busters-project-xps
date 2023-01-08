@@ -126,7 +126,7 @@ public class PurchaseInvoiceController {
     @GetMapping("/removeInvoiceProduct/{invoiceId}/{invoiceProductId}")
     public String deleteInvoiceProductFromPurchaseInvoice(@PathVariable("invoiceId") Long invoiceId,
                                                           @PathVariable("invoiceProductId") Long invoiceProductId) {
-//check if it eligible for deleting
+     //check if it eligible for deleting
 
         invoiceProductService.SoftDelete(invoiceProductId);
         return "redirect:/purchaseInvoices/update/" + invoiceId;

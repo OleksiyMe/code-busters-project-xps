@@ -48,10 +48,14 @@ public class UserController {
     public String createUserFinish(@Valid @ModelAttribute("newUser") UserDto userDto, BindingResult bindingResult, Model model) {
 
         boolean emailExist = userService.emailExists(userDto);
+        boolean passwordsDoNotMatch = userService.passwordsDoNotMatch(userDto);
 
-        if (bindingResult.hasErrors() || emailExist) {
+        if (bindingResult.hasErrors() || emailExist|| passwordsDoNotMatch) {
             if (emailExist) {
                 bindingResult.rejectValue("username", " ", "A user with this email already exists. Please try with different email.");
+            }
+            if (passwordsDoNotMatch) {
+                bindingResult.rejectValue("confirmPassword", " ", "Passwords do not match.");
             }
             model.addAttribute("newUser", userDto);
             model.addAttribute("companies",
