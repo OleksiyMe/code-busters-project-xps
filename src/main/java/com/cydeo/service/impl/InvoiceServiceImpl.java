@@ -1,9 +1,6 @@
 package com.cydeo.service.impl;
 
-import com.cydeo.dto.InvoiceDto;
-import com.cydeo.dto.InvoiceProductDto;
-import com.cydeo.dto.ProductDto;
-import com.cydeo.dto.UserDto;
+import com.cydeo.dto.*;
 import com.cydeo.entity.ClientVendor;
 import com.cydeo.entity.Company;
 import com.cydeo.entity.Invoice;
@@ -19,10 +16,13 @@ import com.cydeo.service.SecurityService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+
+import static java.util.Comparator.comparing;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
@@ -195,7 +195,27 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public List<InvoiceDto> getLastThreeInvoices() {
-        return null;
+        UserDto loggedInUser = securityService.getLoggedInUser();
+
+        return invoiceProductService.FindAllInvoiceProducts().stream()
+                .filter(invoiceProduct -> invoiceProduct.getInvoice().getCompany().getId().equals(loggedInUser.getCompany().getId()))
+                .map(invoiceProduct -> {
+
+                    BigDecimal tax = BigDecimal.valueOf(invoiceProduct.getTax());
+                    InvoiceDto invoiceDto = new InvoiceDto();
+                    invoiceDto.setInvoiceNo(invoiceProduct.getInvoice().getInvoiceNo());
+                    invoiceDto.setDate(invoiceProduct.getInvoice().getDate());
+                    invoiceDto.setClientVendor(mapperUtil.convert(invoiceProduct.getInvoice().getClientVendor(), new ClientVendorDto()));
+                    invoiceDto.setPrice(invoiceProduct.getPrice().setScale(2, RoundingMode.CEILING));
+                    invoiceDto.setTax(BigDecimal.valueOf(invoiceProduct.getTax()));
+                    invoiceDto.setTotal(invoiceProduct.getPrice().multiply(tax.divide(BigDecimal.valueOf(100))).add(invoiceProduct.getPrice()).setScale(2, RoundingMode.CEILING));
+                    return invoiceDto;
+                })
+                .sorted(comparing(InvoiceDto::getDate).reversed())
+                .limit(3)
+                .collect(Collectors.toList());
+
+
     }
 
 
