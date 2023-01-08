@@ -129,8 +129,6 @@ public class PurchaseInvoiceController {
 //check if it eligible for deleting
 
         invoiceProductService.SoftDelete(invoiceProductId);
-
-
         return "redirect:/purchaseInvoices/update/" + invoiceId;
     }
 
