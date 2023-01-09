@@ -24,4 +24,5 @@ public interface InvoiceProductService {
     List<InvoiceProduct> FindAllInvoiceProducts();
 
    List<InvoiceProductDto> findAllNotDeletedForCurrentCompany();
+    List<InvoiceProductDto> findAllNotDeletedForCurrentCompanySortByDate();
 }
