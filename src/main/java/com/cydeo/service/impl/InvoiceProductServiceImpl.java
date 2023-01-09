@@ -5,6 +5,7 @@ import com.cydeo.dto.UserDto;
 import com.cydeo.entity.*;
 import com.cydeo.entity.InvoiceProduct;
 import com.cydeo.entity.Product;
+import com.cydeo.enums.InvoiceStatus;
 import com.cydeo.enums.InvoiceType;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repository.InvoiceProductRepository;
@@ -89,7 +90,7 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
 
     }
 
-    @Transactional
+
     @Override
     public void completeApprovalProcedures(Long invoiceId, InvoiceType type) {
 
@@ -101,7 +102,7 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
                 product.setQuantityInStock(product.getQuantityInStock() + invoiceProduct.getQuantity());
 
                 InvoiceProductDto invoiceProductDto = mapperUtil.convert(invoiceProduct, new InvoiceProductDto());
-                invoiceProductDto.setRemainingQuantity(invoiceProduct.getQuantity());
+//                invoiceProductDto.setRemainingQuantity(invoiceProduct.getQuantity());
 
                 invoiceProductRepository.save(mapperUtil.convert(invoiceProductDto, new InvoiceProduct()));
             }
@@ -117,8 +118,6 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
                     InvoiceProductDto invoiceProductDto = mapperUtil.convert(invoiceProduct, new InvoiceProductDto());
 
                     calculateTotalPrice(invoiceProductDto);
-
-                    invoiceProductDto.setRemainingQuantity(product.getQuantityInStock());
 
                     invoiceProduct.setProfitLoss(invoiceService.calculateProfitLossForInvoiceProduct(invoiceProductDto));
 
@@ -155,8 +154,11 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
     }
 
     @Override
-    public List<InvoiceProduct> FindAllInvoiceProducts() {
-        return invoiceProductRepository.findAll();
+    public List<InvoiceProductDto> findAllInvoiceProducts() {
+        return invoiceProductRepository.findAll().stream()
+                .filter(invoiceProduct -> invoiceProduct.getInvoice().getInvoiceStatus().equals(InvoiceStatus.APPROVED))
+                .map(invoiceProduct -> mapperUtil.convert(invoiceProduct, new InvoiceProductDto()))
+                .collect(Collectors.toList());
     }
 
     @Override
