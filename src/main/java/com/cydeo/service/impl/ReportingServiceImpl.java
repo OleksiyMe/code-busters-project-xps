@@ -10,10 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,7 +37,7 @@ public class ReportingServiceImpl implements ReportingService {
     @Override
     public Map<LocalDate, BigDecimal> getMonthlyProfitLossDataMap() {
 
-        Map<LocalDate, BigDecimal> map = new TreeMap<>();
+        Map<LocalDate, BigDecimal> map = new LinkedHashMap<>();
         List<InvoiceProductDto> listOfInvoiceProducts =
                 invoiceProductService.findAllNotDeletedForCurrentCompanySortByDate().stream()
                         .filter(ip -> ip.getInvoice().getInvoiceStatus().equals(InvoiceStatus.APPROVED))
