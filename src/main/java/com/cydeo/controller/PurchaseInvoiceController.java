@@ -94,10 +94,10 @@ public class PurchaseInvoiceController {
         model.addAttribute("invoice", invoiceDto);
         model.addAttribute("vendors", clientVendorService.listAllVendors());
         model.addAttribute("newInvoiceProduct", new InvoiceProductDto());
-        model.addAttribute("products",
-                productService.listAllNotDeletedProductsForCurrentCompany());
         model.addAttribute("invoiceProducts",
                 invoiceProductService.getInvoiceProductsByInvoiceId(id));
+        model.addAttribute("products",
+                productService.listAllNotDeletedProductsForCurrentCompany());
 
         return "/invoice/purchase-invoice-update";
     }
