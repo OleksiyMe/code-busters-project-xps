@@ -1,6 +1,7 @@
 package com.cydeo.repository;
 
 import com.cydeo.entity.ClientVendor;
+import com.cydeo.entity.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -13,4 +14,5 @@ public interface ClientVendorRepository extends JpaRepository<ClientVendor, Long
 
     @Query("SELECT c from ClientVendor c order by c.clientVendorType, c.clientVendorName")
     List<ClientVendor> listSortedClientVendor();
+
 }

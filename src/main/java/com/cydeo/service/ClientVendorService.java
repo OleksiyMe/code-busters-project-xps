@@ -12,6 +12,10 @@ public interface ClientVendorService {
 
     ClientVendorDto findClientVendorById(Long id);
 
+    ClientVendorDto findById(long id) ;//uo
+
+    void update(ClientVendorDto clientVendorDto); //uo
+
     List<ClientVendorDto> listAllClientVendors();
 
 

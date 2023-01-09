@@ -1,6 +1,7 @@
 package com.cydeo.service.impl;
 
 import com.cydeo.dto.ClientVendorDto;
+import com.cydeo.dto.CompanyDto;
 import com.cydeo.dto.UserDto;
 import com.cydeo.entity.Address;
 import com.cydeo.entity.ClientVendor;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +43,31 @@ public class ClientVendorServiceImpl implements ClientVendorService {
         return mapperUtil.convert(clientVendorRepository.findById(id).get(), new ClientVendorDto());
 
     }
+    //---------------------------------------------------------------------------------uo
+    @Override
+    public ClientVendorDto findById(long id) {
+        ClientVendor clientVendor = clientVendorRepository.findById(id).get();
+        return mapperUtil.convert(clientVendor, new ClientVendorDto());
+    }
 
+    @Override
+    public void update(ClientVendorDto clientVendorDto) {
+        ClientVendor clientVendor = clientVendorRepository.findById(clientVendorDto.getId()).get();
+        clientVendor.setClientVendorType(clientVendorDto.getClientVendorType());
+
+        UserDto loggedInUser = securityService.getLoggedInUser();
+
+        CompanyDto companyDto = loggedInUser.getCompany();
+        Company company = mapperUtil.convert(companyDto, new Company());
+
+        ClientVendor convert = mapperUtil.convert(clientVendorDto, new ClientVendor());
+        convert.setId(clientVendorDto.getId());
+        convert.setCompany(company);
+
+        clientVendorRepository.save(convert);
+    }
+
+    //---------------------------------------------------------------------------------uo
     @Override
     public List<ClientVendorDto> listAllClientVendors() {
 
