@@ -89,7 +89,7 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
 
     }
 
-    @Transactional
+
     @Override
     public void completeApprovalProcedures(Long invoiceId, InvoiceType type) {
 
