@@ -61,8 +61,8 @@ public class SalesInvoiceController {
         model.addAttribute("products", productService.listAllNotDeletedProductsForCurrentCompany());
 
         invoiceDto.setInvoiceType(InvoiceType.SALES);
-        invoiceService.save(invoiceDto);
-        return "/invoice/sales-invoice-update";
+        invoiceDto = invoiceService.save(invoiceDto);
+        return "redirect:/salesInvoices/update/"+ invoiceDto.getId();
     }
 //--------------------------------------------------------------------------uosil  bas
 @GetMapping("/update/{id}")
@@ -70,41 +70,39 @@ public String editSalesInvoice(@PathVariable("id") Long id, Model model){
 
 
     model.addAttribute("invoice", invoiceService.findInvoiceById(id));
+    model.addAttribute("clients", clientVendorService.listAllClients());
 
-    model.addAttribute("clients", clientVendorService.findById(invoiceService.findInvoiceById(id).getClientVendor().getId()));
 
     model.addAttribute("newInvoiceProduct", new InvoiceProductDto());
-    model.addAttribute("newInvoiceProducts",invoiceProductService.getInvoiceProductsByInvoiceId(id));
+    model.addAttribute("invoiceProducts",invoiceProductService.getInvoiceProductsByInvoiceId(id));
 
     model.addAttribute("products", productService.listAllNotDeletedProductsForCurrentCompany());
 
     return "/invoice/sales-invoice-update";
 }
+    @PostMapping("/update/{id}")
+    public String updatePurchaseInvoiceFinish(@PathVariable("id") Long id,
+                                              @ModelAttribute("invoice") InvoiceDto invoiceDto){
+        invoiceDto.setInvoiceProducts(invoiceProductService.getInvoiceProductsByInvoiceId(invoiceDto.getId()));
+        invoiceDto.setInvoiceType(InvoiceType.SALES);
+        invoiceService.save(invoiceDto);
+        return "redirect:/salesInvoices/list";
+    }
 
-//    @PostMapping("/update/{id}")
-//    public String update(/*@Valid */@PathVariable("id") Long id,@ModelAttribute("clientVendor") ClientVendorDto clientVendorDto,
-//                                    BindingResult bindingResult, Model model,InvoiceDto invoiceDto) {
-//
-//
-//        if(bindingResult.hasErrors()){
-//            model.addAttribute("clientVendor", clientVendorDto);
-//            model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
-//
-//            return "clientVendor/clientVendor-update";
-//        }
-//        invoiceService.save(invoiceDto);
-//
-//       return "redirect:/salesInvoices/list";
-//    }
-//    @PostMapping("/addInvoiceProduct/{id}")
-//    public String addInvoiceProductToSalesInvoice(@PathVariable("id") Long id,
-//                                             @ModelAttribute("invoice") InvoiceDto invoiceDto,Model model) {
-//
-//        InvoiceProductDto invoiceProductDto = new InvoiceProductDto();
-//        model.addAttribute("newInvoiceProduct", invoiceProductService.findAllNotDeletedForCurrentCompany());
-//        return "redirect:/salesInvoices/update/";
-//    }
-//
+    @PostMapping("/addInvoiceProduct/{id}")
+    public String addInvoiceProductToInvoice(@PathVariable("id") Long id,
+                                             @ModelAttribute("invoice") InvoiceDto invoiceDto,
+                                             @ModelAttribute("newInvoiceProduct") InvoiceProductDto invoiceProductDto
+    ) {
+
+       invoiceProductDto.setId(null); //need to set null, bec
+        Long invoiceId = invoiceDto.getId();
+        invoiceProductService.save(invoiceId, invoiceProductDto);
+
+        return "redirect:/salesInvoices/update/"+ invoiceId;
+       // return "redirect:/salesInvoices/list/";
+    }
+
 
     ////--------------------------------------------------------------------------uosil son
 
