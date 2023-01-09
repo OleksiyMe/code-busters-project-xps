@@ -89,7 +89,7 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
 
     }
 
- 
+    @Transactional
     @Override
     public void completeApprovalProcedures(Long invoiceId, InvoiceType type) {
 
@@ -99,16 +99,30 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
             for(InvoiceProduct invoiceProduct: invoiceProducts){
                 Product product = invoiceProduct.getProduct();
                 product.setQuantityInStock(product.getQuantityInStock() + invoiceProduct.getQuantity());
-                invoiceProduct.setRemainingQuantity(invoiceProduct.getQuantity());
-                invoiceProductRepository.save(invoiceProduct);
+
+                InvoiceProductDto invoiceProductDto = mapperUtil.convert(invoiceProduct, new InvoiceProductDto());
+                invoiceProductDto.setRemainingQuantity(invoiceProduct.getQuantity());
+
+                invoiceProductRepository.save(mapperUtil.convert(invoiceProductDto, new InvoiceProduct()));
             }
         } else {
             for(InvoiceProduct invoiceProduct: invoiceProducts){
                 Product product = invoiceProduct.getProduct();
 
                 if(invoiceProduct.getQuantity() <= invoiceProduct.getProduct().getQuantityInStock()){
+
                     product.setQuantityInStock(product.getQuantityInStock() - invoiceProduct.getQuantity());
+
+                    InvoiceProductDto invoiceProductDto = mapperUtil.convert(invoiceProduct, new InvoiceProductDto());
+
+                    calculateTotalPrice(invoiceProductDto);
+
+                    invoiceProductDto.setRemainingQuantity(product.getQuantityInStock());
+
+                    invoiceProduct.setProfitLoss(invoiceService.calculateProfitLossForInvoiceProduct(invoiceProductDto));
+
                     invoiceProductRepository.save(invoiceProduct);
+
                 } else{
                     throw new RuntimeException("Not enough products for sale");
                 }
@@ -154,6 +168,12 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
                .filter(invoiceProductDto -> invoiceProductDto.getInvoice().getInvoiceType().equals(InvoiceType.SALES))
                .collect(Collectors.toList());
 
+    }
+
+    private void calculateTotalPrice(InvoiceProductDto invoiceProductDto){
+        BigDecimal price = BigDecimal.valueOf(invoiceProductDto.getQuantity()).multiply(invoiceProductDto.getPrice());
+        BigDecimal tax = price.multiply(BigDecimal.valueOf(invoiceProductDto.getTax())).divide(BigDecimal.valueOf(100));
+        invoiceProductDto.setTotal(price.add(tax));
     }
 
 }
