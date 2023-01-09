@@ -65,7 +65,6 @@ public class UserController {
 
             return "/user/user-create";
         }
-
         userService.save(userDto);
         return "redirect:/users/list";
     }

@@ -21,8 +21,16 @@ public class ReportingController {
     public String listStockReport(Model model) throws Exception {
 
         model.addAttribute("invoiceProducts",reportingService.getStockData());
-
         return "/report/stock-report";
+    }
+
+    @GetMapping("/profitLossData")
+    public String getPLReport(Model model) throws Exception {
+
+        model.addAttribute("monthlyProfitLossDataMap",
+                reportingService.getMonthlyProfitLossDataMap());
+
+        return "/report/profit-loss-report";
 
     }
 

@@ -141,7 +141,7 @@ public class ClientVendorServiceImpl implements ClientVendorService {
         ClientVendorDto clientVendorDto = findClientVendorById(id);
         if (invoiceService.listAllNotDeletedInvoicesForLoggedInUser().stream()
                 .anyMatch(invoiceDto -> invoiceDto.getClientVendor().getId().equals(id)))
-            return "!!ERROR!!: You can not delete ClientVendor " + clientVendorDto.getClientVendorName() +
+            return "You can not delete ClientVendor " + clientVendorDto.getClientVendorName() +
                     ". It is listed in invoice(invoices).";
 //return not empty string -- we can not delete ClientVendor
 //return empty string -- we can delete ClientVendor

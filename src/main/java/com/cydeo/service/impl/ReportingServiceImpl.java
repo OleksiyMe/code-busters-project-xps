@@ -10,9 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,12 +30,28 @@ public class ReportingServiceImpl implements ReportingService {
         return invoiceProductService.findAllNotDeletedForCurrentCompanySortByDate().stream()
                 .filter(invoiceProductDto ->
                         invoiceProductDto.getInvoice().getInvoiceStatus().equals(InvoiceStatus.APPROVED))
-              //  .sorted(Comparator.comparing(invoiceProductDto -> invoiceProductDto.getInvoice().getDate()))
+                //  .sorted(Comparator.comparing(invoiceProductDto -> invoiceProductDto.getInvoice().getDate()))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Map<String, BigDecimal> getMonthlyProfitLossDataMap() {
-        return null;
+    public Map<LocalDate, BigDecimal> getMonthlyProfitLossDataMap() {
+
+        Map<LocalDate, BigDecimal> map = new LinkedHashMap<>();
+        List<InvoiceProductDto> listOfInvoiceProducts =
+                invoiceProductService.findAllNotDeletedForCurrentCompanySortByDate().stream()
+                        .filter(ip -> ip.getInvoice().getInvoiceStatus().equals(InvoiceStatus.APPROVED))
+                        .collect(Collectors.toList());
+        for (InvoiceProductDto eachInvoiceProduct : listOfInvoiceProducts) {
+            LocalDate k = reduceToFirstDayOfMonth(eachInvoiceProduct.getInvoice().getDate());
+            BigDecimal v = map.getOrDefault(k, BigDecimal.valueOf(0))
+                    .add(eachInvoiceProduct.getProfitLoss());
+            map.put(k, v);
+        }
+        return map;
+    }
+
+    private LocalDate reduceToFirstDayOfMonth(LocalDate input) {
+        return LocalDate.of(input.getYear(), input.getMonth(), 1);
     }
 }
