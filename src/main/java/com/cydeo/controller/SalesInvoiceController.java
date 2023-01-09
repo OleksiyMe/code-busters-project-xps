@@ -83,6 +83,25 @@ public class SalesInvoiceController {
         return "/invoice/sales-invoice-list";
     }
 
+    @GetMapping("/print/{id}")
+    String getPdfOfInvoice(@PathVariable("id") Long invoiceId, Model model) {
+
+        String errormessage = invoiceService.invoiceCanBePrinted(invoiceId);
+        if (!errormessage.isBlank()) {
+            model.addAttribute("errorMessage", errormessage);
+            model.addAttribute("invoices", invoiceService.listAllSalesInvoices());
+            return "/invoice/sales-invoice-list";
+        }
+
+        InvoiceDto invoiceDto = invoiceService.findInvoiceById(invoiceId);
+        model.addAttribute("company", invoiceDto.getCompany());
+        model.addAttribute("invoice", invoiceDto);
+        model.addAttribute("invoiceProducts", invoiceDto.getInvoiceProducts());
+
+        return "/invoice/invoice_print.html";
+    }
+
+
 
 }
 

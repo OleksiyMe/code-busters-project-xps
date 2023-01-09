@@ -12,6 +12,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -27,7 +31,7 @@ public class PurchaseInvoiceController {
     private final InvoiceProductService invoiceProductService;
 
     public PurchaseInvoiceController(InvoiceService invoiceService, ClientVendorService clientVendorService, ProductService productService, InvoiceProductService invoiceProductService,
-                                      InvoiceProductService invoiceProductService1) {
+                                     InvoiceProductService invoiceProductService1) {
         this.invoiceService = invoiceService;
         this.clientVendorService = clientVendorService;
         this.productService = productService;
@@ -104,7 +108,7 @@ public class PurchaseInvoiceController {
 
     @PostMapping("/update/{id}")
     public String updatePurchaseInvoiceFinish(@PathVariable("id") Long id,
-                                              @ModelAttribute("invoice") InvoiceDto invoiceDto){
+                                              @ModelAttribute("invoice") InvoiceDto invoiceDto) {
         invoiceDto.setInvoiceProducts(invoiceProductService.getInvoiceProductsByInvoiceId(invoiceDto.getId()));
         invoiceDto.setInvoiceType(InvoiceType.PURCHASE);
         invoiceService.save(invoiceDto);
@@ -124,10 +128,28 @@ public class PurchaseInvoiceController {
     @GetMapping("/removeInvoiceProduct/{invoiceId}/{invoiceProductId}")
     public String deleteInvoiceProductFromPurchaseInvoice(@PathVariable("invoiceId") Long invoiceId,
                                                           @PathVariable("invoiceProductId") Long invoiceProductId) {
-     //check if it eligible for deleting
+        //check if it eligible for deleting
 
         invoiceProductService.SoftDelete(invoiceProductId);
         return "redirect:/purchaseInvoices/update/" + invoiceId;
+    }
+
+    @GetMapping("/print/{id}")
+    String getPdfOfInvoice(@PathVariable("id") Long invoiceId, Model model) {
+
+        String errormessage = invoiceService.invoiceCanBePrinted(invoiceId);
+        if (!errormessage.isBlank()) {
+            model.addAttribute("errorMessage", errormessage);
+            model.addAttribute("invoices", invoiceService.listAllPurchaseInvoices());
+            return "/invoice/purchase-invoice-list";
+        }
+
+        InvoiceDto invoiceDto = invoiceService.findInvoiceById(invoiceId);
+        model.addAttribute("company", invoiceDto.getCompany());
+        model.addAttribute("invoice", invoiceDto);
+        model.addAttribute("invoiceProducts", invoiceDto.getInvoiceProducts());
+
+        return "/invoice/invoice_print.html";
     }
 
 }

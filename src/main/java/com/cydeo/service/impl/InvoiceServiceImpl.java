@@ -10,7 +10,6 @@ import com.cydeo.repository.InvoiceRepository;
 import com.cydeo.service.*;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -213,9 +212,6 @@ public class InvoiceServiceImpl implements InvoiceService {
                 .sorted(comparing(InvoiceDto::getDate).reversed())
                 .limit(3)
                 .collect(Collectors.toList());
-
-
-
     }
 
     @Override
@@ -227,6 +223,18 @@ public class InvoiceServiceImpl implements InvoiceService {
         BigDecimal tax = price.multiply(BigDecimal.valueOf(invoiceProduct.getTax())).divide(BigDecimal.valueOf(100));
 
         return salesInvoiceProduct.getTotal().subtract(price.add(tax));
+    }
+
+    @Override
+    public String invoiceCanBePrinted(Long invoiceId) {
+        UserDto loggedInUser =securityService.getLoggedInUser();
+        //if we are trying to print invoice from other company, or deleted invoice - return error
+       if (!listAllNotDeletedInvoicesForLoggedInUser().stream()
+                .map(invoiceDto -> invoiceDto.getId())
+                .anyMatch(id->id==invoiceId))
+           return "Wrong invoice id";
+
+       return "";
     }
 
 
