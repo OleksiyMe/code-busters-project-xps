@@ -5,6 +5,7 @@ import com.cydeo.entity.*;
 import com.cydeo.enums.InvoiceStatus;
 import com.cydeo.enums.InvoiceType;
 import com.cydeo.mapper.MapperUtil;
+import com.cydeo.repository.InvoiceProductRepository;
 import com.cydeo.repository.InvoiceRepository;
 import com.cydeo.service.*;
 import org.springframework.context.annotation.Lazy;
@@ -23,6 +24,7 @@ import static java.util.Comparator.comparing;
 public class InvoiceServiceImpl implements InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
+    private final InvoiceProductRepository invoiceProductRepository;
     private final InvoiceProductService invoiceProductService;
     private final SecurityService securityService;
     private final MapperUtil mapperUtil;
@@ -30,10 +32,11 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final ClientVendorService clientVendorService;
 
 
-    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, InvoiceProductService invoiceProductService,
+    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, InvoiceProductRepository invoiceProductRepository, InvoiceProductService invoiceProductService,
                               SecurityService securityService, MapperUtil mapperUtil, ProductService productService,
                               @Lazy ClientVendorService clientVendorService) {
         this.invoiceRepository = invoiceRepository;
+        this.invoiceProductRepository = invoiceProductRepository;
         this.invoiceProductService = invoiceProductService;
         this.securityService = securityService;
         this.mapperUtil = mapperUtil;
@@ -212,9 +215,14 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public BigDecimal calculateProfitLossForInvoiceProduct(InvoiceDto invoiceDto) {
+    public BigDecimal calculateProfitLossForInvoiceProduct(InvoiceProductDto salesInvoiceProduct) {
 
-        return null;
+        InvoiceProduct invoiceProduct = invoiceProductRepository.findInvoiceProductById(salesInvoiceProduct.getId());
+
+        BigDecimal price = BigDecimal.valueOf(salesInvoiceProduct.getRemainingQuantity()).multiply(invoiceProduct.getPrice());
+        BigDecimal tax = price.multiply(BigDecimal.valueOf(invoiceProduct.getTax())).divide(BigDecimal.valueOf(100));
+
+        return salesInvoiceProduct.getTotal().subtract(price.add(tax));
     }
 
 
