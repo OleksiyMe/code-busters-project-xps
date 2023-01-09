@@ -21,4 +21,5 @@ public interface InvoiceProductRepository extends JpaRepository<InvoiceProduct, 
     List<InvoiceProduct> findAllByInvoice_InvoiceStatusAndInvoice_Company(InvoiceStatus invoiceStatus, Company company);
     List<InvoiceProduct> findInvoiceProductsByInvoiceInvoiceTypeAndProductAndRemainingQuantityNotOrderByIdAsc(InvoiceType invoiceType, Product product, Integer remainingQuantity);
     List<InvoiceProduct> findAllInvoiceProductByProductId(Long id);
+    List<InvoiceProduct> findAllByIsDeletedFalseOrderByInvoiceLastUpdateDateTimeDesc();
 }
