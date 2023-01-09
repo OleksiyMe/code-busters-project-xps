@@ -5,6 +5,7 @@ import com.cydeo.entity.*;
 import com.cydeo.enums.InvoiceStatus;
 import com.cydeo.enums.InvoiceType;
 import com.cydeo.mapper.MapperUtil;
+import com.cydeo.repository.InvoiceProductRepository;
 import com.cydeo.repository.InvoiceRepository;
 import com.cydeo.service.*;
 import org.springframework.context.annotation.Lazy;
@@ -191,30 +192,41 @@ public class InvoiceServiceImpl implements InvoiceService {
     public List<InvoiceDto> getLastThreeInvoices() {
         UserDto loggedInUser = securityService.getLoggedInUser();
 
-        return invoiceProductService.FindAllInvoiceProducts().stream()
+        return invoiceProductService.findAllInvoiceProducts().stream()
                 .filter(invoiceProduct -> invoiceProduct.getInvoice().getCompany().getId().equals(loggedInUser.getCompany().getId()))
                 .map(invoiceProduct -> {
 
-                    BigDecimal tax = BigDecimal.valueOf(invoiceProduct.getTax());
+                    BigDecimal price = BigDecimal.valueOf(invoiceProduct.getQuantity()).multiply(invoiceProduct.getPrice());
+                    BigDecimal tax = price.multiply(BigDecimal.valueOf(invoiceProduct.getTax())).divide(BigDecimal.valueOf(100));
+                    BigDecimal total = price.add(tax);
+
                     InvoiceDto invoiceDto = new InvoiceDto();
                     invoiceDto.setInvoiceNo(invoiceProduct.getInvoice().getInvoiceNo());
                     invoiceDto.setDate(invoiceProduct.getInvoice().getDate());
                     invoiceDto.setClientVendor(mapperUtil.convert(invoiceProduct.getInvoice().getClientVendor(), new ClientVendorDto()));
-                    invoiceDto.setPrice(invoiceProduct.getPrice().setScale(2, RoundingMode.CEILING));
-                    invoiceDto.setTax(BigDecimal.valueOf(invoiceProduct.getTax()));
-                    invoiceDto.setTotal(invoiceProduct.getPrice().multiply(tax.divide(BigDecimal.valueOf(100))).add(invoiceProduct.getPrice()).setScale(2, RoundingMode.CEILING));
+                    invoiceDto.setPrice(price.setScale(2, RoundingMode.CEILING));
+                    invoiceDto.setTax(tax);
+                    invoiceDto.setTotal(total.setScale(2, RoundingMode.CEILING));
                     return invoiceDto;
+
                 })
                 .sorted(comparing(InvoiceDto::getDate).reversed())
                 .limit(3)
                 .collect(Collectors.toList());
 
+
+
     }
 
     @Override
-    public BigDecimal calculateProfitLossForInvoiceProduct(InvoiceDto invoiceDto) {
+    public BigDecimal calculateProfitLossForInvoiceProduct(InvoiceProductDto salesInvoiceProduct) {
 
-        return null;
+        InvoiceProductDto invoiceProduct = invoiceProductService.findInvoiceProductById(salesInvoiceProduct.getId());
+
+        BigDecimal price = BigDecimal.valueOf(salesInvoiceProduct.getRemainingQuantity()).multiply(invoiceProduct.getPrice());
+        BigDecimal tax = price.multiply(BigDecimal.valueOf(invoiceProduct.getTax())).divide(BigDecimal.valueOf(100));
+
+        return salesInvoiceProduct.getTotal().subtract(price.add(tax));
     }
 
 

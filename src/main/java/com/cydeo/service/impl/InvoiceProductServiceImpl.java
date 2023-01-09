@@ -5,6 +5,7 @@ import com.cydeo.dto.UserDto;
 import com.cydeo.entity.*;
 import com.cydeo.entity.InvoiceProduct;
 import com.cydeo.entity.Product;
+import com.cydeo.enums.InvoiceStatus;
 import com.cydeo.enums.InvoiceType;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repository.InvoiceProductRepository;
@@ -89,26 +90,39 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
 
     }
 
- 
+
     @Override
     public void completeApprovalProcedures(Long invoiceId, InvoiceType type) {
 
         List<InvoiceProduct> invoiceProducts = invoiceProductRepository.findAllByInvoice_Id(invoiceId);
 
         if (type.getValue().equals("Purchase")) {
-            for(InvoiceProduct invoiceProduct: invoiceProducts){
+            for (InvoiceProduct invoiceProduct : invoiceProducts) {
                 Product product = invoiceProduct.getProduct();
                 product.setQuantityInStock(product.getQuantityInStock() + invoiceProduct.getQuantity());
-                invoiceProduct.setRemainingQuantity(invoiceProduct.getQuantity());
-                invoiceProductRepository.save(invoiceProduct);
+
+                InvoiceProductDto invoiceProductDto = mapperUtil.convert(invoiceProduct, new InvoiceProductDto());
+//                invoiceProductDto.setRemainingQuantity(invoiceProduct.getQuantity());
+
+                invoiceProductRepository.save(mapperUtil.convert(invoiceProductDto, new InvoiceProduct()));
             }
         } else {
-            for(InvoiceProduct invoiceProduct: invoiceProducts){
+            for (InvoiceProduct invoiceProduct : invoiceProducts) {
                 Product product = invoiceProduct.getProduct();
 
+
                 if(invoiceProduct.getQuantity() <= invoiceProduct.getProduct().getQuantityInStock()){
+
                     product.setQuantityInStock(product.getQuantityInStock() - invoiceProduct.getQuantity());
+
+                    InvoiceProductDto invoiceProductDto = mapperUtil.convert(invoiceProduct, new InvoiceProductDto());
+
+                    calculateTotalPrice(invoiceProductDto);
+
+                    invoiceProduct.setProfitLoss(invoiceService.calculateProfitLossForInvoiceProduct(invoiceProductDto));
+
                     invoiceProductRepository.save(invoiceProduct);
+
                 } else{
                     throw new RuntimeException("Not enough products for sale");
                 }
@@ -140,8 +154,11 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
     }
 
     @Override
-    public List<InvoiceProduct> FindAllInvoiceProducts() {
-        return invoiceProductRepository.findAll();
+    public List<InvoiceProductDto> findAllInvoiceProducts() {
+        return invoiceProductRepository.findAll().stream()
+                .filter(invoiceProduct -> invoiceProduct.getInvoice().getInvoiceStatus().equals(InvoiceStatus.APPROVED))
+                .map(invoiceProduct -> mapperUtil.convert(invoiceProduct, new InvoiceProductDto()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -149,11 +166,26 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
 
         UserDto loggedInUser = securityService.getLoggedInUser();
 
-       return findAllNotDeleted().stream()
+        return findAllNotDeleted().stream()
                 .filter(invoiceProductDto -> invoiceProductDto.getInvoice().getCompany().getId().equals(loggedInUser.getCompany().getId()))
-               .filter(invoiceProductDto -> invoiceProductDto.getInvoice().getInvoiceType().equals(InvoiceType.SALES))
-               .collect(Collectors.toList());
+                .collect(Collectors.toList());
 
+    }
+
+    @Override
+    public List<InvoiceProductDto> findAllNotDeletedForCurrentCompanySortByDate() {
+        UserDto loggedInUser = securityService.getLoggedInUser();
+        return invoiceProductRepository.findAllByIsDeletedFalseOrderByInvoiceLastUpdateDateTimeDesc().stream()
+                .map(invoiceProduct -> mapperUtil.convert(invoiceProduct, new InvoiceProductDto()))
+                .filter(invoiceProductDto -> invoiceProductDto.getInvoice().getCompany().getId()
+                        .equals(loggedInUser.getCompany().getId()))
+                .collect(Collectors.toList());
+    }
+
+    private void calculateTotalPrice(InvoiceProductDto invoiceProductDto){
+        BigDecimal price = BigDecimal.valueOf(invoiceProductDto.getQuantity()).multiply(invoiceProductDto.getPrice());
+        BigDecimal tax = price.multiply(BigDecimal.valueOf(invoiceProductDto.getTax())).divide(BigDecimal.valueOf(100));
+        invoiceProductDto.setTotal(price.add(tax));
     }
 
 }

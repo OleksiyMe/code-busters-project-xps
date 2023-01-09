@@ -96,10 +96,8 @@ public class ProductServiceImpl implements ProductService {
     public String productCanNotBeDeleted(Long productId) {
 
         if (invoiceProductService.findAllNotDeleted().stream()
-                .anyMatch(invoiceDto -> invoiceDto.getProduct().getId().equals(productId))
-        || productId==111
-        )
-            return "!!ERROR!!: Product with id " + productId +
+                .anyMatch(invoiceDto -> invoiceDto.getProduct().getId().equals(productId)))
+            return "Product with id " + productId +
                     " is listed in invoice. You can not delete it.";
         //return not empty string -- we can not delete Product
         //return empty string -- we can delete Product
