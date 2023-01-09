@@ -128,19 +128,19 @@ public class UserServiceImpl implements UserService {
         User userToBeDeleted = new User();
         if (userToBeDeletedOptional.isPresent())
             userToBeDeleted = userToBeDeletedOptional.get();
-        else return "!!ERROR!!: There is no user with id " + id;
+        else return "There is no user with id " + id;
         if (userToBeDeleted.getRole().getDescription().equals("Root User"))
-            return "!!ERROR!!: Only God can delete Root User :)";
+            return "Only God can delete Root User :)";
         if (!userToBeDeleted.getRole().getDescription().equals("Admin") &&
                 loggedInUser.getRole().getDescription().equals("Root User"))
-            return "!!ERROR!!: As a Root User you can only create and delete Admin users";
+            return "As a Root User you can only create and delete Admin users";
         if (userToBeDeleted.getRole().getDescription().equals("Admin") &&
                 !loggedInUser.getRole().getDescription().equals("Root User"))
-            return "!!ERROR!!: Only Root User can delete Admin user. And your role is "
+            return "Only Root User can delete Admin user. And your role is "
                     +loggedInUser.getRole().getDescription();
         if(!userToBeDeleted.getCompany().getId().equals(loggedInUser.getCompany().getId()) &&
         !loggedInUser.getRole().getDescription().equals("Root User"))
-            return "!!ERROR!!: As Admin user you can delete managers and employees only from " +
+            return "As Admin user you can delete managers and employees only from " +
                     "your own company";
         //return not empty string -- user can not be deleted
 

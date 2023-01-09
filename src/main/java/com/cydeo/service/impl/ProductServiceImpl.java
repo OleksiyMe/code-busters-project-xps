@@ -97,7 +97,7 @@ public class ProductServiceImpl implements ProductService {
 
         if (invoiceProductService.findAllNotDeleted().stream()
                 .anyMatch(invoiceDto -> invoiceDto.getProduct().getId().equals(productId)))
-            return "!!ERROR!!: Product with id " + productId +
+            return "Product with id " + productId +
                     " is listed in invoice. You can not delete it.";
         //return not empty string -- we can not delete Product
         //return empty string -- we can delete Product

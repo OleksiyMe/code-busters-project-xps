@@ -96,7 +96,7 @@ public class CategoryServiceImpl implements CategoryService {
         CategoryDto categoryDto = findCategoryById(id);
         if (productService.listAllNotDeletedProducts().stream()
                 .anyMatch(productDto -> productDto.getCategory().getId().equals(id)))
-            return "!!ERROR!!: You can not delete this Category. It has products inside.";
+            return "You can not delete this Category. It has products inside.";
 //return not empty string -- we can not delete ClientVendor
 //return empty string -- we can delete ClientVendor
         return "";
