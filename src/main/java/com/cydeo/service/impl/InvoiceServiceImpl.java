@@ -24,7 +24,6 @@ import static java.util.Comparator.comparing;
 public class InvoiceServiceImpl implements InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
-    private final InvoiceProductRepository invoiceProductRepository;
     private final InvoiceProductService invoiceProductService;
     private final SecurityService securityService;
     private final MapperUtil mapperUtil;
@@ -32,11 +31,10 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final ClientVendorService clientVendorService;
 
 
-    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, InvoiceProductRepository invoiceProductRepository, InvoiceProductService invoiceProductService,
+    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, InvoiceProductService invoiceProductService,
                               SecurityService securityService, MapperUtil mapperUtil, ProductService productService,
                               @Lazy ClientVendorService clientVendorService) {
         this.invoiceRepository = invoiceRepository;
-        this.invoiceProductRepository = invoiceProductRepository;
         this.invoiceProductService = invoiceProductService;
         this.securityService = securityService;
         this.mapperUtil = mapperUtil;
@@ -194,30 +192,36 @@ public class InvoiceServiceImpl implements InvoiceService {
     public List<InvoiceDto> getLastThreeInvoices() {
         UserDto loggedInUser = securityService.getLoggedInUser();
 
-        return invoiceProductService.FindAllInvoiceProducts().stream()
+        return invoiceProductService.findAllInvoiceProducts().stream()
                 .filter(invoiceProduct -> invoiceProduct.getInvoice().getCompany().getId().equals(loggedInUser.getCompany().getId()))
                 .map(invoiceProduct -> {
 
-                    BigDecimal tax = BigDecimal.valueOf(invoiceProduct.getTax());
+                    BigDecimal price = BigDecimal.valueOf(invoiceProduct.getQuantity()).multiply(invoiceProduct.getPrice());
+                    BigDecimal tax = price.multiply(BigDecimal.valueOf(invoiceProduct.getTax())).divide(BigDecimal.valueOf(100));
+                    BigDecimal total = price.add(tax);
+
                     InvoiceDto invoiceDto = new InvoiceDto();
                     invoiceDto.setInvoiceNo(invoiceProduct.getInvoice().getInvoiceNo());
                     invoiceDto.setDate(invoiceProduct.getInvoice().getDate());
                     invoiceDto.setClientVendor(mapperUtil.convert(invoiceProduct.getInvoice().getClientVendor(), new ClientVendorDto()));
-                    invoiceDto.setPrice(invoiceProduct.getPrice().setScale(2, RoundingMode.CEILING));
-                    invoiceDto.setTax(BigDecimal.valueOf(invoiceProduct.getTax()));
-                    invoiceDto.setTotal(invoiceProduct.getPrice().multiply(tax.divide(BigDecimal.valueOf(100))).add(invoiceProduct.getPrice()).setScale(2, RoundingMode.CEILING));
+                    invoiceDto.setPrice(price.setScale(2, RoundingMode.CEILING));
+                    invoiceDto.setTax(tax);
+                    invoiceDto.setTotal(total.setScale(2, RoundingMode.CEILING));
                     return invoiceDto;
+
                 })
                 .sorted(comparing(InvoiceDto::getDate).reversed())
                 .limit(3)
                 .collect(Collectors.toList());
+
+
 
     }
 
     @Override
     public BigDecimal calculateProfitLossForInvoiceProduct(InvoiceProductDto salesInvoiceProduct) {
 
-        InvoiceProduct invoiceProduct = invoiceProductRepository.findInvoiceProductById(salesInvoiceProduct.getId());
+        InvoiceProductDto invoiceProduct = invoiceProductService.findInvoiceProductById(salesInvoiceProduct.getId());
 
         BigDecimal price = BigDecimal.valueOf(salesInvoiceProduct.getRemainingQuantity()).multiply(invoiceProduct.getPrice());
         BigDecimal tax = price.multiply(BigDecimal.valueOf(invoiceProduct.getTax())).divide(BigDecimal.valueOf(100));
