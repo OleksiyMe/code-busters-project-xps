@@ -40,7 +40,7 @@ public class ClientVendorServiceImpl implements ClientVendorService {
     @Override
     public ClientVendorDto findClientVendorById(Long id) {
 
-        return mapperUtil.convert(clientVendorRepository.findById(id).get(), new ClientVendorDto());
+       return mapperUtil.convert(clientVendorRepository.findById(id).get(), new ClientVendorDto());
 
     }
     //---------------------------------------------------------------------------------uo
@@ -75,15 +75,10 @@ public class ClientVendorServiceImpl implements ClientVendorService {
 
         UserDto loggedInUser = securityService.getLoggedInUser();
 
-        Company currentCompany = mapperUtil.convert(
-                securityService.getLoggedInUser().getCompany(), new Company());
-
         return clientVendorList.stream()
                 .filter(clientVendor -> clientVendor.getCompany().getId().equals(loggedInUser.getCompany().getId()))
                 .map(clientVendor -> mapperUtil.convert(clientVendor, new ClientVendorDto()))
                 .collect(Collectors.toList());
-
-
     }
 
     @Override
