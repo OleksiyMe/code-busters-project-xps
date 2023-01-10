@@ -25,4 +25,6 @@ public interface InvoiceProductService {
 
    List<InvoiceProductDto> findAllNotDeletedForCurrentCompany();
     List<InvoiceProductDto> findAllNotDeletedForCurrentCompanySortByDate();
+
+    void addToRepository(InvoiceProduct invoiceProduct);
 }
