@@ -35,7 +35,7 @@ public class SalesInvoiceController {
     }
 
     @GetMapping("/create")
-    public String createSalesInvoice(Model model){
+    public String createSalesInvoice(Model model) {
 
         InvoiceDto invoiceDto = new InvoiceDto();
         invoiceDto.setInvoiceNo(invoiceService.generateInvoiceNumber(InvoiceType.SALES));
@@ -47,9 +47,9 @@ public class SalesInvoiceController {
     }
 
     @PostMapping("/create")
-    public String saveSalesInvoice(@Valid @ModelAttribute("newSalesInvoice") InvoiceDto invoiceDto, BindingResult bindingResult, Model model){
+    public String saveSalesInvoice(@Valid @ModelAttribute("newSalesInvoice") InvoiceDto invoiceDto, BindingResult bindingResult, Model model) {
 
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             model.addAttribute("clients", clientVendorService.listAllClients());
             return "invoice/sales-invoice-create";
         }
@@ -62,27 +62,29 @@ public class SalesInvoiceController {
 
         invoiceDto.setInvoiceType(InvoiceType.SALES);
         invoiceDto = invoiceService.save(invoiceDto);
-        return "redirect:/salesInvoices/update/"+ invoiceDto.getId();
+        return "redirect:/salesInvoices/update/" + invoiceDto.getId();
     }
-//--------------------------------------------------------------------------uosil  bas
-@GetMapping("/update/{id}")
-public String editSalesInvoice(@PathVariable("id") Long id, Model model){
+
+    //--------------------------------------------------------------------------uosil  bas
+    @GetMapping("/update/{id}")
+    public String editSalesInvoice(@PathVariable("id") Long id, Model model) {
 
 
-    model.addAttribute("invoice", invoiceService.findInvoiceById(id));
-    model.addAttribute("clients", clientVendorService.listAllClients());
+        model.addAttribute("invoice", invoiceService.findInvoiceById(id));
+        model.addAttribute("clients", clientVendorService.listAllClients());
 
 
-    model.addAttribute("newInvoiceProduct", new InvoiceProductDto());
-    model.addAttribute("invoiceProducts",invoiceProductService.getInvoiceProductsByInvoiceId(id));
+        model.addAttribute("newInvoiceProduct", new InvoiceProductDto());
+        model.addAttribute("invoiceProducts", invoiceProductService.getInvoiceProductsByInvoiceId(id));
 
-    model.addAttribute("products", productService.listAllNotDeletedProductsForCurrentCompany());
+        model.addAttribute("products", productService.listAllNotDeletedProductsForCurrentCompany());
 
-    return "/invoice/sales-invoice-update";
-}
+        return "/invoice/sales-invoice-update";
+    }
+
     @PostMapping("/update/{id}")
     public String updatePurchaseInvoiceFinish(@PathVariable("id") Long id,
-                                              @ModelAttribute("invoice") InvoiceDto invoiceDto){
+                                              @ModelAttribute("invoice") InvoiceDto invoiceDto) {
         invoiceDto.setInvoiceProducts(invoiceProductService.getInvoiceProductsByInvoiceId(invoiceDto.getId()));
         invoiceDto.setInvoiceType(InvoiceType.SALES);
         invoiceService.save(invoiceDto);
@@ -95,17 +97,21 @@ public String editSalesInvoice(@PathVariable("id") Long id, Model model){
                                              @ModelAttribute("newInvoiceProduct") InvoiceProductDto invoiceProductDto
     ) {
 
-       invoiceProductDto.setId(null); //need to set null, bec
+        invoiceProductDto.setId(null); //need to set null, bec
         Long invoiceId = invoiceDto.getId();
         invoiceProductService.save(invoiceId, invoiceProductDto);
 
-        return "redirect:/salesInvoices/update/"+ invoiceId;
-       // return "redirect:/salesInvoices/list/";
+        return "redirect:/salesInvoices/update/" + invoiceId;
     }
 
+    @GetMapping("/removeInvoiceProduct/{invoiceId}/{invoiceProductId}")
+    public String deleteInvoiceProductFromPurchaseInvoice(@PathVariable("invoiceId") Long invoiceId,
+                                                          @PathVariable("invoiceProductId") Long invoiceProductId) {
+        //check if it eligible for deleting
 
-    ////--------------------------------------------------------------------------uosil son
-
+        invoiceProductService.SoftDelete(invoiceProductId);
+        return "redirect:/salesInvoices/update/" + invoiceId;
+    }
 
     @GetMapping("/delete/{id}")
     public String deleteSalesInvoice(@PathVariable("id") Long id) {
@@ -114,6 +120,7 @@ public String editSalesInvoice(@PathVariable("id") Long id, Model model){
 
         return "redirect:/salesInvoices/list";
     }
+
     @GetMapping("/approve/{id}")
     public String approveSalesInvoice(@PathVariable Long id) {
 
@@ -130,7 +137,7 @@ public String editSalesInvoice(@PathVariable("id") Long id, Model model){
     }
 
     @GetMapping("/print/{id}")
-    String getPdfOfInvoice(@PathVariable("id") Long invoiceId, Model model) {
+    String printInvoice(@PathVariable("id") Long invoiceId, Model model) {
 
         String errormessage = invoiceService.invoiceCanBePrinted(invoiceId);
         if (!errormessage.isBlank()) {
@@ -146,7 +153,6 @@ public String editSalesInvoice(@PathVariable("id") Long id, Model model){
 
         return "/invoice/invoice_print.html";
     }
-
 
 
 }
