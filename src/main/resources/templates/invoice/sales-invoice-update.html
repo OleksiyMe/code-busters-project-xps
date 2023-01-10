@@ -27,8 +27,10 @@
                                                             <div class="form-group">
                                                                 <div class="controls">
                                                                     <label>Invoice No</label>
-                                                                    <input type="text" th:field="*{invoiceNo}" placeholder="Invoice No" readonly
-                                                                           class="form-control" required="required" aria-invalid="false">
+                                                                    <input type="text" th:field="*{invoiceNo}"
+                                                                           placeholder="Invoice No" readonly
+                                                                           class="form-control" required="required"
+                                                                           aria-invalid="false">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -36,8 +38,10 @@
                                                             <div class="form-group">
                                                                 <div class="controls">
                                                                     <label>Date</label>
-                                                                    <input type="text" th:field="*{date}" placeholder="Date" readonly
-                                                                           class="form-control" required="required" aria-invalid="false">
+                                                                    <input type="text" th:field="*{date}"
+                                                                           placeholder="Date" readonly
+                                                                           class="form-control" required="required"
+                                                                           aria-invalid="false">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -45,13 +49,15 @@
                                                             <div class="form-group">
                                                                 <div class="controls">
                                                                     <label>Client</label>
-                                                                    <select id="clientVendor" name ="clientVendor" class="custom-select" th:with="clientVendor=*{clientVendor}">
-                                                                        <option th:each= "clientVendor:${clients}"
+                                                                    <select id="clientVendor" name="clientVendor"
+                                                                            class="custom-select"
+                                                                            th:with="clientVendor=*{clientVendor}">
+                                                                        <option th:each="clientVendor:${clients}"
                                                                                 th:value="${clientVendor.id}"
                                                                                 th:text="${clientVendor.getClientVendorName}"
                                                                                 th:selected="${clientVendor.id}==${invoice.clientVendor.id}"></option>
                                                                     </select>
-                                                                </div>
+                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -59,9 +65,12 @@
                                                         <button class="btn btn-success mb-2 mb-sm-0 mr-sm-2"
                                                                 type="submit" name="action" value="save">Save
                                                         </button>
-                                                        <button class="btn btn-danger mb-2 mb-sm-0 mr-sm-2"
-                                                                type="reset">Reset
-                                                        </button>
+                                                        <a href="/salesInvoices/list">
+                                                            <button class="btn btn-danger mb-2 mb-sm-0 mr-sm-2"
+                                                                    type="button">
+                                                                Cancel
+                                                            </button>
+                                                        </a>
                                                     </div>
                                                 </form>
                                             </div>
@@ -88,10 +97,12 @@
                                                             <div class="form-group">
                                                                 <div class="controls">
                                                                     <label>Product Name</label>
-                                                                    <select id="product" class="form-control" th:field="*{product}">
+                                                                    <select id="product" class="form-control"
+                                                                            th:field="*{product}">
                                                                         <option th:if="${products.size() >1}"
-                                                                                th:value="''" th:text="'Select'" selected></option>
-                                                                        <option th:each= "product:${products}"
+                                                                                th:value="''" th:text="'Select'"
+                                                                                selected></option>
+                                                                        <option th:each="product:${products}"
                                                                                 th:if="${product.getQuantityInStock() > 0}"
                                                                                 th:value="${product.id}"
                                                                                 th:text="${product.name}"></option>
@@ -110,7 +121,8 @@
                                                             <div class="form-group">
                                                                 <div class="controls">
                                                                     <label>Quantity</label>
-                                                                    <input type="number" th:field="*{quantity}" placeholder="Quantity"
+                                                                    <input type="number" th:field="*{quantity}"
+                                                                           placeholder="Quantity"
                                                                            class="form-control" aria-invalid="false">
                                                                 </div>
                                                                 <div th:if="${#fields.hasErrors('quantity')}">
@@ -126,7 +138,8 @@
                                                             <div class="form-group">
                                                                 <div class="controls">
                                                                     <label>Unit Price (without tax)</label>
-                                                                    <input type="number" th:field="*{price}" placeholder="Price"
+                                                                    <input type="number" th:field="*{price}"
+                                                                           placeholder="Price"
                                                                            class="form-control" aria-invalid="false">
                                                                 </div>
                                                                 <div th:if="${#fields.hasErrors('price')}">
@@ -142,7 +155,8 @@
                                                             <div class="form-group">
                                                                 <div class="controls">
                                                                     <label>Tax Rate</label>
-                                                                    <input type="number" th:field="*{tax}" placeholder="Tax"
+                                                                    <input type="number" th:field="*{tax}"
+                                                                           placeholder="Tax"
                                                                            class="form-control" aria-invalid="false">
                                                                 </div>
                                                                 <div th:if="${#fields.hasErrors('tax')}">
@@ -155,7 +169,8 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="alert alert-danger text-center" role="alert" th:text="${error}" th:if="${error}"></div>
+                                                    <div class="alert alert-danger text-center" role="alert"
+                                                         th:text="${error}" th:if="${error}"></div>
                                                     <div class="col-12 d-flex flex-sm-row flex-column justify-content-end mt-3 mt-sm-2">
                                                         <button class="btn btn-success mb-2 mb-sm-0 mr-sm-2"
                                                                 type="submit" name="action" value="addItem">Add Product
@@ -202,8 +217,11 @@
                                                                 <td th:text="${invoiceProduct.tax}"></td>
                                                                 <td th:text="${invoiceProduct.total}"></td>
                                                                 <td>
-                                                                    <a th:href="@{/salesInvoices/removeInvoiceProduct/{invoiceId}/{invoiceProuductId}(invoiceId=${invoice.getId()}, invoiceProuductId=${invoiceProduct.getId()})}">
-                                                                        <button class="ft-minus btn-danger bg-light-primary" type="submit"></button>
+                                                                    <a th:href="@{/salesInvoices/removeInvoiceProduct/{invoiceId}/{invoiceProuductId}
+                                                                       (invoiceId=${invoice.getId()}, invoiceProuductId=${invoiceProduct.getId()})}">
+                                                                        <button class="btn btn-danger mb-2 mb-sm-0 mr-sm-2">
+                                                                            Delete
+                                                                        </button>
                                                                     </a>
                                                                 </td>
                                                             </tr>
@@ -223,7 +241,8 @@
                             <form>
                                 <div class="col-12 col-sm-6 col-lg-3 d-flex align-items-right">
                                     <a id="companylistlink" class="btn bg-dark text-light mb-1"
-                                       th:href="@{/salesInvoices/list}"><i class="fa fa-list mr-1"></i>Sales Invoice List</a>
+                                       th:href="@{/salesInvoices/list}"><i class="fa fa-list mr-1"></i>Sales Invoice
+                                        List</a>
                                 </div>
                             </form>
                         </div>
