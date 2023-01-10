@@ -65,7 +65,7 @@
                                                                     <td class="actions">
                                                                         <a th:if="${invoice.invoiceStatus.value == 'Awaiting Approval'}"
                                                                            th:href ="@{/salesInvoices/update/{id}(id=${invoice.getId()})}" type="button">
-                                                                            <button class="btn btn-primary mb-2 mb-sm-0 mr-sm-2">Edit</button>
+                                                                            <button class="btn btn-secondary mb-2 mb-sm-0 mr-sm-2">Edit</button>
                                                                         </a>
                                                                         <a th:if="${invoice.invoiceStatus.value == 'Awaiting Approval'}"
                                                                            th:href ="@{/salesInvoices/delete/{id}(id=${invoice.getId()})}" type="button">
