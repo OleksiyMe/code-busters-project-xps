@@ -229,11 +229,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 
             if(purchaseInvoiceProductDto.getRemainingQuantity() >= salesInvoiceProduct.getQuantity()){
 
-                BigDecimal purchasePrice = BigDecimal.valueOf(salesInvoiceProduct.getRemainingQuantity())
-                        .multiply((purchaseInvoiceProductDto.getPrice().multiply(BigDecimal.valueOf(((purchaseInvoiceProductDto.getTax()) + 100) / 100))));
+                BigDecimal purchasePrice = (BigDecimal.valueOf(salesInvoiceProduct.getRemainingQuantity()).multiply(purchaseInvoiceProductDto.getPrice()))
+                        .add((BigDecimal.valueOf(salesInvoiceProduct.getRemainingQuantity()).multiply(purchaseInvoiceProductDto.getPrice())).multiply(BigDecimal.valueOf(purchaseInvoiceProductDto.getTax()).divide(BigDecimal.valueOf(100))));
 
-                BigDecimal salesPrice = BigDecimal.valueOf(purchaseInvoiceProduct.getRemainingQuantity())
-                        .multiply((salesInvoiceProduct.getPrice().multiply(BigDecimal.valueOf(((salesInvoiceProduct.getTax()) + 100) / 100))));
+                BigDecimal salesPrice = (BigDecimal.valueOf(salesInvoiceProduct.getRemainingQuantity()).multiply(salesInvoiceProduct.getPrice()))
+                        .add((BigDecimal.valueOf(salesInvoiceProduct.getRemainingQuantity()).multiply(salesInvoiceProduct.getPrice())).multiply(BigDecimal.valueOf(salesInvoiceProduct.getTax()).divide(BigDecimal.valueOf(100))));
 
                 profitLoss = salesInvoiceProduct.getProfitLoss().add(salesPrice.subtract(purchasePrice));
 
@@ -245,14 +245,13 @@ public class InvoiceServiceImpl implements InvoiceService {
                 invoiceProductService.addToRepository(mapperUtil.convert(purchaseInvoiceProductDto, new InvoiceProduct()));
 
                 break;
-
             } else {
 
-                BigDecimal purchasePrice = BigDecimal.valueOf(salesInvoiceProduct.getRemainingQuantity())
-                        .multiply((purchaseInvoiceProductDto.getPrice().multiply(BigDecimal.valueOf(((purchaseInvoiceProductDto.getTax()) + 100) / 100))));
+                BigDecimal purchasePrice = (BigDecimal.valueOf(salesInvoiceProduct.getRemainingQuantity()).multiply(purchaseInvoiceProductDto.getPrice()))
+                        .add((BigDecimal.valueOf(salesInvoiceProduct.getRemainingQuantity()).multiply(purchaseInvoiceProductDto.getPrice())).multiply(BigDecimal.valueOf(purchaseInvoiceProductDto.getTax()).divide(BigDecimal.valueOf(100))));
 
-                BigDecimal salesPrice = BigDecimal.valueOf(salesInvoiceProduct.getRemainingQuantity())
-                        .multiply((salesInvoiceProduct.getPrice().multiply(BigDecimal.valueOf(((salesInvoiceProduct.getTax()) + 100) / 100))));
+                BigDecimal salesPrice = (BigDecimal.valueOf(salesInvoiceProduct.getRemainingQuantity()).multiply(salesInvoiceProduct.getPrice()))
+                        .add((BigDecimal.valueOf(salesInvoiceProduct.getRemainingQuantity()).multiply(salesInvoiceProduct.getPrice())).multiply(BigDecimal.valueOf(salesInvoiceProduct.getTax()).divide(BigDecimal.valueOf(100))));
 
                 profitLoss = salesInvoiceProduct.getProfitLoss().add(salesPrice.subtract(purchasePrice));
 
