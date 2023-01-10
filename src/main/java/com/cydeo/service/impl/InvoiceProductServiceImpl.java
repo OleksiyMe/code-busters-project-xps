@@ -102,26 +102,27 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
                 product.setQuantityInStock(product.getQuantityInStock() + invoiceProduct.getQuantity());
 
                 InvoiceProductDto invoiceProductDto = mapperUtil.convert(invoiceProduct, new InvoiceProductDto());
-//                invoiceProductDto.setRemainingQuantity(invoiceProduct.getQuantity());
+                invoiceProductDto.setRemainingQuantity(invoiceProduct.getQuantity());
 
                 invoiceProductRepository.save(mapperUtil.convert(invoiceProductDto, new InvoiceProduct()));
             }
         } else {
-            for (InvoiceProduct invoiceProduct : invoiceProducts) {
-                Product product = invoiceProduct.getProduct();
+            for (InvoiceProduct salesInvoiceProduct : invoiceProducts) {
+                Product product = salesInvoiceProduct.getProduct();
 
+                if(checkProductQuantity(mapperUtil.convert(salesInvoiceProduct, new InvoiceProductDto()))){
 
-                if(invoiceProduct.getQuantity() <= invoiceProduct.getProduct().getQuantityInStock()){
+                    product.setQuantityInStock(product.getQuantityInStock() - salesInvoiceProduct.getQuantity());
 
-                    product.setQuantityInStock(product.getQuantityInStock() - invoiceProduct.getQuantity());
+                    InvoiceProductDto salesInvoiceProductDto = mapperUtil.convert(salesInvoiceProduct, new InvoiceProductDto());
 
-                    InvoiceProductDto invoiceProductDto = mapperUtil.convert(invoiceProduct, new InvoiceProductDto());
+                    salesInvoiceProductDto.setRemainingQuantity(salesInvoiceProduct.getQuantity());
 
-                    calculateTotalPrice(invoiceProductDto);
+                    calculateTotalPrice(salesInvoiceProductDto);
 
-                    invoiceProduct.setProfitLoss(invoiceService.calculateProfitLossForInvoiceProduct(invoiceProductDto));
+                    salesInvoiceProduct.setProfitLoss(invoiceService.calculateProfitLossForInvoiceProduct(salesInvoiceProductDto));
 
-                    invoiceProductRepository.save(invoiceProduct);
+                    invoiceProductRepository.save(salesInvoiceProduct);
 
                 } else{
                     throw new RuntimeException("Not enough products for sale");
@@ -180,6 +181,11 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
                 .filter(invoiceProductDto -> invoiceProductDto.getInvoice().getCompany().getId()
                         .equals(loggedInUser.getCompany().getId()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void addToRepository(InvoiceProduct invoiceProduct) {
+        invoiceProductRepository.save(invoiceProduct);
     }
 
     private void calculateTotalPrice(InvoiceProductDto invoiceProductDto){

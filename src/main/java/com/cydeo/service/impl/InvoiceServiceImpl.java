@@ -139,12 +139,16 @@ public class InvoiceServiceImpl implements InvoiceService {
         Company currentCompany = mapperUtil.convert(
                 securityService.getLoggedInUser().getCompany(), new Company());
 
-        String maxInvoiceId = invoiceRepository.findMaxId(currentCompany.getId()).toString();
-        String maxSalesId = invoiceRepository.findMaxSalesId(currentCompany.getId()).toString();
+        String maxInvoiceId =
+                ((invoiceRepository.findMaxId(currentCompany.getId()))==null)?
+                        "0":(invoiceRepository.findMaxId(currentCompany.getId()).toString());
+        String maxSalesId = ((invoiceRepository.findMaxSalesId(currentCompany.getId()))==null)? "0" :
+                invoiceRepository.findMaxSalesId(currentCompany.getId()).toString();
 
         String num = "";
 
         if (invoiceType.getValue().equals("Purchase")) {
+
             for (int i = 0; i < maxInvoiceId.length(); i++) {
                 if (Character.isDigit(maxInvoiceId.charAt(i))) num += maxInvoiceId.charAt(i);
             }
@@ -158,7 +162,6 @@ public class InvoiceServiceImpl implements InvoiceService {
         }
 
     }
-
 
     @Override
     public List<InvoiceDto> listAllPurchaseInvoices() {
@@ -216,13 +219,57 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public BigDecimal calculateProfitLossForInvoiceProduct(InvoiceProductDto salesInvoiceProduct) {
+        Product product = mapperUtil.convert(salesInvoiceProduct.getProduct(), new Product());
 
-        InvoiceProductDto invoiceProduct = invoiceProductService.findInvoiceProductById(salesInvoiceProduct.getId());
+        List<InvoiceProduct> purchaseInvoiceProducts = invoiceProductService
+                .findInvoiceProductsByInvoiceTypeAndProductRemainingQuantity(InvoiceType.PURCHASE, product, 0);
 
-        BigDecimal price = BigDecimal.valueOf(salesInvoiceProduct.getRemainingQuantity()).multiply(invoiceProduct.getPrice());
-        BigDecimal tax = price.multiply(BigDecimal.valueOf(invoiceProduct.getTax())).divide(BigDecimal.valueOf(100));
+        BigDecimal profitLoss = BigDecimal.ZERO;
 
-        return salesInvoiceProduct.getTotal().subtract(price.add(tax));
+        for (InvoiceProduct purchaseInvoiceProduct : purchaseInvoiceProducts) {
+
+            InvoiceProductDto purchaseInvoiceProductDto = mapperUtil.convert(purchaseInvoiceProduct, new InvoiceProductDto());
+
+            if(purchaseInvoiceProductDto.getRemainingQuantity() >= salesInvoiceProduct.getQuantity()){
+
+                BigDecimal purchasePrice = (BigDecimal.valueOf(salesInvoiceProduct.getRemainingQuantity()).multiply(purchaseInvoiceProductDto.getPrice()))
+                        .add((BigDecimal.valueOf(salesInvoiceProduct.getRemainingQuantity()).multiply(purchaseInvoiceProductDto.getPrice())).multiply(BigDecimal.valueOf(purchaseInvoiceProductDto.getTax()).divide(BigDecimal.valueOf(100))));
+
+                BigDecimal salesPrice = (BigDecimal.valueOf(salesInvoiceProduct.getRemainingQuantity()).multiply(salesInvoiceProduct.getPrice()))
+                        .add((BigDecimal.valueOf(salesInvoiceProduct.getRemainingQuantity()).multiply(salesInvoiceProduct.getPrice())).multiply(BigDecimal.valueOf(salesInvoiceProduct.getTax()).divide(BigDecimal.valueOf(100))));
+
+                profitLoss = salesInvoiceProduct.getProfitLoss().add(salesPrice.subtract(purchasePrice));
+
+                purchaseInvoiceProductDto.setRemainingQuantity(purchaseInvoiceProductDto.getRemainingQuantity() - salesInvoiceProduct.getRemainingQuantity());
+                salesInvoiceProduct.setProfitLoss(profitLoss);
+                salesInvoiceProduct.setRemainingQuantity(0);
+
+                invoiceProductService.addToRepository(mapperUtil.convert(salesInvoiceProduct, new InvoiceProduct()));
+                invoiceProductService.addToRepository(mapperUtil.convert(purchaseInvoiceProductDto, new InvoiceProduct()));
+
+                break;
+            } else {
+
+                BigDecimal purchasePrice = (BigDecimal.valueOf(purchaseInvoiceProduct.getRemainingQuantity()).multiply(purchaseInvoiceProductDto.getPrice()))
+                        .add((BigDecimal.valueOf(purchaseInvoiceProduct.getRemainingQuantity()).multiply(purchaseInvoiceProductDto.getPrice())).multiply(BigDecimal.valueOf(purchaseInvoiceProductDto.getTax()).divide(BigDecimal.valueOf(100))));
+
+                BigDecimal salesPrice = (BigDecimal.valueOf(purchaseInvoiceProduct.getRemainingQuantity()).multiply(salesInvoiceProduct.getPrice()))
+                        .add((BigDecimal.valueOf(purchaseInvoiceProduct.getRemainingQuantity()).multiply(salesInvoiceProduct.getPrice())).multiply(BigDecimal.valueOf(salesInvoiceProduct.getTax()).divide(BigDecimal.valueOf(100))));
+
+                profitLoss = salesInvoiceProduct.getProfitLoss().add(salesPrice.subtract(purchasePrice));
+
+                salesInvoiceProduct.setRemainingQuantity(salesInvoiceProduct.getRemainingQuantity() - purchaseInvoiceProduct.getRemainingQuantity());
+                salesInvoiceProduct.setProfitLoss(profitLoss);
+                purchaseInvoiceProductDto.setRemainingQuantity(0);
+
+                invoiceProductService.addToRepository(mapperUtil.convert(salesInvoiceProduct, new InvoiceProduct()));
+                invoiceProductService.addToRepository(mapperUtil.convert(purchaseInvoiceProductDto, new InvoiceProduct()));
+
+            }
+
+        }
+        return profitLoss;
+
     }
 
     @Override
