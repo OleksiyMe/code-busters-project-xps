@@ -2,8 +2,8 @@ package com.cydeo.controller;
 
 import com.cydeo.dto.InvoiceDto;
 import com.cydeo.dto.InvoiceProductDto;
+import com.cydeo.dto.UserDto;
 import com.cydeo.enums.InvoiceType;
-import com.cydeo.repository.InvoiceProductRepository;
 import com.cydeo.service.ClientVendorService;
 import com.cydeo.service.InvoiceProductService;
 import com.cydeo.service.InvoiceService;
@@ -12,14 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.List;
 
 @Controller
 @RequestMapping("/purchaseInvoices")
@@ -93,7 +88,6 @@ public class PurchaseInvoiceController {
 
     @GetMapping("/update/{id}")
     public String updatePurchaseInvoiceStart(@PathVariable("id") Long id, Model model) {
-
         InvoiceDto invoiceDto = invoiceService.findInvoiceById(id);
         model.addAttribute("invoice", invoiceDto);
         model.addAttribute("vendors", clientVendorService.listAllVendors());
@@ -102,13 +96,14 @@ public class PurchaseInvoiceController {
                 invoiceProductService.getInvoiceProductsByInvoiceId(id));
         model.addAttribute("products",
                 productService.listAllNotDeletedProductsForCurrentCompany());
-
         return "/invoice/purchase-invoice-update";
     }
 
     @PostMapping("/update/{id}")
     public String updatePurchaseInvoiceFinish(@PathVariable("id") Long id,
-                                              @ModelAttribute("invoice") InvoiceDto invoiceDto) {
+                                         @ModelAttribute("invoice") InvoiceDto invoiceDto
+                                         ) {
+
         invoiceDto.setInvoiceProducts(invoiceProductService.getInvoiceProductsByInvoiceId(invoiceDto.getId()));
         invoiceDto.setInvoiceType(InvoiceType.PURCHASE);
         invoiceService.save(invoiceDto);
@@ -116,11 +111,21 @@ public class PurchaseInvoiceController {
     }
 
     @PostMapping("/addInvoiceProduct/{id}")
-    public String addInvoiceProductToInvoice(@PathVariable("id") Long id,
-                                             @ModelAttribute("newInvoiceProduct") InvoiceProductDto invoiceProductDto,
-                                             @ModelAttribute("invoice") InvoiceDto invoiceDto) {
+    public String addInvoiceProductToInvoice(@PathVariable("id") Long invoiceId,
+                                   @Valid    @ModelAttribute("newInvoiceProduct") InvoiceProductDto invoiceProductDto,
+                                             BindingResult bindingResult,
+                                             @ModelAttribute("invoice") InvoiceDto invoiceDto,Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("invoice", invoiceService.findInvoiceById(invoiceId));
+            model.addAttribute("newInvoiceProduct", invoiceProductDto);
+            model.addAttribute("vendors", clientVendorService.listAllVendors());
+            model.addAttribute("invoiceProducts",
+                    invoiceProductService.getInvoiceProductsByInvoiceId(invoiceId));
+            model.addAttribute("products",
+                    productService.listAllNotDeletedProductsForCurrentCompany());
+            return "/invoice/purchase-invoice-update";
+        }
         invoiceProductDto.setId(null); //need to set null, because id from ModelAttribute is equal invoice id, do not know why
-        Long invoiceId = invoiceDto.getId();
         invoiceProductService.save(invoiceId, invoiceProductDto);
         return "redirect:/purchaseInvoices/update/" + invoiceId;
     }
@@ -135,7 +140,7 @@ public class PurchaseInvoiceController {
     }
 
     @GetMapping("/print/{id}")
-    String getPdfOfInvoice(@PathVariable("id") Long invoiceId, Model model) {
+    String printInvoice(@PathVariable("id") Long invoiceId, Model model) {
 
         String errormessage = invoiceService.invoiceCanBePrinted(invoiceId);
         if (!errormessage.isBlank()) {
