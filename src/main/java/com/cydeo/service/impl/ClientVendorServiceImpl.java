@@ -72,8 +72,8 @@ public class ClientVendorServiceImpl implements ClientVendorService {
     public List<ClientVendorDto> listAllClientVendors() {
 
         List<ClientVendor> clientVendorList = clientVendorRepository.listSortedClientVendor();
-
         UserDto loggedInUser = securityService.getLoggedInUser();
+
 
         return clientVendorList.stream()
                 .filter(clientVendor -> clientVendor.getCompany().getId().equals(loggedInUser.getCompany().getId()))
