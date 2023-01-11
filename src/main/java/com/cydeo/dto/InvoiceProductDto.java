@@ -4,6 +4,7 @@ import lombok.*;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -17,7 +18,8 @@ public class InvoiceProductDto {
     private Long id;
 
     @NotNull(message = "Quantity is a required field.")
-    @Range(min = 1, max = 100, message = "Maximum order count is 100")
+    @Min(value = 1, message = "Minimum order count is 1")
+    @Max(value=100, message = "Maximum order count is 100")
     private Integer quantity;
 
     @NotNull(message = "Price is a required field.")
