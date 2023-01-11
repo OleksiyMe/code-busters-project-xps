@@ -388,8 +388,8 @@ class ClientVendorServiceImplTest {
         inOrder.verify(clientVendorRepository).findById(anyLong());
         inOrder.verify(mapperUtil).convert(any(ClientVendor.class), (any(ClientVendorDto.class)));
         inOrder.verify(invoiceService).listAllNotDeletedInvoicesForLoggedInUser();
-        Assertions.assertFalse(result1.isBlank());
-        Assertions.assertTrue(result2.isBlank());
+        Assertions.assertFalse(result1.isBlank());  //must be not blank (id 2L is listed in invoice
+        Assertions.assertTrue(result2.isBlank());//must be not blank (id 5L is not listed in invoice
 
     }
 
