@@ -47,7 +47,8 @@ public class SalesInvoiceController {
     }
 
     @PostMapping("/create")
-    public String saveSalesInvoice(@Valid @ModelAttribute("newSalesInvoice") InvoiceDto invoiceDto, BindingResult bindingResult, Model model) {
+    public String saveSalesInvoice(@Valid @ModelAttribute("newSalesInvoice") InvoiceDto invoiceDto,
+                                   BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("clients", clientVendorService.listAllClients());
@@ -92,13 +93,21 @@ public class SalesInvoiceController {
     }
 
     @PostMapping("/addInvoiceProduct/{id}")
-    public String addInvoiceProductToInvoice(@PathVariable("id") Long id,
-                                             @ModelAttribute("invoice") InvoiceDto invoiceDto,
-                                             @ModelAttribute("newInvoiceProduct") InvoiceProductDto invoiceProductDto
-    ) {
-
-        invoiceProductDto.setId(null); //need to set null, bec
-        Long invoiceId = invoiceDto.getId();
+    public String addInvoiceProductToInvoice(@PathVariable("id") Long invoiceId,
+                           @Valid @ModelAttribute("newInvoiceProduct") InvoiceProductDto invoiceProductDto,
+                                             BindingResult bindingResult,
+                                             @ModelAttribute("invoice") InvoiceDto invoiceDto,Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("invoice", invoiceService.findInvoiceById(invoiceId));
+            model.addAttribute("newInvoiceProduct", invoiceProductDto);
+            model.addAttribute("clients", clientVendorService.listAllClients());
+            model.addAttribute("invoiceProducts",
+                    invoiceProductService.getInvoiceProductsByInvoiceId(invoiceId));
+            model.addAttribute("products",
+                    productService.listAllNotDeletedProductsForCurrentCompany());
+            return "/invoice/sales-invoice-update";
+        }
+        invoiceProductDto.setId(null);
         invoiceProductService.save(invoiceId, invoiceProductDto);
 
         return "redirect:/salesInvoices/update/" + invoiceId;
