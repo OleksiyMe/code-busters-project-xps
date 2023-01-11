@@ -1,5 +1,6 @@
 package com.cydeo.controller;
 
+import com.cydeo.client.ConsumeCurrencyClient;
 import com.cydeo.dto.UserDto;
 import com.cydeo.service.CompanyService;
 import com.cydeo.service.RoleService;
@@ -10,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.net.http.HttpResponse;
 
 @Controller
 @RequestMapping("/users")
@@ -113,5 +115,9 @@ public class UserController {
         userService.deleteUserById(id);
         return "redirect:/users/list";
     }
+
+
+
+
 }
 

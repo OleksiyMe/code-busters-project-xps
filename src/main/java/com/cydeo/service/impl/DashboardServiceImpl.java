@@ -1,8 +1,10 @@
 package com.cydeo.service.impl;
 
+import com.cydeo.client.ConsumeCurrencyClient;
 import com.cydeo.dto.CurrencyDto;
 import com.cydeo.dto.InvoiceDto;
 import com.cydeo.dto.InvoiceProductDto;
+import com.cydeo.dto.feign.ConsumedCurrencyDto;
 import com.cydeo.service.DashboardService;
 import com.cydeo.service.InvoiceProductService;
 import com.cydeo.service.InvoiceService;
@@ -19,9 +21,12 @@ public class DashboardServiceImpl implements DashboardService {
     private final InvoiceService invoiceService;
     private final InvoiceProductService invoiceProductService;
 
-    public DashboardServiceImpl(InvoiceService invoiceService, InvoiceProductService invoiceProductService) {
+    private final ConsumeCurrencyClient consumeCurrencyClient;
+
+    public DashboardServiceImpl(InvoiceService invoiceService, InvoiceProductService invoiceProductService, ConsumeCurrencyClient consumeCurrencyClient) {
         this.invoiceService = invoiceService;
         this.invoiceProductService = invoiceProductService;
+        this.consumeCurrencyClient = consumeCurrencyClient;
     }
 
     @Override
@@ -63,7 +68,18 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public CurrencyDto getExchangeRates() {
-        return null;
+
+        ConsumedCurrencyDto consumedCurrencyDto = consumeCurrencyClient.getCurrency();
+
+        CurrencyDto currencyDto=CurrencyDto.builder()
+                .euro(consumedCurrencyDto.getRates().getEur())
+                .britishPound(consumedCurrencyDto.getRates().getGbp())
+                .canadianDollar(consumedCurrencyDto.getRates().getCad())
+                .japaneseYen(consumedCurrencyDto.getRates().getJpy())
+                .indianRupee(consumedCurrencyDto.getRates().getInr()).build();
+
+
+        return currencyDto;
     }
 
     @Override
