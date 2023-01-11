@@ -160,39 +160,7 @@ class ClientVendorServiceImplTest {
 
     }
 
-//    @Test
-//    @DisplayName("testing update()")
-//    void update_Test() {
-////Given part
-//        //Stubbing Behavior and return for our mocks
-//        when(clientVendorRepository.findById(anyLong()))
-//                .thenReturn(Optional.of(new ClientVendor()));
-//        when(securityService.getLoggedInUser())
-//                .thenReturn(new UserDto(1L, "Username@test.com", "Abc22#", "Abc22@", "Alex",
-//                        "First", "1234567890", null, new CompanyDto(1L, "CompanyName", "1234567890",
-//                        "http//www.vvv.com", new AddressDto(), CompanyStatus.ACTIVE),
-//                        true));
-//        when(mapperUtil.convert(any(CompanyDto.class), any(Company.class)))
-//                .thenReturn(new Company());
-//        when(mapperUtil.convert(any(ClientVendorDto.class), any(ClientVendor.class)))
-//                .thenReturn(new ClientVendor());
-//        when(clientVendorRepository.save(any(ClientVendor.class)))
-//                .thenReturn(new ClientVendor());
-//// When part
-//        ClientVendorDto clientVendorDto = new ClientVendorDto(1L, "Name name", "+111 (202) 555-0125",
-//                "http://www.vvv.com", ClientVendorType.CLIENT, new AddressDto(), new CompanyDto(1L, "CompanyName", "1234567890",
-//                "http//www.vvv.com", new AddressDto(), CompanyStatus.ACTIVE));
-//        clientVendorService.update(clientVendorDto);
-//// Then part
-//        //check the order of calling for these three mock
-//        InOrder inOrder = inOrder(clientVendorRepository, mapperUtil, securityService);
-//        //let us provide in which order calling for these two mock should be
-//        inOrder.verify(clientVendorRepository).findById(anyLong());
-//        inOrder.verify(securityService).getLoggedInUser();
-//        inOrder.verify(mapperUtil).convert(any(CompanyDto.class), any(Company.class));
-//        inOrder.verify(mapperUtil).convert(any(ClientVendorDto.class), any(ClientVendor.class));
-//
-//    }
+
 
     @Test
     @DisplayName("testing updateClientVendor()")
@@ -233,6 +201,25 @@ class ClientVendorServiceImplTest {
 
     }
 
+    @Test
+    @DisplayName("testing listAllClientVendors()")
+    void findClientVendorAddress_Test() {
+//Given part
+        //Stubbing Behavior and return for our mocks
+        ClientVendor clientVendor=new ClientVendor();
+        clientVendor.setAddress(new Address("1 Green Str","", "NewYork", "NY", "USA",
+                "12345-1234"));
+        when(clientVendorRepository.findById(anyLong()))
+                .thenReturn(Optional.of(clientVendor));
+// When part
+        Address address = clientVendorService.findClientVendorAddress(anyLong());
+// Then part
+        //check the order of calling for these three mock
+        InOrder inOrder = inOrder(clientVendorRepository);
+        //let us provide in which order calling for these two mock should be
+        inOrder.verify(clientVendorRepository).findById(anyLong());
+        Assertions.assertNotNull(address);
+    }
 
 
 
