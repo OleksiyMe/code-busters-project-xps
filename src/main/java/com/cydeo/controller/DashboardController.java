@@ -1,5 +1,6 @@
 package com.cydeo.controller;
 
+import com.cydeo.client.ConsumeCurrencyClient;
 import com.cydeo.service.CompanyService;
 import com.cydeo.service.DashboardService;
 import com.cydeo.service.InvoiceService;
@@ -13,11 +14,13 @@ public class DashboardController {
     private final DashboardService dashboardService;
     private final InvoiceService invoiceService;
     private final CompanyService companyService;
+    private final ConsumeCurrencyClient consumeCurrencyClient;
 
-    public DashboardController(DashboardService dashboardService, InvoiceService invoiceService, CompanyService companyService) {
+    public DashboardController(DashboardService dashboardService, InvoiceService invoiceService, CompanyService companyService, ConsumeCurrencyClient consumeCurrencyClient) {
         this.dashboardService = dashboardService;
         this.invoiceService = invoiceService;
         this.companyService = companyService;
+        this.consumeCurrencyClient = consumeCurrencyClient;
     }
 
     @GetMapping("/dashboard")
@@ -27,6 +30,9 @@ public class DashboardController {
         model.addAttribute("invoices", dashboardService.getLast3TransactionsByDate());
         model.addAttribute("exchangeRates", dashboardService.getExchangeRates());
         model.addAttribute("title", "Cydeo Accounting-Dashboard");
+
+
+
         return "/dashboard";
     }
 }
