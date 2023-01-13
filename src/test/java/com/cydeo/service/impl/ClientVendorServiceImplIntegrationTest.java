@@ -37,7 +37,6 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@ExtendWith(MockitoExtension.class)
 class ClientVendorServiceImplIntegrationTest {
 
     @Autowired
@@ -130,9 +129,7 @@ class ClientVendorServiceImplIntegrationTest {
             Assertions.assertEquals(clientVendorDto.getCompany().getId(),
                     userService.findByUsername("admin@greentech.com").getCompany().getId());
         }
-
     }
-
 
     @Test
     @Sql(scripts = "/testSqlScripts/createTestClientVendor.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
