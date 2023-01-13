@@ -8,7 +8,6 @@ import com.cydeo.enums.ClientVendorType;
 import com.cydeo.enums.CompanyStatus;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repository.ClientVendorRepository;
-import com.cydeo.service.ClientVendorService;
 import com.cydeo.service.CompanyService;
 import com.cydeo.service.InvoiceService;
 import com.cydeo.service.SecurityService;
@@ -29,7 +28,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ClientVendorServiceImplTest {
+class ClientVendorServiceImplUnitTest {
 
     @Mock
     ClientVendorRepository clientVendorRepository;
