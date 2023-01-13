@@ -11,6 +11,7 @@ import com.cydeo.service.InvoiceService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,9 +34,9 @@ public class DashboardServiceImpl implements DashboardService {
     public Map<String, BigDecimal> getSummaryNumbers() throws Exception {
          Map<String, BigDecimal> financialActivities = new HashMap<>();
 
-         financialActivities.put("totalCost", calculateTotalCost());
-         financialActivities.put("totalSales", calculateTotalSales());
-         financialActivities.put("profitLoss", calculateProfitLoss());
+         financialActivities.put("totalCost", calculateTotalCost().setScale(2, RoundingMode.CEILING));
+         financialActivities.put("totalSales", calculateTotalSales().setScale(2, RoundingMode.CEILING));
+         financialActivities.put("profitLoss", calculateProfitLoss().setScale(2, RoundingMode.CEILING));
 
         return financialActivities;
     }
