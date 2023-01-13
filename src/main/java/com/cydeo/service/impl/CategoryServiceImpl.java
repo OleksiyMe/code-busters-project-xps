@@ -38,7 +38,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto findCategoryById(Long id) {
-        return mapperUtil.convert(categoryRepository.getCategoryById(id), new CategoryDto());
+        return mapperUtil.convert(categoryRepository.getCategoryById(id).get(), new CategoryDto());
     }
 
     @Override
@@ -86,8 +86,6 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.getCategoryById(id).get();
         category.setIsDeleted(true);
         categoryRepository.save(category);
-
-        //where clause ??? we added it to Category Entity?
 
     }
 
