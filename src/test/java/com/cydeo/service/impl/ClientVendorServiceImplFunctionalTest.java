@@ -8,7 +8,6 @@ import com.cydeo.enums.ClientVendorType;
 import com.cydeo.enums.CompanyStatus;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repository.ClientVendorRepository;
-import com.cydeo.service.ClientVendorService;
 import com.cydeo.service.CompanyService;
 import com.cydeo.service.InvoiceService;
 import com.cydeo.service.SecurityService;
@@ -20,71 +19,72 @@ import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-class ClientVendorServiceImplTest {
+@SpringBootTest
+class ClientVendorServiceImplFunctionalTest {
 
-    @Mock
+    @Autowired
     ClientVendorRepository clientVendorRepository;
-    @Mock
+    @Autowired
     MapperUtil mapperUtil;
-    @Mock
+    @Autowired
     SecurityService securityService;
-    @Mock
+    @Autowired
     CompanyService companyService;
-    @Mock
+    @Autowired
     InvoiceService invoiceService;
-    @InjectMocks
+    @Autowired
     ClientVendorServiceImpl clientVendorService;
 
     @Test
-    @DisplayName("testing findClientVendorById()")
     void findClientVendorById_Test() {
 //Given part
-        //Stubbing Behavior and return for our mocks
-        when(clientVendorRepository.findById(anyLong()))
-                .thenReturn(Optional.of(new ClientVendor()));
-        when(mapperUtil.convert(any(ClientVendor.class), any(ClientVendorDto.class)))
-                .thenReturn(new ClientVendorDto());
+        Long id1 = 1L;
+        Long id2 = 999L;
+        String exceptionMessage="";
 // When part
-        ClientVendorDto clientVendorDto = clientVendorService.findClientVendorById(anyLong());
+        ClientVendorDto clientVendorDto1 = clientVendorService.findClientVendorById(id1);
+        try{
+            ClientVendorDto clientVendorDto2 = clientVendorService.findClientVendorById(id2);
+        }
+            catch (Exception e){
+            exceptionMessage=e.getMessage();
+            }
 // Then part
-        //check the order of calling for these two mocks
-        InOrder inOrder = inOrder(clientVendorRepository, mapperUtil);
-        //let us provide in which order calling for these two mock should be
-
-        inOrder.verify(clientVendorRepository).findById(anyLong());
-        inOrder.verify(mapperUtil).convert(any(ClientVendor.class), (any(ClientVendorDto.class)));
-        Assertions.assertTrue(clientVendorService.findClientVendorById(anyLong()) instanceof ClientVendorDto);
-        Assertions.assertNotNull(clientVendorDto);
+        Assertions.assertNotNull(clientVendorDto1);
+        Assertions.assertEquals(clientVendorDto1.getId(), id1);
+        Assertions.assertFalse(exceptionMessage.isBlank());
     }
 
     @Test
-    @DisplayName("testing findById()")
     void findById_Test() {
 //Given part
-        //Stubbing Behavior and return for our mocks
-        when(clientVendorRepository.findById(anyLong()))
-                .thenReturn(Optional.of(new ClientVendor()));
-        when(mapperUtil.convert(any(ClientVendor.class), any(ClientVendorDto.class)))
-                .thenReturn(new ClientVendorDto());
+        Long id1 = 1L;
+        Long id2 = 999L;
+        String exceptionMessage="";
 // When part
-        ClientVendorDto clientVendorDto = clientVendorService.findById(anyLong());
+        ClientVendorDto clientVendorDto1 = clientVendorService.findClientVendorById(id1);
+        try{
+            ClientVendorDto clientVendorDto2 = clientVendorService.findClientVendorById(id2);
+        }
+        catch (Exception e){
+            exceptionMessage=e.getMessage();
+        }
 // Then part
-        //check the order of calling for these two mocks
-        InOrder inOrder = inOrder(clientVendorRepository, mapperUtil);
-        //let us provide in which order calling for these two mock should be
-        inOrder.verify(clientVendorRepository).findById(anyLong());
-        inOrder.verify(mapperUtil).convert(any(ClientVendor.class), (any(ClientVendorDto.class)));
-        Assertions.assertTrue(clientVendorService.findById(anyLong()) instanceof ClientVendorDto);
-        Assertions.assertNotNull(clientVendorDto);
+        Assertions.assertNotNull(clientVendorDto1);
+        Assertions.assertEquals(clientVendorDto1.getId(), id1);
+        Assertions.assertFalse(exceptionMessage.isBlank());
     }
 
     @Test
@@ -383,7 +383,7 @@ class ClientVendorServiceImplTest {
         String result1 = clientVendorService.clientVendorCanNotBeDeleted(2L);
         String result2 = clientVendorService.clientVendorCanNotBeDeleted(5L);
 // Then part
-        InOrder inOrder = inOrder(invoiceService, clientVendorRepository,mapperUtil);
+        InOrder inOrder = inOrder(invoiceService, clientVendorRepository, mapperUtil);
         //let us provide in which order calling for these two mock should be
         inOrder.verify(clientVendorRepository).findById(anyLong());
         inOrder.verify(mapperUtil).convert(any(ClientVendor.class), (any(ClientVendorDto.class)));

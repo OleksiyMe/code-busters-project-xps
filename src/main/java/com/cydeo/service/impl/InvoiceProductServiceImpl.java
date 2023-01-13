@@ -31,6 +31,7 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
     private final MapperUtil mapperUtil;
     private final SecurityService securityService;
 
+
     public InvoiceProductServiceImpl(InvoiceProductRepository invoiceProductRepository,
                                      @Lazy InvoiceService invoiceService, ProductService productService,
                                      MapperUtil mapperUtil, SecurityService securityService) {
@@ -110,7 +111,7 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
             for (InvoiceProduct salesInvoiceProduct : invoiceProducts) {
                 Product product = salesInvoiceProduct.getProduct();
 
-                if(checkProductQuantity(mapperUtil.convert(salesInvoiceProduct, new InvoiceProductDto()))){
+                if (checkProductQuantity(mapperUtil.convert(salesInvoiceProduct, new InvoiceProductDto()))) {
 
                     product.setQuantityInStock(product.getQuantityInStock() - salesInvoiceProduct.getQuantity());
 
@@ -124,7 +125,7 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
 
                     invoiceProductRepository.save(salesInvoiceProduct);
 
-                } else{
+                } else {
                     throw new RuntimeException("Not enough products for sale");
                 }
             }
@@ -188,7 +189,7 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
         invoiceProductRepository.save(invoiceProduct);
     }
 
-    private void calculateTotalPrice(InvoiceProductDto invoiceProductDto){
+    private void calculateTotalPrice(InvoiceProductDto invoiceProductDto) {
         BigDecimal price = BigDecimal.valueOf(invoiceProductDto.getQuantity()).multiply(invoiceProductDto.getPrice());
         BigDecimal tax = price.multiply(BigDecimal.valueOf(invoiceProductDto.getTax())).divide(BigDecimal.valueOf(100));
         invoiceProductDto.setTotal(price.add(tax));
