@@ -92,12 +92,12 @@ public class ClientVendorServiceImpl implements ClientVendorService {
 
         Address address = convertedClientVendor.getAddress();
 
-        convertedClientVendor.setClientVendorType(clientVendor.getClientVendorType());
+        //These 3 lines below -- are ERROR
+        //convertedClientVendor.setClientVendorType(clientVendor.getClientVendorType());
+        //convertedClientVendor.setWebsite(clientVendor.getWebsite());
+        //convertedClientVendor.setAddress(address);
         convertedClientVendor.setCompany(currentCompany);
         convertedClientVendor.setId(clientVendor.getId());
-        convertedClientVendor.setWebsite(clientVendor.getWebsite());
-        convertedClientVendor.setAddress(address);
-
 
         clientVendorRepository.save(convertedClientVendor);
 
