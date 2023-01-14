@@ -1,5 +1,6 @@
 package com.cydeo.controller;
 
+import com.cydeo.annotation.ExecutionTime;
 import com.cydeo.client.ConsumeCurrencyClient;
 import com.cydeo.service.CompanyService;
 import com.cydeo.service.DashboardService;
@@ -22,6 +23,7 @@ public class DashboardController {
         this.companyService = companyService;
         this.consumeCurrencyClient = consumeCurrencyClient;
     }
+
 
     @GetMapping("/dashboard")
     public String navigateToDashboard(Model model) throws Exception {
