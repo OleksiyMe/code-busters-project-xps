@@ -17,10 +17,10 @@ public class LoggingAspect {
 
 
     @AfterThrowing(pointcut="anyPC()", throwing="exception")
-    public void afterThrowingAnyPC(JoinPoint joinPoint, Exception exception){
-        log.info("After Throwing-> Method: {}, Excecption Class: {}, Message: {]"
-        , joinPoint.getSignature().toShortString()
-        ,getClass()
+    public void afterThrowingAnyPC(JoinPoint joinPoint, RuntimeException exception){
+        log.error("After Throwing-> Method: {}, Exception Class: {}, Exception Message: {}"
+        ,joinPoint.getSignature().toShortString()
+        ,exception.getClass()
         ,exception.getMessage());
 
 
