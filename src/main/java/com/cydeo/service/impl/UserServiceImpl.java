@@ -58,11 +58,11 @@ public class UserServiceImpl implements UserService {
         switch (loggedInUser.getRole().getDescription()) {
             case "Root User":
                 return findAllOrderByCompanyAndRole().stream()
-                        .filter(user -> user.getRole().getDescription().equals("Admin"))
+                        .filter(userDto -> userDto.getRole().getDescription().equals("Admin"))
                         .collect(Collectors.toList());
             case "Admin":
                 return findAllOrderByCompanyAndRole().stream()
-                        .filter(user -> user.getCompany().getId().equals(loggedInUser.getCompany().getId()))
+                        .filter(userDto -> userDto.getCompany().getId().equals(loggedInUser.getCompany().getId()))
                         .collect(Collectors.toList());
             default:
                 return findAllOrderByCompanyAndRole();
