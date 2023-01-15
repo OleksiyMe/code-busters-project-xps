@@ -94,9 +94,9 @@ public class SalesInvoiceController {
 
     @PostMapping("/addInvoiceProduct/{id}")
     public String addInvoiceProductToInvoice(@PathVariable("id") Long invoiceId,
-                           @Valid @ModelAttribute("newInvoiceProduct") InvoiceProductDto invoiceProductDto,
+                                             @Valid @ModelAttribute("newInvoiceProduct") InvoiceProductDto invoiceProductDto,
                                              BindingResult bindingResult,
-                                             @ModelAttribute("invoice") InvoiceDto invoiceDto,Model model) {
+                                             @ModelAttribute("invoice") InvoiceDto invoiceDto, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("invoice", invoiceService.findInvoiceById(invoiceId));
             model.addAttribute("newInvoiceProduct", invoiceProductDto);
@@ -131,9 +131,15 @@ public class SalesInvoiceController {
     }
 
     @GetMapping("/approve/{id}")
-    public String approveSalesInvoice(@PathVariable Long id) {
+    public String approveSalesInvoice(@PathVariable("id") Long invoiceId, Model model) {
 
-        invoiceService.approve(id);
+        String errormessage = invoiceService.SalesInvoiceCanBeApproved(invoiceId);
+        if (!errormessage.isBlank()) {
+            model.addAttribute("invoices", invoiceService.listAllSalesInvoices());
+            model.addAttribute("errorMessage", errormessage);
+            return "/invoice/sales-invoice-list";
+        }
+        invoiceService.approve(invoiceId);
 
         return "redirect:/salesInvoices/list";
     }

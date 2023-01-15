@@ -64,7 +64,7 @@ class UserServiceImplUnitTest {
 
     @Test
     void findAllFilterForLoggedInUser_Test() {
-        //can not write unit test for this method
+
     }
 
 
