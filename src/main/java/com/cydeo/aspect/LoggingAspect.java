@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 public class LoggingAspect {
 
     @Pointcut("within(com.cydeo..*)")
+
        public void anyPC() {}
 
 
