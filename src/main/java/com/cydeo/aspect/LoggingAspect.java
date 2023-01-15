@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class LoggingAspect {
 
-    @Pointcut("execution(* com.cydeo.*.*(..))")
+    @Pointcut("within(com.cydeo..*)")
        public void anyPC() {}
 
 
