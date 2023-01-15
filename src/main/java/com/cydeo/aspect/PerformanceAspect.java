@@ -6,13 +6,11 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
-import com.cydeo.dto.CurrencyDto;
 
 @Aspect
 @Component
 @Slf4j
 public class PerformanceAspect {
-
 
     @Pointcut("@annotation(com.cydeo.annotation.ExecutionTime)")
     public void executionTimePC(){}
@@ -40,6 +38,8 @@ public class PerformanceAspect {
 
     }
 
+
+
     @Pointcut("execution(* com.cydeo.service.impl.DashboardServiceImpl.getExchangeRates()))")
     public void executionTimeAPI(){}
 
@@ -65,8 +65,6 @@ public class PerformanceAspect {
         return result;
 
     }
-
-
 
 
 
