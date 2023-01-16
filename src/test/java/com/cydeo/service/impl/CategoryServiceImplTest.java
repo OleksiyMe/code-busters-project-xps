@@ -64,30 +64,21 @@ class CategoryServiceImplTest {
     @Test
     void listAllNotDeletedCategoriesForCurrentCompany_test() {
 
-//        UserDto loggedInUser = new UserDto(1L, "Username@test.com", "Abc22#", "Abc22@", "Alex",
-//                "First", "1234567890", null, new CompanyDto(1L, "CompanyName", "1234567890",
-//                "http//www.vvv.com", new AddressDto(), CompanyStatus.ACTIVE),
-//                true);
-//
-//        Company company = new Company("CompanyName", "1234567890",
-//                "http//www.vvv.com", CompanyStatus.ACTIVE, new Address());
-//
-//        when(securityService.getLoggedInUser()).thenReturn(loggedInUser);
-//        when(companyService.findCompanyById(anyLong())).thenReturn(new CompanyDto());
-////        when(mapperUtil.convert(any(CompanyDto.class), any(Company.class))).thenReturn(company);
-//        when(mapperUtil.convert(any(Category.class), any(CategoryDto.class))).thenReturn(new CategoryDto());
-//
-//        List<CategoryDto> categories = categoryServiceImpl.listAllNotDeletedCategoriesForCurrentCompany();
-//
-//        InOrder inOrder = inOrder(categoryRepository, mapperUtil);
-//
-//        inOrder.verify(companyService.findCompanyById(anyLong()));
-////        inOrder.verify(mapperUtil.convert(any(CompanyDto.class), any(Company.class)));
-//        inOrder.verify(categoryRepository).findAllNotDeleted();
-//        inOrder.verify(mapperUtil).convert(any(Category.class), any(CategoryDto.class));
-//
-//        Assertions.assertEquals(loggedInUser.getCompany(), company);
-//        assertNotNull(categories);
+        UserDto loggedInUser = new UserDto(1L, "Username@test.com", "Abc22#", "Abc22@", "Alex",
+                "First", "1234567890", null, new CompanyDto(1L, "CompanyName", "1234567890",
+                "http//www.vvv.com", new AddressDto(), CompanyStatus.ACTIVE),
+                true);
+
+        Company company = new Company("CompanyName", "1234567890",
+                "http//www.vvv.com", CompanyStatus.ACTIVE, new Address());
+
+
+        when(securityService.getLoggedInUser()).thenReturn(loggedInUser);
+        when(mapperUtil.convert(any(CompanyDto.class), any(Company.class))).thenReturn(company);
+
+        List<CategoryDto> categories = categoryServiceImpl.listAllNotDeletedCategoriesForCurrentCompany();
+
+        assertNotNull(categories);
     }
 
     @Test
@@ -96,7 +87,6 @@ class CategoryServiceImplTest {
 
     @Test
     void isDescriptionExist_test() {
-
 
     }
 
