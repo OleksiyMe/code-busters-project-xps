@@ -32,4 +32,6 @@ public interface InvoiceService {
     BigDecimal calculateProfitLossForInvoiceProduct(InvoiceProductDto invoiceProductDto);
 
     String invoiceCanBePrinted(Long invoiceId);
+
+    String SalesInvoiceCanBeApproved(Long invoiceId);
 }

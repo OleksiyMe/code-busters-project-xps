@@ -1,5 +1,6 @@
 package com.cydeo.controller;
 
+import com.cydeo.annotation.ExecutionTime;
 import com.cydeo.dto.InvoiceDto;
 import com.cydeo.dto.InvoiceProductDto;
 import com.cydeo.dto.UserDto;
@@ -32,7 +33,7 @@ public class PurchaseInvoiceController {
         this.productService = productService;
         this.invoiceProductService = invoiceProductService1;
     }
-
+    @ExecutionTime
     @GetMapping("/list")
     public String purchaseInvoiceList(Model model) {
         model.addAttribute("invoices", invoiceService.listAllPurchaseInvoices());

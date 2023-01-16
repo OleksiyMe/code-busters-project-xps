@@ -22,6 +22,7 @@ public class CategoryController {
     @GetMapping("/list")
 
     public String listAllCategories(Model model) {
+      //  throw new RuntimeException("My Exception");
         model.addAttribute("categories", categoryService.listAllNotDeletedCategoriesForCurrentCompany());
 
         return "/category/category-list";

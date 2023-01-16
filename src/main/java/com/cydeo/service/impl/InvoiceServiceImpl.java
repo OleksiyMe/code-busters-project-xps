@@ -10,10 +10,13 @@ import com.cydeo.repository.InvoiceRepository;
 import com.cydeo.service.*;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -28,17 +31,20 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final MapperUtil mapperUtil;
     private final ProductService productService;
     private final ClientVendorService clientVendorService;
+    private final InvoiceProductRepository invoiceProductRepository;
 
 
     public InvoiceServiceImpl(InvoiceRepository invoiceRepository, InvoiceProductService invoiceProductService,
                               SecurityService securityService, MapperUtil mapperUtil, ProductService productService,
-                              @Lazy ClientVendorService clientVendorService) {
+                              @Lazy ClientVendorService clientVendorService,
+                              InvoiceProductRepository invoiceProductRepository) {
         this.invoiceRepository = invoiceRepository;
         this.invoiceProductService = invoiceProductService;
         this.securityService = securityService;
         this.mapperUtil = mapperUtil;
         this.productService = productService;
         this.clientVendorService = clientVendorService;
+        this.invoiceProductRepository = invoiceProductRepository;
     }
 
     @Override
@@ -140,9 +146,9 @@ public class InvoiceServiceImpl implements InvoiceService {
                 securityService.getLoggedInUser().getCompany(), new Company());
 
         String maxInvoiceId =
-                ((invoiceRepository.findMaxId(currentCompany.getId()))==null)?
-                        "0":(invoiceRepository.findMaxId(currentCompany.getId()).toString());
-        String maxSalesId = ((invoiceRepository.findMaxSalesId(currentCompany.getId()))==null)? "0" :
+                ((invoiceRepository.findMaxId(currentCompany.getId())) == null) ?
+                        "0" : (invoiceRepository.findMaxId(currentCompany.getId()).toString());
+        String maxSalesId = ((invoiceRepository.findMaxSalesId(currentCompany.getId())) == null) ? "0" :
                 invoiceRepository.findMaxSalesId(currentCompany.getId()).toString();
 
         String num = "";
@@ -230,7 +236,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
             InvoiceProductDto purchaseInvoiceProductDto = mapperUtil.convert(purchaseInvoiceProduct, new InvoiceProductDto());
 
-            if(purchaseInvoiceProductDto.getRemainingQuantity() >= salesInvoiceProduct.getQuantity()){
+            if (purchaseInvoiceProductDto.getRemainingQuantity() >= salesInvoiceProduct.getQuantity()) {
 
                 BigDecimal purchasePrice = (BigDecimal.valueOf(salesInvoiceProduct.getRemainingQuantity()).multiply(purchaseInvoiceProductDto.getPrice()))
                         .add((BigDecimal.valueOf(salesInvoiceProduct.getRemainingQuantity()).multiply(purchaseInvoiceProductDto.getPrice())).multiply(BigDecimal.valueOf(purchaseInvoiceProductDto.getTax()).divide(BigDecimal.valueOf(100))));
@@ -274,14 +280,38 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public String invoiceCanBePrinted(Long invoiceId) {
-        UserDto loggedInUser =securityService.getLoggedInUser();
+        UserDto loggedInUser = securityService.getLoggedInUser();
         //if we are trying to print invoice from other company, or deleted invoice - return error
-       if (!listAllNotDeletedInvoicesForLoggedInUser().stream()
+        if (!listAllNotDeletedInvoicesForLoggedInUser().stream()
                 .map(invoiceDto -> invoiceDto.getId())
-                .anyMatch(id->id==invoiceId))
-           return "Wrong invoice id";
+                .anyMatch(id -> id == invoiceId))
+            return "Wrong invoice id";
 
-       return "";
+        //"" -- can be printed, any other result -- is a message why not
+        return "";
+    }
+
+    @Override
+    public String SalesInvoiceCanBeApproved(Long invoiceId) {
+
+        InvoiceDto invoiceDto = findInvoiceById(invoiceId);
+        Map<Long, Integer> tmpMapProductquantities = new HashMap<>();
+
+        for (InvoiceProductDto invoiceProduct : invoiceDto.getInvoiceProducts()) {
+            tmpMapProductquantities.put(invoiceProduct.getProduct().getId(),
+                    invoiceProduct.getProduct().getQuantityInStock());
+        }
+        for (InvoiceProductDto invoiceProduct : invoiceDto.getInvoiceProducts()) {
+            Integer quantity = invoiceProduct.getQuantity();
+            Long productId = invoiceProduct.getProduct().getId();
+
+            if (quantity > tmpMapProductquantities.get(productId))
+                return "We can not sell " + quantity + " " + invoiceProduct.getProduct().getName() +
+                        ". We have only " + tmpMapProductquantities.get(productId) + " in stock";
+            tmpMapProductquantities.put(productId, tmpMapProductquantities.get(productId) - quantity);
+        }
+        //"" -- can be printed, any other result -- is a message why not
+        return "";
     }
 
 
