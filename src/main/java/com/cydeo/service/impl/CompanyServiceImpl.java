@@ -131,4 +131,15 @@ public class CompanyServiceImpl implements CompanyService {
 
         return securityService.getLoggedInUser().getCompany();
     }
+
+    @Override
+    public boolean titleExists(String title) {
+        return companyRepository.findAll().stream()
+                .filter(company -> company.getIsDeleted().equals(false))
+                .anyMatch(company -> company.getTitle().equals(title));
+
+
+    }
+
+
 }
