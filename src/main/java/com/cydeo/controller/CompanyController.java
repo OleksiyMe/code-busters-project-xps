@@ -28,6 +28,8 @@ public class CompanyController {
 
     @GetMapping("/create")
     public String createCompany(Model model) {
+
+
         model.addAttribute("newCompany", new CompanyDto());
         return "/company/company-create";
     }
@@ -35,11 +37,23 @@ public class CompanyController {
     @PostMapping("/create")
     public String createCompanyFinish(@Valid @ModelAttribute("newCompany") CompanyDto companyDto,
                                       BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
+
+        boolean titleExist = companyService.titleExists(companyDto.getTitle());
+
+
+        if (bindingResult.hasErrors() || titleExist) {
+            if (titleExist) {
+                bindingResult.rejectValue("title", " ",
+                        "A company with this title already exists. " +
+                                "Please try with different title.");
+            }
             return "/company/company-create";
         }
+
+
         companyService.save(companyDto);
         return "redirect:/companies/list";
+
     }
 
     @GetMapping("/update/{companyId}")
@@ -49,15 +63,28 @@ public class CompanyController {
     }
 
     @PostMapping("/update/{companyId}")
-    public String updateCompany(@PathVariable("companyId") Long companyId, @Valid @ModelAttribute("company") CompanyDto companyDto, BindingResult bindingResult) {
-        if(bindingResult.hasErrors()){
-            companyDto.setId(companyId);
-            return "company/company-update";
+    public String updateCompany(@PathVariable("companyId") Long companyId,
+                                @Valid @ModelAttribute("company") CompanyDto companyDto,
+                                BindingResult bindingResult) {
+        boolean titleExist = companyService.titleExists(companyDto.getTitle());
+
+        if (bindingResult.hasErrors() || titleExist) {
+            if (titleExist) {
+                bindingResult.rejectValue("title", " ",
+                        "A company with this title already exists. " +
+                                "Please try with different title.");
+            }
+            if (bindingResult.hasErrors()) {
+                companyDto.setId(companyId);
+                return "company/company-update";
+            }
+
         }
         companyDto.setId(companyId);
         companyService.updateCompany(companyDto);
         return "redirect:/companies/list";
     }
+
 
     @GetMapping("/activate/{id}")
     public String activate(@PathVariable("id") Long id) {
