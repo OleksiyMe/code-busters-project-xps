@@ -37,3 +37,4 @@ build/
 /.mvn/
 /mvnw.cmd
 /my_accounting_project.iml
+/logs/
