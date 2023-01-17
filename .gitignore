@@ -38,3 +38,4 @@ build/
 /mvnw.cmd
 /my_accounting_project.iml
 /logs/
+/Dockerfile
