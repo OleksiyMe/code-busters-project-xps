@@ -25,13 +25,13 @@ public class CategoryController {
       //  throw new RuntimeException("My Exception");
         model.addAttribute("categories", categoryService.listAllNotDeletedCategoriesForCurrentCompany());
 
-        return "/category/category-list";
+        return "category/category-list";
     }
 
     @GetMapping("/create")
     public String createCategory(Model model) {
         model.addAttribute("categoryDto", new CategoryDto());
-        return "/category/category-create";
+        return "category/category-create";
     }
 
     @PostMapping("/create")
@@ -43,7 +43,7 @@ public class CategoryController {
                     "This category description already exist");
         }
         if (bindingResult.hasErrors()) {
-            return "/category/category-create";
+            return "category/category-create";
         }
         categoryService.save(categoryDto);
         return "redirect:/categories/list";
@@ -56,7 +56,7 @@ public class CategoryController {
             model.addAttribute("categories",
                     categoryService.listAllNotDeletedCategoriesForCurrentCompany());
             model.addAttribute("errorMessage", errormessage);
-            return "/category/category-list";
+            return "category/category-list";
         }
 
 
@@ -82,7 +82,7 @@ public class CategoryController {
         }
         if(bindingResult.hasErrors()){
 
-            return "/category/category-update";
+            return "category/category-update";
         }
         categoryService.update(categoryDto);
 

@@ -43,7 +43,7 @@ public class SalesInvoiceController {
         model.addAttribute("newSalesInvoice", invoiceDto);
         model.addAttribute("clients", clientVendorService.listAllClients());
 
-        return "/invoice/sales-invoice-create";
+        return "invoice/sales-invoice-create";
     }
 
     @PostMapping("/create")
@@ -80,7 +80,7 @@ public class SalesInvoiceController {
 
         model.addAttribute("products", productService.listAllNotDeletedProductsForCurrentCompany());
 
-        return "/invoice/sales-invoice-update";
+        return "invoice/sales-invoice-update";
     }
 
     @PostMapping("/update/{id}")
@@ -105,7 +105,7 @@ public class SalesInvoiceController {
                     invoiceProductService.getInvoiceProductsByInvoiceId(invoiceId));
             model.addAttribute("products",
                     productService.listAllNotDeletedProductsForCurrentCompany());
-            return "/invoice/sales-invoice-update";
+            return "invoice/sales-invoice-update";
         }
         invoiceProductDto.setId(null);
         invoiceProductService.save(invoiceId, invoiceProductDto);
@@ -137,7 +137,7 @@ public class SalesInvoiceController {
         if (!errormessage.isBlank()) {
             model.addAttribute("invoices", invoiceService.listAllSalesInvoices());
             model.addAttribute("errorMessage", errormessage);
-            return "/invoice/sales-invoice-list";
+            return "invoice/sales-invoice-list";
         }
         invoiceService.approve(invoiceId);
 
@@ -148,7 +148,7 @@ public class SalesInvoiceController {
     public String salesInvoiceList(Model model) {
         model.addAttribute("invoices", invoiceService.listAllSalesInvoices());
 
-        return "/invoice/sales-invoice-list";
+        return "invoice/sales-invoice-list";
     }
 
     @GetMapping("/print/{id}")
@@ -158,7 +158,7 @@ public class SalesInvoiceController {
         if (!errormessage.isBlank()) {
             model.addAttribute("errorMessage", errormessage);
             model.addAttribute("invoices", invoiceService.listAllSalesInvoices());
-            return "/invoice/sales-invoice-list";
+            return "invoice/sales-invoice-list";
         }
 
         InvoiceDto invoiceDto = invoiceService.findInvoiceById(invoiceId);
@@ -166,7 +166,7 @@ public class SalesInvoiceController {
         model.addAttribute("invoice", invoiceDto);
         model.addAttribute("invoiceProducts", invoiceDto.getInvoiceProducts());
 
-        return "/invoice/invoice_print.html";
+        return "invoice/invoice_print.html";
     }
 
 

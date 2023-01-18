@@ -23,7 +23,7 @@ public class CompanyController {
     @GetMapping("/list")
     public String listCompanies(Model model) {
         model.addAttribute("companies", companyService.listAllCompanies());
-        return "/company/company-list";
+        return "company/company-list";
     }
 
     @GetMapping("/create")
@@ -31,7 +31,7 @@ public class CompanyController {
 
 
         model.addAttribute("newCompany", new CompanyDto());
-        return "/company/company-create";
+        return "company/company-create";
     }
 
     @PostMapping("/create")
@@ -47,7 +47,7 @@ public class CompanyController {
                         "A company with this title already exists. " +
                                 "Please try with different title.");
             }
-            return "/company/company-create";
+            return "company/company-create";
         }
 
 

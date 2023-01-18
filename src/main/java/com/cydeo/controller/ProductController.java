@@ -27,7 +27,7 @@ public class ProductController {
     @GetMapping("/list")
     public String listAllProducts(Model model) {
         model.addAttribute("products", productService.listAllNotDeletedProductsForCurrentCompany());
-        return "/product/product-list";
+        return "product/product-list";
     }
 
     @GetMapping("/create")
@@ -40,7 +40,7 @@ public class ProductController {
         model.addAttribute("productUnits", productService.listAllProductUnits());
 
 
-        return "/product/product-create";
+        return "product/product-create";
     }
 
     @PostMapping("/create")
@@ -54,7 +54,7 @@ public class ProductController {
             }
             model.addAttribute("categories", categoryService.listAllNotDeletedCategoriesForCurrentCompany());
             model.addAttribute("productUnits", productService.listAllProductUnits());
-            return "/product/product-create";
+            return "product/product-create";
         }
 
         productService.createProduct(productDto);
@@ -69,7 +69,7 @@ public class ProductController {
             model.addAttribute("products",
                     productService.listAllNotDeletedProductsForCurrentCompany());
             model.addAttribute("errorMessage", errorMessage);
-            return "/product/product-list";
+            return "product/product-list";
         }
         productService.deleteProductById(productId);
         return "redirect:/products/list";

@@ -24,14 +24,14 @@ public class ClientVendorController {
         model.addAttribute("clientVendors",
                 clientVendorService.listAllClientVendors());
 
-        return "/clientVendor/clientVendor-list";
+        return "clientVendor/clientVendor-list";
     }
 
     @GetMapping("/create")
     public String createClientVendor(Model model) {
         model.addAttribute("newClientVendor", new ClientVendorDto());
         model.addAttribute("clientVendorTypes", clientVendorService.listAllClientVendorTypes());
-        return "/clientVendor/clientVendor-create";
+        return "clientVendor/clientVendor-create";
     }
 
     @PostMapping("/create")
@@ -42,7 +42,7 @@ public class ClientVendorController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("clientVendorTypes", clientVendorService.listAllClientVendorTypes());
-            return "/clientVendor/clientVendor-create";
+            return "clientVendor/clientVendor-create";
         }
 
         clientVendorService.save(clientVendorDto);
@@ -85,7 +85,7 @@ public class ClientVendorController {
             model.addAttribute("clientVendors",
                     clientVendorService.listAllClientVendors());
             model.addAttribute("errorMessage", errormessage);
-            return "/clientVendor/clientVendor-list";
+            return "clientVendor/clientVendor-list";
         }
 
 

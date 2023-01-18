@@ -32,7 +32,7 @@ public class UserController {
     public String listAllUsers(Model model) {
         model.addAttribute("users",
                 userService.findAllFilterForLoggedInUser());
-        return "/user/user-list";
+        return "user/user-list";
     }
 
     @GetMapping("/create")
@@ -43,7 +43,7 @@ public class UserController {
                 companyService.listAllActiveCompaniesForLoggedInUser());
         model.addAttribute("userRoles",
                 roleService.getRolesFilterForLoggedUser());
-        return "/user/user-create";
+        return "user/user-create";
     }
 
     @PostMapping("/create")
@@ -65,7 +65,7 @@ public class UserController {
             model.addAttribute("userRoles",
                     roleService.getRolesFilterForLoggedUser());
 
-            return "/user/user-create";
+            return "user/user-create";
         }
         userService.save(userDto);
         return "redirect:/users/list";
@@ -80,7 +80,7 @@ public class UserController {
                 companyService.listAllActiveCompaniesForLoggedInUser());
         model.addAttribute("userRoles",
                 roleService.getRolesFilterForLoggedUser());
-        return "/user/user-update";
+        return "user/user-update";
     }
 
     @PostMapping("/update/{id}")
@@ -95,7 +95,7 @@ public class UserController {
             UserDto userDto = userService.findById(userId);
             userDtoToSave.setIsOnlyAdmin(userDto.getIsOnlyAdmin());
             userService.save(userDtoToSave);
-            return "/user/user-update";
+            return "user/user-update";
         }
         userService.update(userDtoToSave);
         return "redirect:/users/list";
@@ -109,7 +109,7 @@ public class UserController {
             model.addAttribute("users",
                     userService.findAllFilterForLoggedInUser());
             model.addAttribute("errorMessage", errormessage);
-            return "/user/user-list";
+            return "user/user-list";
         }
 
         userService.deleteUserById(id);

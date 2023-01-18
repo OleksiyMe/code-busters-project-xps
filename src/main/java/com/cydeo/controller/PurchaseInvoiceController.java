@@ -38,7 +38,7 @@ public class PurchaseInvoiceController {
     public String purchaseInvoiceList(Model model) {
         model.addAttribute("invoices", invoiceService.listAllPurchaseInvoices());
 
-        return "/invoice/purchase-invoice-list";
+        return "invoice/purchase-invoice-list";
     }
 
     @GetMapping("/create")
@@ -50,7 +50,7 @@ public class PurchaseInvoiceController {
         model.addAttribute("newPurchaseInvoice", invoiceDto);
         model.addAttribute("vendors", clientVendorService.listAllVendors());
 
-        return "/invoice/purchase-invoice-create";
+        return "invoice/purchase-invoice-create";
     }
 
     @PostMapping("/create")
@@ -97,7 +97,7 @@ public class PurchaseInvoiceController {
                 invoiceProductService.getInvoiceProductsByInvoiceId(id));
         model.addAttribute("products",
                 productService.listAllNotDeletedProductsForCurrentCompany());
-        return "/invoice/purchase-invoice-update";
+        return "invoice/purchase-invoice-update";
     }
 
     @PostMapping("/update/{id}")
@@ -124,7 +124,7 @@ public class PurchaseInvoiceController {
                     invoiceProductService.getInvoiceProductsByInvoiceId(invoiceId));
             model.addAttribute("products",
                     productService.listAllNotDeletedProductsForCurrentCompany());
-            return "/invoice/purchase-invoice-update";
+            return "invoice/purchase-invoice-update";
         }
         invoiceProductDto.setId(null); //need to set null, because id from ModelAttribute is equal invoice id, do not know why
         invoiceProductService.save(invoiceId, invoiceProductDto);
@@ -147,7 +147,7 @@ public class PurchaseInvoiceController {
         if (!errormessage.isBlank()) {
             model.addAttribute("errorMessage", errormessage);
             model.addAttribute("invoices", invoiceService.listAllPurchaseInvoices());
-            return "/invoice/purchase-invoice-list";
+            return "invoice/purchase-invoice-list";
         }
 
         InvoiceDto invoiceDto = invoiceService.findInvoiceById(invoiceId);
@@ -155,7 +155,7 @@ public class PurchaseInvoiceController {
         model.addAttribute("invoice", invoiceDto);
         model.addAttribute("invoiceProducts", invoiceDto.getInvoiceProducts());
 
-        return "/invoice/invoice_print.html";
+        return "invoice/invoice_print.html";
     }
 
 }

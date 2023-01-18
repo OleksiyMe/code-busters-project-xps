@@ -33,6 +33,6 @@ public class DashboardController {
 
 
 
-        return "/dashboard";
+        return "dashboard.html";
     }
 }

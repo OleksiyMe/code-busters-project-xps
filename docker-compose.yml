@@ -1,0 +1,29 @@
+version: '3.1'
+networks:
+  docker-net:
+services:
+  app:
+    image: 'stogur/accountingdoggy:latest'
+    networks:
+      - docker-net
+    build:
+      context: .
+    ports:
+      - "8001:8001"
+    container_name: app
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/codebusters
+
+
+  db:
+    image: postgres
+    container_name: db
+    networks:
+      - docker-net
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=codebusters
+
