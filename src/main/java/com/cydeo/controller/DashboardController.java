@@ -32,7 +32,6 @@ public class DashboardController {
         model.addAttribute("title", "Cydeo Accounting-Dashboard");
 
 
-
         return "dashboard.html";
     }
 }
