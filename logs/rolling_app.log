@@ -1,2 +1,8 @@
 [INFO ] 2023-01-19 13:29:23.959 [http-nio-8001-exec-4] PerformanceAspect - Execution starts: Method: DashboardServiceImpl.getExchangeRates()
 [INFO ] 2023-01-19 13:29:24.068 [http-nio-8001-exec-4] PerformanceAspect - Time taken to execute: Method: DashboardServiceImpl.getExchangeRates() - 110 ms 
+[INFO ] 2023-01-19 13:36:03.779 [http-nio-8001-exec-3] PerformanceAspect - Execution starts: Method: DashboardServiceImpl.getExchangeRates()
+[INFO ] 2023-01-19 13:36:04.056 [http-nio-8001-exec-3] PerformanceAspect - Time taken to execute: Method: DashboardServiceImpl.getExchangeRates() - 277 ms 
+[INFO ] 2023-01-19 13:37:40.601 [http-nio-8001-exec-6] PerformanceAspect - Execution starts: Method: DashboardServiceImpl.getExchangeRates()
+[INFO ] 2023-01-19 13:37:40.888 [http-nio-8001-exec-6] PerformanceAspect - Time taken to execute: Method: DashboardServiceImpl.getExchangeRates() - 287 ms 
+[INFO ] 2023-01-19 13:38:34.379 [http-nio-8001-exec-9] PerformanceAspect - Execution starts: Method: DashboardServiceImpl.getExchangeRates()
+[INFO ] 2023-01-19 13:38:34.637 [http-nio-8001-exec-9] PerformanceAspect - Time taken to execute: Method: DashboardServiceImpl.getExchangeRates() - 259 ms 
