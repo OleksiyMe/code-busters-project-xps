@@ -1,6 +1,8 @@
 version: '3.1'
 networks:
   docker-net:
+volumes:
+  initdb:
 services:
   app:
     image: 'stogur/accountingdoggy:latest'
@@ -26,4 +28,6 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=admin
       - POSTGRES_DB=codebusters
+    volumes:
+      - initdb:/var/lib/postgresql/data
 

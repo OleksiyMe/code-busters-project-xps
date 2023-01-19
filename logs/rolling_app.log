@@ -1,27 +1,5 @@
-[INFO ] 2023-01-16 12:56:07.554 [http-nio-8001-exec-5] PerformanceAspect - Time taken to execute: Method: DashboardServiceImpl.getExchangeRates() - 122 ms 
-[INFO ] 2023-01-16 12:56:37.102 [http-nio-8001-exec-4] PerformanceAspect - Execution starts: Method: DashboardServiceImpl.getExchangeRates()
-[INFO ] 2023-01-16 12:56:37.197 [http-nio-8001-exec-4] PerformanceAspect - Time taken to execute: Method: DashboardServiceImpl.getExchangeRates() - 95 ms 
-[INFO ] 2023-01-16 12:58:50.178 [http-nio-8001-exec-9] PerformanceAspect - Execution starts: Method: PurchaseInvoiceController.purchaseInvoiceList(..)
-[INFO ] 2023-01-16 12:58:50.218 [http-nio-8001-exec-9] PerformanceAspect - Time taken to execute: Method: PurchaseInvoiceController.purchaseInvoiceList(..) - 40 ms 
-[INFO ] 2023-01-16 12:58:56.158 [http-nio-8001-exec-9] PerformanceAspect - Execution starts: Method: PurchaseInvoiceController.purchaseInvoiceList(..)
-[INFO ] 2023-01-16 12:58:56.188 [http-nio-8001-exec-9] PerformanceAspect - Time taken to execute: Method: PurchaseInvoiceController.purchaseInvoiceList(..) - 31 ms 
-[INFO ] 2023-01-16 12:59:48.881 [http-nio-8001-exec-10] PerformanceAspect - Execution starts: Method: PurchaseInvoiceController.purchaseInvoiceList(..)
-[INFO ] 2023-01-16 12:59:48.905 [http-nio-8001-exec-10] PerformanceAspect - Time taken to execute: Method: PurchaseInvoiceController.purchaseInvoiceList(..) - 25 ms 
-[INFO ] 2023-01-16 12:59:59.931 [http-nio-8001-exec-3] PerformanceAspect - Execution starts: Method: PurchaseInvoiceController.purchaseInvoiceList(..)
-[INFO ] 2023-01-16 12:59:59.954 [http-nio-8001-exec-3] PerformanceAspect - Time taken to execute: Method: PurchaseInvoiceController.purchaseInvoiceList(..) - 23 ms 
-[ERROR] 2023-01-17 16:49:48.299 [main] LoggingAspect - After Throwing-> Method: ClientVendorServiceImpl.findClientVendorById(..), Exception Class: class java.util.NoSuchElementException, Exception Message: No value present
-[ERROR] 2023-01-17 16:49:48.775 [main] LoggingAspect - After Throwing-> Method: ClientVendorServiceImpl.findClientVendorById(..), Exception Class: class java.util.NoSuchElementException, Exception Message: No value present
-[ERROR] 2023-01-17 17:20:17.305 [main] LoggingAspect - After Throwing-> Method: ClientVendorServiceImpl.findClientVendorById(..), Exception Class: class java.util.NoSuchElementException, Exception Message: No value present
-[ERROR] 2023-01-17 17:20:17.710 [main] LoggingAspect - After Throwing-> Method: ClientVendorServiceImpl.findClientVendorById(..), Exception Class: class java.util.NoSuchElementException, Exception Message: No value present
-[ERROR] 2023-01-17 17:21:43.985 [main] LoggingAspect - After Throwing-> Method: ClientVendorServiceImpl.findClientVendorById(..), Exception Class: class java.util.NoSuchElementException, Exception Message: No value present
-[ERROR] 2023-01-17 17:21:44.418 [main] LoggingAspect - After Throwing-> Method: ClientVendorServiceImpl.findClientVendorById(..), Exception Class: class java.util.NoSuchElementException, Exception Message: No value present
-[ERROR] 2023-01-17 17:43:17.574 [main] LoggingAspect - After Throwing-> Method: ClientVendorServiceImpl.findClientVendorById(..), Exception Class: class java.util.NoSuchElementException, Exception Message: No value present
-[ERROR] 2023-01-17 17:43:18.062 [main] LoggingAspect - After Throwing-> Method: ClientVendorServiceImpl.findClientVendorById(..), Exception Class: class java.util.NoSuchElementException, Exception Message: No value present
-[ERROR] 2023-01-17 23:35:30.962 [main] LoggingAspect - After Throwing-> Method: ClientVendorServiceImpl.findClientVendorById(..), Exception Class: class java.util.NoSuchElementException, Exception Message: No value present
-[ERROR] 2023-01-17 23:35:31.652 [main] LoggingAspect - After Throwing-> Method: ClientVendorServiceImpl.findClientVendorById(..), Exception Class: class java.util.NoSuchElementException, Exception Message: No value present
-[INFO ] 2023-01-17 23:45:03.824 [http-nio-8001-exec-1] PerformanceAspect - Execution starts: Method: DashboardServiceImpl.getExchangeRates()
-[INFO ] 2023-01-17 23:45:04.194 [http-nio-8001-exec-1] PerformanceAspect - Time taken to execute: Method: DashboardServiceImpl.getExchangeRates() - 370 ms 
-[ERROR] 2023-01-18 01:08:31.351 [main] LoggingAspect - After Throwing-> Method: ClientVendorServiceImpl.findClientVendorById(..), Exception Class: class java.util.NoSuchElementException, Exception Message: No value present
-[ERROR] 2023-01-18 01:08:31.748 [main] LoggingAspect - After Throwing-> Method: ClientVendorServiceImpl.findClientVendorById(..), Exception Class: class java.util.NoSuchElementException, Exception Message: No value present
-[INFO ] 2023-01-18 09:01:04.364 [http-nio-8001-exec-8] PerformanceAspect - Execution starts: Method: DashboardServiceImpl.getExchangeRates()
-[INFO ] 2023-01-18 09:01:05.278 [http-nio-8001-exec-8] PerformanceAspect - Time taken to execute: Method: DashboardServiceImpl.getExchangeRates() - 914 ms 
+[INFO ] 2023-01-19 10:41:22.470 [http-nio-8001-exec-1] PerformanceAspect - Time taken to execute: Method: DashboardServiceImpl.getExchangeRates() - 385 ms 
+[ERROR] 2023-01-19 10:42:00.880 [main] LoggingAspect - After Throwing-> Method: ClientVendorServiceImpl.findClientVendorById(..), Exception Class: class java.util.NoSuchElementException, Exception Message: No value present
+[ERROR] 2023-01-19 10:42:01.290 [main] LoggingAspect - After Throwing-> Method: ClientVendorServiceImpl.findClientVendorById(..), Exception Class: class java.util.NoSuchElementException, Exception Message: No value present
+[ERROR] 2023-01-19 13:10:52.029 [main] LoggingAspect - After Throwing-> Method: ClientVendorServiceImpl.findClientVendorById(..), Exception Class: class java.util.NoSuchElementException, Exception Message: No value present
+[ERROR] 2023-01-19 13:10:52.423 [main] LoggingAspect - After Throwing-> Method: ClientVendorServiceImpl.findClientVendorById(..), Exception Class: class java.util.NoSuchElementException, Exception Message: No value present
