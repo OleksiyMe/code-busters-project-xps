@@ -24,9 +24,9 @@
                             <div id="submenu-1" class="collapse submenu">
                                 <ul class="nav flex-column">
                                     <li class="nav-item" sec:authorize="hasAnyAuthority('Root User')">
-                                        <a class="nav-link text-white" th:href="@{companies/list}">Company Registration</a></li>
+                                        <a class="nav-link text-white" th:href="@{/companies/list}">Company Registration</a></li>
                                     <li class="nav-item" sec:authorize="hasAnyAuthority('Root User')">
-                                        <a class="nav-link text-white" th:href="@{users/list}">User Registration</a></li>
+                                        <a class="nav-link text-white" th:href="@{/users/list}">User Registration</a></li>
                                 </ul>
                             </div>
                         </li>
@@ -44,9 +44,9 @@
                             <div id="submenu-2" class="collapse submenu ">
                                 <ul class="nav flex-column">
                                     <li class="nav-item" sec:authorize="hasAnyAuthority('Admin')">
-                                        <a class="nav-link text-white" th:href="@{users/list}">User Registration</a></li>
+                                        <a class="nav-link text-white" th:href="@{/users/list}">User Registration</a></li>
                                     <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Manager','Employee')">
-                                        <a class="nav-link text-white" th:href="@{clientVendors/list}">Client/Vendor Registration</a></li>
+                                        <a class="nav-link text-white" th:href="@{/clientVendors/list}">Client/Vendor Registration</a></li>
                                 </ul>
                             </div>
                         </li>
@@ -64,9 +64,9 @@
                             <div id="submenu-3" class="collapse submenu " style="">
                                 <ul class="nav flex-column" style="color: #579BB1">
                                     <li class="nav-item">
-                                        <a class="nav-link text-white" th:href="@{categories/list}">Category</a></li>
+                                        <a class="nav-link text-white" th:href="@{/categories/list}">Category</a></li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-white" th:href="@{products/list}">Product</a></li>
+                                        <a class="nav-link text-white" th:href="@{/products/list}">Product</a></li>
                                 </ul>
                             </div>
                         </li>
@@ -84,9 +84,9 @@
                             <div id="submenu-4" class="collapse submenu " style="">
                                 <ul class="nav flex-column">
                                     <li class="nav-item">
-                                        <a class="nav-link text-white" th:href="@{purchaseInvoices/list}">Purchase Invoice</a></li>
+                                        <a class="nav-link text-white" th:href="@{/purchaseInvoices/list}">Purchase Invoice</a></li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-white" th:href="@{salesInvoices/list}">Sales Invoice</a></li>
+                                        <a class="nav-link text-white" th:href="@{/salesInvoices/list}">Sales Invoice</a></li>
                                 </ul>
                             </div>
                         </li>
@@ -104,9 +104,9 @@
                             <div id="submenu-5" class="collapse submenu " style="">
                                 <ul class="nav flex-column">
                                     <li class="nav-item">
-                                        <a class="nav-link text-white" th:href="@{reports/profitLossData}">Profit/Loss Report</a></li>
+                                        <a class="nav-link text-white" th:href="@{/reports/profitLossData}">Profit/Loss Report</a></li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-white" th:href="@{reports/stockData}">Stock Report</a></li>
+                                        <a class="nav-link text-white" th:href="@{/reports/stockData}">Stock Report</a></li>
                                 </ul>
                             </div>
                         </li>

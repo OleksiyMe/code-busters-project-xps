@@ -6,3 +6,9 @@
 [INFO ] 2023-01-19 13:37:40.888 [http-nio-8001-exec-6] PerformanceAspect - Time taken to execute: Method: DashboardServiceImpl.getExchangeRates() - 287 ms 
 [INFO ] 2023-01-19 13:38:34.379 [http-nio-8001-exec-9] PerformanceAspect - Execution starts: Method: DashboardServiceImpl.getExchangeRates()
 [INFO ] 2023-01-19 13:38:34.637 [http-nio-8001-exec-9] PerformanceAspect - Time taken to execute: Method: DashboardServiceImpl.getExchangeRates() - 259 ms 
+[INFO ] 2023-01-19 13:38:51.433 [http-nio-8001-exec-5] PerformanceAspect - Execution starts: Method: DashboardServiceImpl.getExchangeRates()
+[INFO ] 2023-01-19 13:38:51.542 [http-nio-8001-exec-5] PerformanceAspect - Time taken to execute: Method: DashboardServiceImpl.getExchangeRates() - 109 ms 
+[INFO ] 2023-01-19 13:39:11.640 [http-nio-8001-exec-9] PerformanceAspect - Execution starts: Method: DashboardServiceImpl.getExchangeRates()
+[INFO ] 2023-01-19 13:39:11.743 [http-nio-8001-exec-9] PerformanceAspect - Time taken to execute: Method: DashboardServiceImpl.getExchangeRates() - 103 ms 
+[INFO ] 2023-01-19 13:41:41.369 [http-nio-8001-exec-9] PerformanceAspect - Execution starts: Method: PurchaseInvoiceController.purchaseInvoiceList(..)
+[INFO ] 2023-01-19 13:41:41.411 [http-nio-8001-exec-9] PerformanceAspect - Time taken to execute: Method: PurchaseInvoiceController.purchaseInvoiceList(..) - 42 ms 
